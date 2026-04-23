@@ -190,7 +190,7 @@ export default function AdminPanel({
           {activeTab === 'services' && (
             <ServicesAdminSimple services={services} onUpdate={onUpdateServices} />
           )}
-          {activeTab === 'portfolio' && <PortfolioAdmin />}
+          {activeTab === 'portfolio' && <PortfolioAdmin onUpdate={onUpdatePortfolio} />}
           {activeTab === 'granite' && (
             <GraniteAdminSimple graniteTypes={graniteTypes} onUpdate={onUpdateGraniteTypes} />
           )}

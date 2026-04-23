@@ -9,7 +9,11 @@ const UPLOAD_URL = '/upload-image';
 
 const EMPTY: Omit<Portfolio, 'id'> = { title: '', material: 'Чёрный гранит', image: '', year: new Date().getFullYear() };
 
-export default function PortfolioAdmin() {
+interface Props {
+  onUpdate?: (items: Portfolio[]) => void;
+}
+
+export default function PortfolioAdmin({ onUpdate }: Props) {
   const [items, setItems] = useState<Portfolio[]>([]);
   const [selected, setSelected] = useState<Portfolio | null>(null);
   const [creating, setCreating] = useState(false);
@@ -53,16 +57,20 @@ export default function PortfolioAdmin() {
   const save = async () => {
     if (!current) return;
     setSaving(true);
+    let newItems: Portfolio[];
     if (creating) {
       const created = await createPortfolioItem({ title: current.title, material: current.material, image: current.image, year: current.year });
-      setItems([...items, created]);
+      newItems = [...items, created];
+      setItems(newItems);
       setCreating(false);
       setSelected(created);
     } else {
       const updated = await updatePortfolioItem(current.id, current);
-      setItems(items.map(p => p.id === updated.id ? updated : p));
+      newItems = items.map(p => p.id === updated.id ? updated : p);
+      setItems(newItems);
       setSelected(updated);
     }
+    onUpdate?.(newItems);
     setSaving(false);
     setSaved(true);
     setTimeout(() => setSaved(false), 2000);
@@ -71,7 +79,9 @@ export default function PortfolioAdmin() {
   const remove = async (id: number) => {
     if (!confirm('Удалить работу из портфолио?')) return;
     await deletePortfolioItem(id);
-    setItems(items.filter(p => p.id !== id));
+    const newItems = items.filter(p => p.id !== id);
+    setItems(newItems);
+    onUpdate?.(newItems);
     if (selected?.id === id) setSelected(null);
   };
 
