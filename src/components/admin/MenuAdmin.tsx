@@ -152,18 +152,25 @@ export default function MenuAdmin({ menuItems, onUpdate }: MenuAdminProps) {
       <div className="bg-white border border-dashed border-border p-4">
         <div className="text-xs font-body text-muted-foreground mb-3 uppercase tracking-wide">Добавить пункт</div>
         <div className="space-y-2">
-          <div className="flex gap-2">
-            <input className="field-input flex-1" value={newLabel} onChange={e => setNewLabel(e.target.value)}
-              placeholder="Название" onKeyDown={e => e.key === 'Enter' && addItem()} />
-            <input className="field-input w-40" value={newHref} onChange={e => setNewHref(e.target.value)}
-              placeholder="#section или /page" />
+          <div className="grid grid-cols-2 gap-2">
+            <div>
+              <div className="text-[10px] text-muted-foreground font-body mb-0.5">Название</div>
+              <input className="field-input w-full" value={newLabel} onChange={e => setNewLabel(e.target.value)}
+                placeholder="Каталог" onKeyDown={e => e.key === 'Enter' && addItem()} />
+            </div>
+            <div>
+              <div className="text-[10px] text-muted-foreground font-body mb-0.5">Ссылка</div>
+              <input className="field-input w-full" value={newHref} onChange={e => setNewHref(e.target.value)}
+                placeholder="#section или /page" />
+            </div>
           </div>
           <div className="flex gap-2 items-center">
             <select className="field-input flex-1 text-sm" value={newParentId ?? ''} onChange={e => setNewParentId(e.target.value ? Number(e.target.value) : null)}>
               <option value="">Верхний уровень</option>
               {topLevel(activeTab).map(i => <option key={i.id} value={i.id}>↳ под «{i.label}»</option>)}
             </select>
-            <button onClick={addItem} className="px-4 py-2 bg-foreground text-white text-sm font-body hover:bg-foreground/80 transition-colors shrink-0">
+            <button onClick={addItem} disabled={!newLabel.trim()}
+              className="px-4 py-2 bg-foreground text-white text-sm font-body hover:bg-foreground/80 transition-colors shrink-0 disabled:opacity-40">
               <Icon name="Plus" size={14} />
             </button>
           </div>
