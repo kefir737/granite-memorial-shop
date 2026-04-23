@@ -14,6 +14,7 @@ import GraniteSection from '@/components/site/GraniteSection';
 import ContactsSection from '@/components/site/ContactsSection';
 import Footer from '@/components/site/Footer';
 import AdminPanel from '@/components/admin/AdminPanel';
+import MonumentPage from './MonumentPage';
 
 export default function Index() {
   const [monuments, setMonuments] = useState<Monument[]>(defaultMonuments);
@@ -23,6 +24,9 @@ export default function Index() {
   const [menuItems, setMenuItems] = useState<MenuItem[]>(defaultMenuItems);
   const [settings, setSettings] = useState<SiteSettings>(defaultSiteSettings);
   const [adminOpen, setAdminOpen] = useState(false);
+  const [currentSlug, setCurrentSlug] = useState<string | null>(null);
+
+  const currentMonument = currentSlug ? monuments.find(m => m.slug === currentSlug) : null;
 
   if (adminOpen) {
     return (
@@ -44,6 +48,16 @@ export default function Index() {
     );
   }
 
+  if (currentMonument) {
+    return (
+      <MonumentPage
+        monument={currentMonument}
+        settings={settings}
+        onBack={() => setCurrentSlug(null)}
+      />
+    );
+  }
+
   return (
     <div className="min-h-screen bg-white">
       <Header
@@ -53,7 +67,10 @@ export default function Index() {
       />
       <main className="pt-16">
         <HeroSection settings={settings} />
-        <CatalogSection monuments={monuments} />
+        <CatalogSection
+          monuments={monuments}
+          onMonumentClick={(slug) => { setCurrentSlug(slug); window.scrollTo(0, 0); }}
+        />
         <ServicesSection services={services} />
         <PortfolioSection portfolio={portfolio} />
         <GraniteSection graniteTypes={graniteTypes} />

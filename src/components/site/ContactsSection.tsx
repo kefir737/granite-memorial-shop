@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import Icon from '@/components/ui/icon';
 import { SiteSettings } from '@/data/siteData';
 
@@ -5,7 +6,30 @@ interface ContactsSectionProps {
   settings: SiteSettings;
 }
 
+const CONTACT_URL = 'https://functions.poehali.dev/164ed562-9538-47ed-9730-c9118fa2f14d';
+
 export default function ContactsSection({ settings }: ContactsSectionProps) {
+  const [name, setName] = useState('');
+  const [phone, setPhone] = useState('');
+  const [msg, setMsg] = useState('');
+  const [status, setStatus] = useState<'idle' | 'sending' | 'sent' | 'error'>('idle');
+
+  const send = async () => {
+    if (!name.trim() || !phone.trim()) return;
+    setStatus('sending');
+    try {
+      const res = await fetch(CONTACT_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, phone, message: msg }),
+      });
+      const data = await res.json();
+      const parsed = typeof data === 'string' ? JSON.parse(data) : data;
+      if (parsed.ok) { setStatus('sent'); setName(''); setPhone(''); setMsg(''); }
+      else setStatus('error');
+    } catch { setStatus('error'); }
+  };
+
   return (
     <section id="contacts" className="py-24 bg-white">
       <div className="max-w-7xl mx-auto px-6">
@@ -18,7 +42,6 @@ export default function ContactsSection({ settings }: ContactsSectionProps) {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-          {/* Info */}
           <div className="space-y-8">
             <div className="space-y-5">
               {[
@@ -35,7 +58,7 @@ export default function ContactsSection({ settings }: ContactsSectionProps) {
                   <div>
                     <div className="text-xs font-body text-muted-foreground mb-0.5 uppercase tracking-wide">{item.label}</div>
                     {item.href ? (
-                      <a href={item.href} className="font-body text-base text-foreground hover:text-blue transition-colors" style={{ '--tw-text-opacity': '1' } as React.CSSProperties}>
+                      <a href={item.href} className="font-body text-base text-foreground hover:underline transition-colors">
                         {item.value}
                       </a>
                     ) : (
@@ -46,36 +69,39 @@ export default function ContactsSection({ settings }: ContactsSectionProps) {
               ))}
             </div>
 
-            {/* Form */}
             <div className="border border-border p-6">
               <h3 className="font-display text-2xl font-light text-foreground mb-5">Оставить заявку</h3>
-              <div className="space-y-3">
-                <input
-                  type="text"
-                  placeholder="Ваше имя"
-                  className="w-full border border-border px-4 py-3 font-body text-sm focus:outline-none focus:border-foreground transition-colors bg-white"
-                />
-                <input
-                  type="tel"
-                  placeholder="Телефон"
-                  className="w-full border border-border px-4 py-3 font-body text-sm focus:outline-none focus:border-foreground transition-colors bg-white"
-                />
-                <textarea
-                  placeholder="Ваш вопрос или пожелание"
-                  rows={3}
-                  className="w-full border border-border px-4 py-3 font-body text-sm focus:outline-none focus:border-foreground transition-colors bg-white resize-none"
-                />
-                <button className="w-full py-3 bg-foreground text-white font-body text-sm tracking-wide hover:bg-foreground/80 transition-colors">
-                  Отправить заявку
-                </button>
-              </div>
-              <p className="text-xs font-body text-muted-foreground mt-3">
-                Нажимая кнопку, вы соглашаетесь с политикой конфиденциальности
-              </p>
+              {status === 'sent' ? (
+                <div className="flex items-center gap-3 py-6 text-green-700 font-body text-sm">
+                  <Icon name="CheckCircle" size={20} />
+                  Заявка отправлена! Мы свяжемся с вами в ближайшее время.
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  <input value={name} onChange={e => setName(e.target.value)} type="text" placeholder="Ваше имя *"
+                    className="w-full border border-border px-4 py-3 font-body text-sm focus:outline-none focus:border-foreground transition-colors bg-white" />
+                  <input value={phone} onChange={e => setPhone(e.target.value)} type="tel" placeholder="Телефон *"
+                    className="w-full border border-border px-4 py-3 font-body text-sm focus:outline-none focus:border-foreground transition-colors bg-white" />
+                  <textarea value={msg} onChange={e => setMsg(e.target.value)} placeholder="Ваш вопрос или пожелание" rows={3}
+                    className="w-full border border-border px-4 py-3 font-body text-sm focus:outline-none focus:border-foreground transition-colors bg-white resize-none" />
+                  <button
+                    onClick={send}
+                    disabled={status === 'sending' || !name.trim() || !phone.trim()}
+                    className="w-full py-3 bg-foreground text-white font-body text-sm tracking-wide hover:bg-foreground/80 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    {status === 'sending' ? 'Отправляем...' : 'Отправить заявку'}
+                  </button>
+                  {status === 'error' && (
+                    <p className="text-red-500 text-xs font-body">Ошибка. Позвоните нам: {settings.phone}</p>
+                  )}
+                  <p className="text-xs font-body text-muted-foreground mt-3">
+                    Нажимая кнопку, вы соглашаетесь с политикой конфиденциальности
+                  </p>
+                </div>
+              )}
             </div>
           </div>
 
-          {/* Map placeholder */}
           <div className="h-full min-h-[400px] bg-stone-100 border border-border flex items-center justify-center">
             <div className="text-center">
               <Icon name="MapPin" size={32} className="text-muted-foreground mx-auto mb-3" />

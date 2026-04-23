@@ -2,7 +2,6 @@ import { useState } from 'react';
 import Icon from '@/components/ui/icon';
 import {
   Monument, Service, Portfolio, GraniteType, MenuItem, SiteSettings,
-  defaultMonuments, defaultServices, defaultPortfolio, defaultGraniteTypes, defaultMenuItems, defaultSiteSettings
 } from '@/data/siteData';
 import MonumentsAdmin from './MonumentsAdmin';
 import MenuAdmin from './MenuAdmin';
@@ -44,6 +43,65 @@ export default function AdminPanel({
 }: AdminPanelProps) {
   const [activeTab, setActiveTab] = useState<Tab>('monuments');
   const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [authed, setAuthed] = useState(() => sessionStorage.getItem('admin_ok') === '1');
+  const [pwd, setPwd] = useState('');
+  const [pwdError, setPwdError] = useState(false);
+
+  const ADMIN_PASSWORD = 'admin2024';
+
+  const tryLogin = () => {
+    if (pwd === ADMIN_PASSWORD) {
+      sessionStorage.setItem('admin_ok', '1');
+      setAuthed(true);
+      setPwdError(false);
+    } else {
+      setPwdError(true);
+      setPwd('');
+    }
+  };
+
+  const logout = () => {
+    sessionStorage.removeItem('admin_ok');
+    setAuthed(false);
+    onClose();
+  };
+
+  if (!authed) {
+    return (
+      <div className="fixed inset-0 z-[100] flex items-center justify-center bg-foreground">
+        <div className="w-full max-w-sm px-8">
+          <div className="mb-8 text-center">
+            <div className="font-display text-3xl text-white font-light mb-2">Вход в панель</div>
+            <div className="text-sm font-body text-white/40">granit-sever.ru</div>
+          </div>
+          <div className="space-y-4">
+            <input
+              type="password"
+              value={pwd}
+              onChange={e => { setPwd(e.target.value); setPwdError(false); }}
+              onKeyDown={e => e.key === 'Enter' && tryLogin()}
+              placeholder="Пароль"
+              autoFocus
+              className={`w-full bg-white/10 border text-white placeholder-white/30 px-4 py-3 font-body text-sm focus:outline-none focus:border-white/60 transition-colors ${pwdError ? 'border-red-400' : 'border-white/20'}`}
+            />
+            {pwdError && <p className="text-red-400 text-xs font-body">Неверный пароль</p>}
+            <button
+              onClick={tryLogin}
+              className="w-full py-3 bg-white text-foreground font-body text-sm tracking-wide hover:bg-white/90 transition-colors"
+            >
+              Войти
+            </button>
+            <button
+              onClick={onClose}
+              className="w-full py-2 text-white/40 font-body text-sm hover:text-white/70 transition-colors"
+            >
+              Вернуться на сайт
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="fixed inset-0 z-[100] flex bg-white font-body">
@@ -85,14 +143,22 @@ export default function AdminPanel({
           ))}
         </nav>
 
-        <div className="p-4 border-t border-white/10">
+        <div className="p-4 border-t border-white/10 space-y-1">
           <button
             onClick={onClose}
-            className={`w-full flex items-center gap-3 text-sm text-white/50 hover:text-white transition-colors`}
-            title={!sidebarOpen ? 'Вернуться на сайт' : undefined}
+            className="w-full flex items-center gap-3 text-sm text-white/50 hover:text-white transition-colors"
+            title={!sidebarOpen ? 'На сайт' : undefined}
           >
             <Icon name="ArrowLeft" size={16} />
-            {sidebarOpen && <span className="font-body">Вернуться на сайт</span>}
+            {sidebarOpen && <span className="font-body">На сайт</span>}
+          </button>
+          <button
+            onClick={logout}
+            className="w-full flex items-center gap-3 text-sm text-white/30 hover:text-red-400 transition-colors"
+            title={!sidebarOpen ? 'Выйти' : undefined}
+          >
+            <Icon name="LogOut" size={16} />
+            {sidebarOpen && <span className="font-body">Выйти</span>}
           </button>
         </div>
       </aside>

@@ -68,6 +68,35 @@ export default function SettingsAdmin({ settings, onUpdate }: SettingsAdminProps
           </Field>
         </Section>
 
+        <div className="border-t border-border" />
+
+        <Section title="Уведомления на email">
+          <p className="font-body text-sm text-muted-foreground -mt-2">
+            Заявки с формы контактов будут приходить на указанный адрес. SMTP_PASSWORD задаётся в настройках платформы (секреты).
+          </p>
+          <TwoCol>
+            <Field label="Email для уведомлений">
+              <input className="field-input" {...f('notificationEmail')} placeholder="info@granit-sever.ru" />
+            </Field>
+            <Field label="SMTP логин (отправитель)">
+              <input className="field-input" {...f('smtpUser')} placeholder="noreply@granit-sever.ru" />
+            </Field>
+          </TwoCol>
+          <TwoCol>
+            <Field label="SMTP сервер">
+              <input className="field-input" {...f('smtpHost')} placeholder="smtp.yandex.ru" />
+            </Field>
+            <Field label="SMTP порт">
+              <input className="field-input" {...f('smtpPort')} placeholder="465" />
+            </Field>
+          </TwoCol>
+          <div className="bg-stone-50 border border-border p-4 text-xs font-body text-muted-foreground space-y-1">
+            <div><b>Яндекс:</b> smtp.yandex.ru, порт 465</div>
+            <div><b>Mail.ru:</b> smtp.mail.ru, порт 465</div>
+            <div><b>Gmail:</b> smtp.gmail.com, порт 587</div>
+          </div>
+        </Section>
+
         <div className="flex items-center gap-3 pt-2">
           <button
             onClick={save}
