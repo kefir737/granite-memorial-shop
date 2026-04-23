@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import Icon from '@/components/ui/icon';
-import { getPages, createPage, updatePage, deletePage, Page, saveMenuItems, getMenuItems } from '@/lib/api';
+import { getPages, createPage, updatePage, deletePage, Page } from '@/lib/api';
+import { MenuItem } from '@/data/siteData';
 
 const TEMPLATES = [
   { id: 'landing', label: 'Лендинг', desc: 'Главная страница с героем и блоками' },
@@ -9,7 +10,12 @@ const TEMPLATES = [
   { id: 'contacts', label: 'Контакты', desc: 'Контакты, карта, форма обратной связи' },
 ];
 
-export default function PagesAdmin() {
+interface Props {
+  menuItems: MenuItem[];
+  onUpdateMenuItems: (v: MenuItem[]) => void;
+}
+
+export default function PagesAdmin({ menuItems, onUpdateMenuItems }: Props) {
   const [pages, setPages] = useState<Page[]>([]);
   const [selected, setSelected] = useState<Page | null>(null);
   const [showNew, setShowNew] = useState(false);
@@ -36,11 +42,10 @@ export default function PagesAdmin() {
       setPages([...pages, page]);
 
       if (addToHeader || addToFooter) {
-        const menuItems = await getMenuItems().catch(() => []);
         const newItems = [...menuItems];
         if (addToHeader) newItems.push({ id: Date.now(), label: newTitle, href: slug, order: newItems.length + 1, visible: true, menuType: 'header' });
         if (addToFooter) newItems.push({ id: Date.now() + 1, label: newTitle, href: slug, order: newItems.length + 1, visible: true, menuType: 'footer' });
-        await saveMenuItems(newItems).catch(console.error);
+        onUpdateMenuItems(newItems);
       }
 
       setNewTitle('');
