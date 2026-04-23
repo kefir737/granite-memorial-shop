@@ -109,6 +109,8 @@ async def api_handler(path: str, request: Request):
             return handle_settings(method, parts, body, cur, conn)
         elif entity == "pages":
             return handle_pages(method, parts, body, cur, conn)
+        elif entity == "leads":
+            return handle_leads(method, parts, body, cur, conn)
         else:
             return JSONResponse({"error": "Not found"}, status_code=404)
     finally:
@@ -409,6 +411,51 @@ def handle_pages(method, parts, body, cur, conn):
     return JSONResponse({"error": "Not found"}, status_code=404)
 
 
+# ── Leads ─────────────────────────────────────────────────────────────────────
+
+def ensure_leads_table(cur, conn):
+    cur.execute("""
+        CREATE TABLE IF NOT EXISTS leads (
+            id SERIAL PRIMARY KEY,
+            name TEXT NOT NULL DEFAULT '',
+            phone TEXT NOT NULL DEFAULT '',
+            message TEXT NOT NULL DEFAULT '',
+            source TEXT NOT NULL DEFAULT '',
+            processed BOOLEAN NOT NULL DEFAULT false,
+            created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+        )
+    """)
+    conn.commit()
+
+
+def row_lead(r):
+    return {
+        "id": r["id"], "name": r["name"], "phone": r["phone"],
+        "message": r["message"], "source": r["source"],
+        "processed": bool(r["processed"]),
+        "createdAt": r["created_at"].isoformat() if r["created_at"] else None,
+    }
+
+
+def handle_leads(method, parts, body, cur, conn):
+    ensure_leads_table(cur, conn)
+
+    if method == "GET":
+        cur.execute("SELECT * FROM leads ORDER BY created_at DESC")
+        return JSONResponse([row_lead(dict(r)) for r in cur.fetchall()])
+
+    if method == "PATCH" and len(parts) == 2 and parts[1].isdigit():
+        cur.execute(
+            "UPDATE leads SET processed=%s WHERE id=%s RETURNING *",
+            (bool(body.get("processed")), int(parts[1]))
+        )
+        conn.commit()
+        r = cur.fetchone()
+        return JSONResponse(row_lead(dict(r))) if r else JSONResponse({"error": "Not found"}, status_code=404)
+
+    return JSONResponse({"error": "Not found"}, status_code=404)
+
+
 # ── Contact form ──────────────────────────────────────────────────────────────
 
 @app.post("/contact")
@@ -422,6 +469,21 @@ async def contact(request: Request):
     if not name or not phone:
         return JSONResponse({"ok": False, "error": "name_phone_required"}, status_code=400)
 
+    # Сохраняем заявку в БД
+    conn = get_conn()
+    cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+    try:
+        ensure_leads_table(cur, conn)
+        source = monument_name if monument_name else "Форма обратной связи"
+        cur.execute(
+            "INSERT INTO leads (name, phone, message, source) VALUES (%s,%s,%s,%s)",
+            (name, phone, message, source)
+        )
+        conn.commit()
+    finally:
+        cur.close()
+        conn.close()
+
     smtp_host = os.environ.get("SMTP_HOST", "smtp.yandex.ru")
     smtp_port = int(os.environ.get("SMTP_PORT", "465"))
     smtp_user = os.environ.get("SMTP_USER", "")
@@ -429,7 +491,7 @@ async def contact(request: Request):
     recipient = os.environ.get("EMAIL_RECIPIENT", smtp_user)
 
     if not smtp_user or not smtp_password:
-        return JSONResponse({"ok": False, "error": "smtp_not_configured"})
+        return JSONResponse({"ok": True})
 
     subject = "Новая заявка — granit-sever.ru"
     if monument_name:
@@ -453,15 +515,17 @@ async def contact(request: Request):
     msg["To"] = recipient
     msg.attach(MIMEText(html, "html", "utf-8"))
 
-    if smtp_port == 465:
-        server = smtplib.SMTP_SSL(smtp_host, smtp_port)
-    else:
-        server = smtplib.SMTP(smtp_host, smtp_port)
-        server.starttls()
-
-    server.login(smtp_user, smtp_password)
-    server.sendmail(smtp_user, recipient, msg.as_string())
-    server.quit()
+    try:
+        if smtp_port == 465:
+            server = smtplib.SMTP_SSL(smtp_host, smtp_port)
+        else:
+            server = smtplib.SMTP(smtp_host, smtp_port)
+            server.starttls()
+        server.login(smtp_user, smtp_password)
+        server.sendmail(smtp_user, recipient, msg.as_string())
+        server.quit()
+    except Exception:
+        pass
 
     return JSONResponse({"ok": True})
 

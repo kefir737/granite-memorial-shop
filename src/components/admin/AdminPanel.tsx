@@ -9,6 +9,7 @@ import SettingsAdmin from './SettingsAdmin';
 import PagesAdmin from './PagesAdmin';
 import PortfolioAdmin from './PortfolioAdmin';
 import GraniteAdmin from './GraniteAdmin';
+import LeadsAdmin from './LeadsAdmin';
 
 interface AdminPanelProps {
   monuments: Monument[];
@@ -27,9 +28,10 @@ interface AdminPanelProps {
   onClose: () => void;
 }
 
-type Tab = 'monuments' | 'services' | 'portfolio' | 'granite' | 'menu' | 'pages' | 'settings';
+type Tab = 'leads' | 'monuments' | 'services' | 'portfolio' | 'granite' | 'menu' | 'pages' | 'settings';
 
 const tabs: { id: Tab; label: string; icon: string }[] = [
+  { id: 'leads', label: 'Заявки', icon: 'Inbox' },
   { id: 'monuments', label: 'Памятники', icon: 'Package' },
   { id: 'services', label: 'Услуги', icon: 'Hammer' },
   { id: 'portfolio', label: 'Портфолио', icon: 'Image' },
@@ -44,7 +46,7 @@ export default function AdminPanel({
   onUpdateMonuments, onUpdateServices, onUpdatePortfolio, onUpdateGraniteTypes,
   onUpdateMenuItems, onUpdateSettings, onRefreshMenu, onClose,
 }: AdminPanelProps) {
-  const [activeTab, setActiveTab] = useState<Tab>('monuments');
+  const [activeTab, setActiveTab] = useState<Tab>('leads');
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [authed, setAuthed] = useState(() => sessionStorage.getItem('admin_ok') === '1');
   const [pwd, setPwd] = useState('');
@@ -186,6 +188,7 @@ export default function AdminPanel({
 
         {/* Content */}
         <div className="flex-1 overflow-y-auto bg-stone-50" style={{ background: 'hsl(0,0%,97%)' }}>
+          {activeTab === 'leads' && <LeadsAdmin />}
           {activeTab === 'monuments' && (
             <MonumentsAdmin monuments={monuments} onUpdate={onUpdateMonuments} />
           )}
