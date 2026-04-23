@@ -77,6 +77,7 @@ def row_menu(r):
 @app.get("/api/{path:path}")
 @app.post("/api/{path:path}")
 @app.put("/api/{path:path}")
+@app.patch("/api/{path:path}")
 @app.delete("/api/{path:path}")
 async def api_handler(path: str, request: Request):
     method = request.method
@@ -84,7 +85,7 @@ async def api_handler(path: str, request: Request):
     entity = parts[0] if parts else ""
 
     body = {}
-    if method in ("POST", "PUT"):
+    if method in ("POST", "PUT", "PATCH"):
         try:
             body = await request.json()
         except Exception:
@@ -290,6 +291,19 @@ def handle_settings(method, parts, body, cur, conn):
     return JSONResponse({"error": "Not found"}, status_code=404)
 
 
+def get_page_assignments(cur, page_id):
+    cur.execute("CREATE TABLE IF NOT EXISTS page_menu_assignments (id SERIAL PRIMARY KEY, page_id INTEGER NOT NULL, location TEXT NOT NULL, sort_order INTEGER NOT NULL DEFAULT 0, UNIQUE(page_id, location))")
+    cur.execute("SELECT location FROM page_menu_assignments WHERE page_id=%s ORDER BY sort_order", (page_id,))
+    return [r["location"] for r in cur.fetchall()]
+
+
+def row_page(r, assignments=None):
+    return {"id": r["id"], "title": r["title"], "slug": r["slug"],
+            "template": r["template"], "visible": bool(r["visible"]),
+            "content": r["content"], "sortOrder": r["sort_order"],
+            "menuAssignments": assignments or []}
+
+
 def handle_pages(method, parts, body, cur, conn):
     cur.execute("""
         CREATE TABLE IF NOT EXISTS pages (
@@ -303,11 +317,35 @@ def handle_pages(method, parts, body, cur, conn):
             created_at TIMESTAMPTZ NOT NULL DEFAULT now()
         )
     """)
+    cur.execute("CREATE TABLE IF NOT EXISTS page_menu_assignments (id SERIAL PRIMARY KEY, page_id INTEGER NOT NULL, location TEXT NOT NULL, sort_order INTEGER NOT NULL DEFAULT 0, UNIQUE(page_id, location))")
     conn.commit()
+
+    # PATCH /:id/menu — обновить только привязки меню
+    if method == "PATCH" and len(parts) == 3 and parts[1].isdigit() and parts[2] == "menu":
+        page_id = int(parts[1])
+        locations = body.get("locations", [])
+        valid = {"header", "footer"}
+        locations = [l for l in locations if l in valid]
+        # Атомарная синхронизация
+        cur.execute("SELECT location FROM page_menu_assignments WHERE page_id=%s", (page_id,))
+        existing = {r["location"] for r in cur.fetchall()}
+        to_add = set(locations) - existing
+        to_remove = existing - set(locations)
+        for loc in to_add:
+            cur.execute("INSERT INTO page_menu_assignments (page_id, location) VALUES (%s,%s) ON CONFLICT DO NOTHING", (page_id, loc))
+        for loc in to_remove:
+            cur.execute("DELETE FROM page_menu_assignments WHERE page_id=%s AND location=%s", (page_id, loc))
+        conn.commit()
+        return JSONResponse({"pageId": page_id, "locations": locations})
 
     if method == "GET":
         cur.execute("SELECT * FROM pages ORDER BY sort_order, id")
-        return JSONResponse([row_page(dict(r)) for r in cur.fetchall()])
+        pages = cur.fetchall()
+        result = []
+        for p in pages:
+            assignments = get_page_assignments(cur, p["id"])
+            result.append(row_page(dict(p), assignments))
+        return JSONResponse(result)
 
     if method == "POST":
         cur.execute(
@@ -320,7 +358,8 @@ def handle_pages(method, parts, body, cur, conn):
              bool(body.get("visible",False)), body.get("content",""), body.get("sortOrder",0))
         )
         conn.commit()
-        return JSONResponse(row_page(dict(cur.fetchone())), status_code=201)
+        page = dict(cur.fetchone())
+        return JSONResponse(row_page(page, []), status_code=201)
 
     if method == "PUT" and len(parts) == 2 and parts[1].isdigit():
         cur.execute(
@@ -330,20 +369,18 @@ def handle_pages(method, parts, body, cur, conn):
         )
         conn.commit()
         r = cur.fetchone()
-        return JSONResponse(row_page(dict(r))) if r else JSONResponse({"error": "Not found"}, status_code=404)
+        if not r:
+            return JSONResponse({"error": "Not found"}, status_code=404)
+        assignments = get_page_assignments(cur, int(parts[1]))
+        return JSONResponse(row_page(dict(r), assignments))
 
     if method == "DELETE" and len(parts) == 2 and parts[1].isdigit():
+        cur.execute("DELETE FROM page_menu_assignments WHERE page_id=%s", (int(parts[1]),))
         cur.execute("DELETE FROM pages WHERE id=%s", (int(parts[1]),))
         conn.commit()
         return JSONResponse({"deleted": True})
 
     return JSONResponse({"error": "Not found"}, status_code=404)
-
-
-def row_page(r):
-    return {"id": r["id"], "title": r["title"], "slug": r["slug"],
-            "template": r["template"], "visible": bool(r["visible"]),
-            "content": r["content"], "sortOrder": r["sort_order"]}
 
 
 # ── Contact form ──────────────────────────────────────────────────────────────

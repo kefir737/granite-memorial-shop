@@ -23,6 +23,7 @@ interface AdminPanelProps {
   onUpdateGraniteTypes: (v: GraniteType[]) => void;
   onUpdateMenuItems: (v: MenuItem[]) => void;
   onUpdateSettings: (v: SiteSettings) => void;
+  onRefreshMenu: () => void;
   onClose: () => void;
 }
 
@@ -41,7 +42,7 @@ const tabs: { id: Tab; label: string; icon: string }[] = [
 export default function AdminPanel({
   monuments, services, portfolio, graniteTypes, menuItems, settings,
   onUpdateMonuments, onUpdateServices, onUpdatePortfolio, onUpdateGraniteTypes,
-  onUpdateMenuItems, onUpdateSettings, onClose,
+  onUpdateMenuItems, onUpdateSettings, onRefreshMenu, onClose,
 }: AdminPanelProps) {
   const [activeTab, setActiveTab] = useState<Tab>('monuments');
   const [sidebarOpen, setSidebarOpen] = useState(true);
@@ -198,7 +199,7 @@ export default function AdminPanel({
           {activeTab === 'menu' && (
             <MenuAdmin menuItems={menuItems} onUpdate={onUpdateMenuItems} />
           )}
-          {activeTab === 'pages' && <PagesAdmin menuItems={menuItems} onUpdateMenuItems={onUpdateMenuItems} />}
+          {activeTab === 'pages' && <PagesAdmin onMenuChanged={onRefreshMenu} />}
           {activeTab === 'settings' && (
             <SettingsAdmin settings={settings} onUpdate={onUpdateSettings} />
           )}

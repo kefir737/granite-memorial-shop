@@ -103,6 +103,16 @@ INSERT INTO menu_items (label,href,sort_order,visible) VALUES
 ('Контакты','#contacts',5,true)
 ON CONFLICT DO NOTHING;
 
+CREATE TABLE IF NOT EXISTS page_menu_assignments (
+    id SERIAL PRIMARY KEY,
+    page_id INTEGER NOT NULL,
+    location TEXT NOT NULL,
+    sort_order INTEGER NOT NULL DEFAULT 0,
+    UNIQUE(page_id, location)
+);
+
+CREATE INDEX IF NOT EXISTS idx_page_menu_assignments_location ON page_menu_assignments(location);
+
 INSERT INTO site_settings (key,value) VALUES
 ('phone','+7 (495) 000-00-00'),
 ('description','Изготовление и установка памятников из гранита в Москве')

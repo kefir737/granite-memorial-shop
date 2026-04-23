@@ -75,6 +75,10 @@ export default function AppShell() {
     saveMenuItems(updated).catch(console.error);
   };
 
+  const handleRefreshMenu = () => {
+    getMenuItems().then(list => { if (list?.length) setMenuItems(list); }).catch(() => {});
+  };
+
   const handleUpdateSettings = async (updated: SiteSettings) => {
     setSettings(updated);
     await saveSettings(settingsToFlat(updated)).catch(console.error);
@@ -103,6 +107,7 @@ export default function AppShell() {
         onUpdateGraniteTypes={handleUpdateGraniteTypes}
         onUpdateMenuItems={handleUpdateMenuItems}
         onUpdateSettings={handleUpdateSettings}
+        onRefreshMenu={handleRefreshMenu}
         onClose={() => { setAdminOpen(false); navigate('/'); }}
       />
     );

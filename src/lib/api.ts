@@ -71,6 +71,7 @@ export function settingsToObj(raw: Record<string, string>): SiteSettings {
 }
 
 // Pages
+export type PageMenuLocation = 'header' | 'footer';
 export type Page = {
   id: number;
   title: string;
@@ -79,12 +80,18 @@ export type Page = {
   visible: boolean;
   content: string;
   sortOrder: number;
+  menuAssignments: PageMenuLocation[];
 };
 export const getPages = () => apiFetch<Page[]>('pages');
-export const createPage = (data: Omit<Page, 'id'>) =>
+export const createPage = (data: Omit<Page, 'id' | 'menuAssignments'>) =>
   apiFetch<Page>('pages', { method: 'POST', body: JSON.stringify(data) });
 export const updatePage = (id: number, data: Partial<Page>) =>
   apiFetch<Page>(`pages/${id}`, { method: 'PUT', body: JSON.stringify(data) });
+export const updatePageMenuAssignments = (id: number, locations: PageMenuLocation[]) =>
+  apiFetch<{ pageId: number; locations: PageMenuLocation[] }>(`pages/${id}/menu`, {
+    method: 'PATCH',
+    body: JSON.stringify({ locations }),
+  });
 export const deletePage = (id: number) =>
   apiFetch<{ deleted: boolean }>(`pages/${id}`, { method: 'DELETE' });
 
