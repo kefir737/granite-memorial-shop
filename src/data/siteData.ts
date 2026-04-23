@@ -50,6 +50,8 @@ export type MenuItem = {
   href: string;
   order: number;
   visible: boolean;
+  menuType?: 'header' | 'footer' | 'both';
+  parentId?: number | null;
 };
 
 export type PageContent = {

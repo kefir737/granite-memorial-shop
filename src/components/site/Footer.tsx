@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import { SiteSettings, MenuItem } from '@/data/siteData';
 
 interface FooterProps {
@@ -6,7 +7,10 @@ interface FooterProps {
 }
 
 export default function Footer({ settings, menuItems }: FooterProps) {
-  const visible = [...menuItems].filter(m => m.visible).sort((a, b) => a.order - b.order);
+  const visible = [...menuItems]
+    .filter(m => m.visible && (m.menuType === 'footer' || m.menuType === 'both'))
+    .filter(m => !m.parentId)
+    .sort((a, b) => a.order - b.order);
 
   return (
     <footer className="bg-foreground text-white">
@@ -26,13 +30,9 @@ export default function Footer({ settings, menuItems }: FooterProps) {
             <div className="text-xs font-body text-white/40 uppercase tracking-widest mb-4">Разделы</div>
             <nav className="space-y-2">
               {visible.map(item => (
-                <a
-                  key={item.id}
-                  href={item.href}
-                  className="block font-body text-sm text-white/60 hover:text-white transition-colors"
-                >
-                  {item.label}
-                </a>
+                item.href.startsWith('#')
+                  ? <a key={item.id} href={item.href} className="block font-body text-sm text-white/60 hover:text-white transition-colors">{item.label}</a>
+                  : <Link key={item.id} to={item.href} className="block font-body text-sm text-white/60 hover:text-white transition-colors">{item.label}</Link>
               ))}
             </nav>
           </div>

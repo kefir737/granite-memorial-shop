@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import Icon from '@/components/ui/icon';
-import { getPages, createPage, updatePage, deletePage, Page } from '@/lib/api';
+import { getPages, createPage, updatePage, deletePage, Page, saveMenuItems, getMenuItems } from '@/lib/api';
 
 const TEMPLATES = [
   { id: 'landing', label: 'Лендинг', desc: 'Главная страница с героем и блоками' },
@@ -19,6 +19,8 @@ export default function PagesAdmin() {
   const [saved, setSaved] = useState(false);
   const [creating, setCreating] = useState(false);
   const [error, setError] = useState('');
+  const [addToHeader, setAddToHeader] = useState(false);
+  const [addToFooter, setAddToFooter] = useState(false);
 
   useEffect(() => {
     getPages().then(setPages).catch(() => setPages([]));
@@ -32,9 +34,20 @@ export default function PagesAdmin() {
       const slug = '/' + newTitle.toLowerCase().replace(/\s+/g, '-');
       const page = await createPage({ title: newTitle, slug, template: newTemplate, visible: false, content: '', sortOrder: 0 });
       setPages([...pages, page]);
+
+      if (addToHeader || addToFooter) {
+        const menuItems = await getMenuItems().catch(() => []);
+        const newItems = [...menuItems];
+        if (addToHeader) newItems.push({ id: Date.now(), label: newTitle, href: slug, order: newItems.length + 1, visible: true, menuType: 'header' });
+        if (addToFooter) newItems.push({ id: Date.now() + 1, label: newTitle, href: slug, order: newItems.length + 1, visible: true, menuType: 'footer' });
+        await saveMenuItems(newItems).catch(console.error);
+      }
+
       setNewTitle('');
       setShowNew(false);
       setSelected(page);
+      setAddToHeader(false);
+      setAddToFooter(false);
     } catch {
       setError('Ошибка при создании. Проверьте подключение к серверу.');
     } finally {
@@ -118,6 +131,17 @@ export default function PagesAdmin() {
             >
               {TEMPLATES.map(t => <option key={t.id} value={t.id}>{t.label}</option>)}
             </select>
+            <div className="space-y-1.5">
+              <div className="text-xs font-body text-muted-foreground uppercase tracking-wide">Добавить в меню</div>
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input type="checkbox" checked={addToHeader} onChange={e => setAddToHeader(e.target.checked)} />
+                <span className="font-body text-sm">Хедер</span>
+              </label>
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input type="checkbox" checked={addToFooter} onChange={e => setAddToFooter(e.target.checked)} />
+                <span className="font-body text-sm">Футер</span>
+              </label>
+            </div>
             {error && <p className="text-xs text-red-500 font-body">{error}</p>}
             <div className="flex gap-2">
               <button onClick={addPage} disabled={creating} className="flex-1 py-2 bg-foreground text-white text-sm font-body hover:bg-foreground/80 disabled:opacity-50">
