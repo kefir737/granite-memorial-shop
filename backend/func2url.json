@@ -1,4 +1,5 @@
 {
+  "mysql-migrate": "https://functions.poehali.dev/194e0f88-b93a-4070-94a0-37e9ac29344e",
   "api": "https://functions.poehali.dev/35b6eecf-bee4-4d3f-ba79-551cb00675bc",
   "contact-form": "https://functions.poehali.dev/164ed562-9538-47ed-9730-c9118fa2f14d",
   "upload-image": "https://functions.poehali.dev/0a6cd7b2-1977-4844-93dc-3b92573bb20c"
