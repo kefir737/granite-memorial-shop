@@ -258,11 +258,11 @@ def handle_menu(method, parts, body, cur, conn):
 
     if method == "PUT":
         items = body if isinstance(body, list) else []
-        cur.execute("TRUNCATE menu_items RESTART IDENTITY")
+        cur.execute("DELETE FROM menu_items")
         for i, item in enumerate(items):
             cur.execute(
-                "INSERT INTO menu_items (id,label,href,sort_order,visible,menu_type,parent_id) VALUES (%s,%s,%s,%s,%s,%s,%s)",
-                (item.get("id", i+1), item.get("label",""), item.get("href","#"),
+                "INSERT INTO menu_items (label,href,sort_order,visible,menu_type,parent_id) VALUES (%s,%s,%s,%s,%s,%s)",
+                (item.get("label",""), item.get("href","#"),
                  item.get("order", i+1), bool(item.get("visible", True)),
                  item.get("menuType", "header"), item.get("parentId"))
             )
