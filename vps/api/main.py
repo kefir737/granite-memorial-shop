@@ -2,11 +2,8 @@ import json
 import os
 import base64
 import uuid
-import hmac
-import hashlib
-import datetime
-import urllib.request
 import smtplib
+from pathlib import Path
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 
@@ -332,43 +329,8 @@ async def contact(request: Request):
 
 # ── Upload image ──────────────────────────────────────────────────────────────
 
-def _sign(key, msg):
-    return hmac.new(key, msg.encode("utf-8"), hashlib.sha256).digest()
-
-
-def _get_signature_key(key, date_stamp, region, service):
-    k_date = _sign(("AWS4" + key).encode("utf-8"), date_stamp)
-    k_region = _sign(k_date, region)
-    k_service = _sign(k_region, service)
-    return _sign(k_service, "aws4_request")
-
-
-def upload_to_s3(bucket, key, data, content_type, access_key, secret_key):
-    endpoint = "bucket.poehali.dev"
-    region = "us-east-1"
-    now = datetime.datetime.utcnow()
-    amz_date = now.strftime("%Y%m%dT%H%M%SZ")
-    date_stamp = now.strftime("%Y%m%d")
-    uri = f"/{bucket}/{key}"
-    payload_hash = hashlib.sha256(data).hexdigest()
-    headers_to_sign = {"host": endpoint, "x-amz-date": amz_date,
-                       "x-amz-content-sha256": payload_hash, "content-type": content_type}
-    canonical_headers = "".join(f"{k}:{v}\n" for k, v in sorted(headers_to_sign.items()))
-    signed_headers = ";".join(sorted(headers_to_sign.keys()))
-    canonical_request = "\n".join(["PUT", uri, "", canonical_headers, signed_headers, payload_hash])
-    credential_scope = f"{date_stamp}/{region}/s3/aws4_request"
-    string_to_sign = "\n".join(["AWS4-HMAC-SHA256", amz_date, credential_scope,
-                                 hashlib.sha256(canonical_request.encode()).hexdigest()])
-    signing_key = _get_signature_key(secret_key, date_stamp, region, "s3")
-    signature = hmac.new(signing_key, string_to_sign.encode(), hashlib.sha256).hexdigest()
-    auth = f"AWS4-HMAC-SHA256 Credential={access_key}/{credential_scope}, SignedHeaders={signed_headers}, Signature={signature}"
-    req = urllib.request.Request(f"https://{endpoint}{uri}", data=data, method="PUT")
-    req.add_header("Authorization", auth)
-    req.add_header("x-amz-date", amz_date)
-    req.add_header("x-amz-content-sha256", payload_hash)
-    req.add_header("Content-Type", content_type)
-    with urllib.request.urlopen(req) as resp:
-        return resp.status
+UPLOADS_DIR = Path("/app/uploads")
+UPLOADS_DIR.mkdir(parents=True, exist_ok=True)
 
 
 @app.post("/upload-image")
@@ -376,7 +338,6 @@ async def upload_image(request: Request):
     body = await request.json()
     file_data = body.get("file", "")
     file_name = body.get("fileName", "image.jpg")
-    content_type = body.get("contentType", "image/jpeg")
 
     if not file_data:
         return JSONResponse({"error": "Файл не передан"}, status_code=400)
@@ -393,12 +354,11 @@ async def upload_image(request: Request):
     if len(image_bytes) > 10 * 1024 * 1024:
         return JSONResponse({"error": "Файл слишком большой. Максимум 10 МБ"}, status_code=400)
 
-    s3_key = f"monuments/{uuid.uuid4()}.{ext}"
-    access_key = os.environ["AWS_ACCESS_KEY_ID"]
-    secret_key = os.environ["AWS_SECRET_ACCESS_KEY"]
-    upload_to_s3("files", s3_key, image_bytes, content_type, access_key, secret_key)
-    url = f"https://cdn.poehali.dev/projects/{access_key}/bucket/{s3_key}"
+    filename = f"{uuid.uuid4()}.{ext}"
+    (UPLOADS_DIR).mkdir(parents=True, exist_ok=True)
+    (UPLOADS_DIR / filename).write_bytes(image_bytes)
 
+    url = f"/uploads/{filename}"
     return JSONResponse({"ok": True, "url": url})
 
 

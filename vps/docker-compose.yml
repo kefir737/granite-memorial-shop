@@ -28,19 +28,21 @@ services:
       SMTP_USER: ${SMTP_USER}
       SMTP_PASSWORD: ${SMTP_PASSWORD}
       EMAIL_RECIPIENT: ${EMAIL_RECIPIENT}
-      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
-      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
+    volumes:
+      - uploads:/app/uploads
 
   frontend:
-    build: ./frontend
+    build:
+      context: ../
+      dockerfile: vps/frontend/Dockerfile
     restart: always
     depends_on:
       - api
     ports:
       - "80:80"
-      - "443:443"
     volumes:
-      - ./certs:/etc/nginx/certs:ro
+      - uploads:/usr/share/nginx/uploads:ro
 
 volumes:
   pgdata:
+  uploads:
