@@ -125,7 +125,7 @@ export default function AppShell() {
           onUpdateGraniteTypes={handleUpdateGraniteTypes}
         />
       } />
-      <Route path="/:slug" element={<DynamicPage {...sharedProps} />} />
+      <Route path="/:slug" element={<DynamicPage {...sharedProps} monuments={monuments} portfolio={portfolio} />} />
     </Routes>
   );
 }

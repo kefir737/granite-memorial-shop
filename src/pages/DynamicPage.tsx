@@ -1,17 +1,23 @@
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { getPages, Page } from '@/lib/api';
-import { SiteSettings, MenuItem } from '@/data/siteData';
+import { SiteSettings, MenuItem, Monument, Portfolio } from '@/data/siteData';
 import Header from '@/components/site/Header';
 import Footer from '@/components/site/Footer';
+import SeoPage from './templates/SeoPage';
+import CatalogPage from './templates/CatalogPage';
+import OrderPage from './templates/OrderPage';
+import ProductPage from './templates/ProductPage';
 
 interface Props {
   settings: SiteSettings;
   menuItems: MenuItem[];
+  monuments: Monument[];
+  portfolio: Portfolio[];
   onAdminClick: () => void;
 }
 
-export default function DynamicPage({ settings, menuItems, onAdminClick }: Props) {
+export default function DynamicPage({ settings, menuItems, monuments, portfolio, onAdminClick }: Props) {
   const { slug } = useParams<{ slug: string }>();
   const navigate = useNavigate();
   const [page, setPage] = useState<Page | null>(null);
@@ -20,11 +26,8 @@ export default function DynamicPage({ settings, menuItems, onAdminClick }: Props
   useEffect(() => {
     getPages().then(pages => {
       const found = pages.find(p => p.slug === `/${slug}`);
-      if (found) {
-        setPage(found);
-      } else {
-        navigate('/404', { replace: true });
-      }
+      if (found) setPage(found);
+      else navigate('/404', { replace: true });
     }).catch(() => navigate('/404', { replace: true }))
       .finally(() => setLoading(false));
   }, [slug]);
@@ -39,14 +42,22 @@ export default function DynamicPage({ settings, menuItems, onAdminClick }: Props
 
   if (!page) return null;
 
+  const shared = { page, settings, menuItems, onAdminClick };
+
+  if (page.template === 'catalog') return <CatalogPage {...shared} monuments={monuments} onMonumentClick={() => {}} />;
+  if (page.template === 'contacts') return <OrderPage {...shared} />;
+  if (page.template === 'landing') return <ProductPage {...shared} monuments={monuments} />;
+  if (page.template === 'content') return <SeoPage {...shared} portfolio={portfolio} />;
+
   return (
     <div className="min-h-screen bg-white">
       <Header menuItems={menuItems} settings={settings} onAdminClick={onAdminClick} />
       <main className="pt-16 max-w-4xl mx-auto px-6 py-16">
         <h1 className="font-display text-5xl font-light text-foreground mb-8">{page.title}</h1>
-        <div className="font-body text-base text-foreground/80 leading-relaxed whitespace-pre-wrap">
-          {page.content}
-        </div>
+        <div
+          className="prose prose-stone max-w-none font-body leading-relaxed"
+          dangerouslySetInnerHTML={{ __html: page.content }}
+        />
       </main>
       <Footer settings={settings} menuItems={menuItems} />
     </div>

@@ -2,12 +2,13 @@ import { useState, useEffect } from 'react';
 import Icon from '@/components/ui/icon';
 import { getPages, createPage, updatePage, deletePage, Page } from '@/lib/api';
 import { MenuItem } from '@/data/siteData';
+import RichEditor from './RichEditor';
 
 const TEMPLATES = [
-  { id: 'landing', label: 'Лендинг', desc: 'Главная страница с героем и блоками' },
-  { id: 'catalog', label: 'Каталог', desc: 'Сетка карточек с фильтрами' },
-  { id: 'content', label: 'Текстовая', desc: 'Страница с текстом и изображениями' },
-  { id: 'contacts', label: 'Контакты', desc: 'Контакты, карта, форма обратной связи' },
+  { id: 'content', label: 'SEO-страница', desc: 'Текст + портфолио' },
+  { id: 'catalog', label: 'Каталог', desc: 'Фильтры + карточки памятников' },
+  { id: 'landing', label: 'Карточка товара', desc: 'Фото, цена, форма заказа' },
+  { id: 'contacts', label: 'Процесс заказа', desc: 'Таймлайн, FAQ, CTA' },
 ];
 
 interface Props {
@@ -211,13 +212,11 @@ export default function PagesAdmin({ menuItems, onUpdateMenuItems }: Props) {
             </div>
 
             <div>
-              <div className="text-xs font-body text-muted-foreground mb-1 uppercase tracking-wide">Описание / контент</div>
-              <textarea
-                className="field-input resize-none"
-                rows={6}
+              <div className="text-xs font-body text-muted-foreground mb-1 uppercase tracking-wide">Контент</div>
+              <RichEditor
                 value={selected.content}
-                onChange={e => setSelected({ ...selected, content: e.target.value })}
-                placeholder="Текст или описание страницы..."
+                onChange={content => setSelected({ ...selected, content })}
+                placeholder="Введите текст страницы..."
               />
             </div>
 
