@@ -3,7 +3,9 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm install
 COPY . .
-RUN npm run build
+RUN sed -i '/<script src="https:\/\/cdn\.poehali\.dev/d' index.html && \
+    sed -i '/<meta name="pp-name"/d' index.html && \
+    npm run build
 
 FROM nginx:alpine
 COPY --from=builder /app/dist /usr/share/nginx/html
