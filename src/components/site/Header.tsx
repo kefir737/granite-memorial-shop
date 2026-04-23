@@ -93,12 +93,7 @@ export default function Header({ menuItems, settings, onAdminClick }: HeaderProp
               <Icon name="Phone" size={14} />
               {settings.phone}
             </a>
-            <button onClick={onAdminClick}
-              className="hidden md:flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors border border-border px-3 py-1.5"
-              title="Войти в админ-панель">
-              <Icon name="Settings" size={12} />
-              Управление
-            </button>
+
             <button className="md:hidden p-2" onClick={() => setMobileOpen(!mobileOpen)}>
               <Icon name={mobileOpen ? 'X' : 'Menu'} size={20} />
             </button>

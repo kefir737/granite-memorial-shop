@@ -1,5 +1,8 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { SiteSettings } from '@/data/siteData';
+import { compressImage } from '@/lib/compress';
+
+const UPLOAD_URL = '/upload-image';
 
 interface SettingsAdminProps {
   settings: SiteSettings;
@@ -9,6 +12,28 @@ interface SettingsAdminProps {
 export default function SettingsAdmin({ settings, onUpdate }: SettingsAdminProps) {
   const [draft, setDraft] = useState({ ...settings });
   const [saved, setSaved] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const fileRef = useRef<HTMLInputElement>(null);
+
+  const uploadHeroImage = async (file: File) => {
+    setUploading(true);
+    try {
+      const compressed = await compressImage(file, 1920);
+      const reader = new FileReader();
+      reader.onload = async (e) => {
+        const b64 = e.target?.result as string;
+        const res = await fetch(UPLOAD_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ file: b64, fileName: compressed.name, contentType: compressed.type }),
+        });
+        const data = await res.json();
+        if (data.ok) setDraft(d => ({ ...d, heroImage: data.url }));
+        setUploading(false);
+      };
+      reader.readAsDataURL(compressed);
+    } catch { setUploading(false); }
+  };
 
   const save = () => {
     onUpdate(draft);
@@ -34,10 +59,13 @@ export default function SettingsAdmin({ settings, onUpdate }: SettingsAdminProps
             <Field label="Телефон (основной)">
               <input className="field-input" {...f('phone')} />
             </Field>
-            <Field label="Телефон (8-800)">
+            <Field label="Телефон 2">
               <input className="field-input" {...f('phone2')} />
             </Field>
           </TwoCol>
+          <Field label="Подпись под телефоном 2 (напр. «Мессенджеры»)">
+            <input className="field-input" {...f('phone2Label')} placeholder="Мессенджеры" />
+          </Field>
           <Field label="Email">
             <input className="field-input" {...f('email')} />
           </Field>
@@ -57,6 +85,33 @@ export default function SettingsAdmin({ settings, onUpdate }: SettingsAdminProps
           </Field>
           <Field label="Подзаголовок">
             <input className="field-input" {...f('heroSubtitle')} />
+          </Field>
+          <Field label="Фоновое изображение">
+            <div className="space-y-2">
+              {draft.heroImage && (
+                <div className="relative w-full aspect-video overflow-hidden bg-stone-100 border border-border">
+                  <img src={draft.heroImage} alt="Фон" className="w-full h-full object-cover" />
+                  <div className="absolute top-2 right-2 text-xs font-body bg-black/50 text-white px-2 py-1">
+                    текущий фон
+                  </div>
+                </div>
+              )}
+              <div className="flex gap-2">
+                <button type="button" onClick={() => fileRef.current?.click()} disabled={uploading}
+                  className="px-4 py-2 border border-border text-sm font-body hover:border-foreground/40 transition-colors disabled:opacity-50">
+                  {uploading ? 'Загрузка...' : draft.heroImage ? 'Заменить фото' : 'Загрузить фото'}
+                </button>
+                {draft.heroImage && (
+                  <button type="button" onClick={() => setDraft(d => ({ ...d, heroImage: '' }))}
+                    className="px-4 py-2 border border-red-200 text-red-600 text-sm font-body hover:bg-red-50 transition-colors">
+                    Удалить
+                  </button>
+                )}
+              </div>
+              <p className="text-xs font-body text-muted-foreground">Рекомендуемый размер: 1920×1080 пикс. Сжимается автоматически.</p>
+              <input ref={fileRef} type="file" accept="image/*" className="hidden"
+                onChange={e => e.target.files?.[0] && uploadHeroImage(e.target.files[0])} />
+            </div>
           </Field>
         </Section>
 

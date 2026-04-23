@@ -6,7 +6,7 @@ interface ContactsSectionProps {
   settings: SiteSettings;
 }
 
-const CONTACT_URL = 'https://functions.poehali.dev/164ed562-9538-47ed-9730-c9118fa2f14d';
+const CONTACT_URL = '/contact';
 
 export default function ContactsSection({ settings }: ContactsSectionProps) {
   const [name, setName] = useState('');
@@ -24,8 +24,7 @@ export default function ContactsSection({ settings }: ContactsSectionProps) {
         body: JSON.stringify({ name, phone, message: msg }),
       });
       const data = await res.json();
-      const parsed = typeof data === 'string' ? JSON.parse(data) : data;
-      if (parsed.ok) { setStatus('sent'); setName(''); setPhone(''); setMsg(''); }
+      if (data.ok) { setStatus('sent'); setName(''); setPhone(''); setMsg(''); }
       else setStatus('error');
     } catch { setStatus('error'); }
   };
@@ -46,7 +45,7 @@ export default function ContactsSection({ settings }: ContactsSectionProps) {
             <div className="space-y-5">
               {[
                 { icon: 'Phone', label: 'Телефон', value: settings.phone, href: `tel:${settings.phone}` },
-                { icon: 'Phone', label: 'Бесплатно', value: settings.phone2, href: `tel:${settings.phone2}` },
+                { icon: 'Phone', label: settings.phone2Label || 'Мессенджеры', value: settings.phone2, href: `tel:${settings.phone2}` },
                 { icon: 'Mail', label: 'Email', value: settings.email, href: `mailto:${settings.email}` },
                 { icon: 'MapPin', label: 'Адрес', value: settings.address, href: undefined },
                 { icon: 'Clock', label: 'Часы работы', value: settings.workHours, href: undefined },

@@ -65,12 +65,14 @@ export type SiteSettings = {
   companyName: string;
   phone: string;
   phone2: string;
+  phone2Label: string;
   email: string;
   address: string;
   workHours: string;
   mapUrl: string;
   heroTitle: string;
   heroSubtitle: string;
+  heroImage: string;
   metaDescription: string;
   notificationEmail: string;
   smtpUser: string;
@@ -298,12 +300,14 @@ export const defaultSiteSettings: SiteSettings = {
   companyName: 'Гранит Север',
   phone: '+7 (495) 123-45-67',
   phone2: '+7 (800) 555-01-01',
+  phone2Label: 'Мессенджеры',
   email: 'info@granit-sever.ru',
   address: 'г. Москва, ул. Гранитная, д. 12, стр. 1',
   workHours: 'Пн–Сб: 9:00–19:00, Вс: 10:00–17:00',
   mapUrl: 'https://yandex.ru/map-widget/v1/?ll=37.620393%2C55.753960&z=12',
   heroTitle: 'Памятники из гранита',
   heroSubtitle: 'Собственное производство · Установка · Доставка по России',
+  heroImage: '',
   metaDescription: 'Изготовление памятников из гранита. granit-sever.ru — широкий каталог, доступные цены, профессиональная установка.',
   notificationEmail: '',
   smtpUser: '',

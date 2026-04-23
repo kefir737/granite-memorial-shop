@@ -10,7 +10,7 @@ export default function HeroSection({ settings }: HeroSectionProps) {
       {/* Background image */}
       <div
         className="absolute inset-0 bg-cover bg-center opacity-25"
-        style={{ backgroundImage: `url(https://cdn.poehali.dev/projects/37badc84-9384-4d2b-8da3-56516f9e5627/files/b0b1004c-737e-475d-8c92-a90dd637541f.jpg)` }}
+        style={{ backgroundImage: `url(${settings.heroImage || 'https://cdn.poehali.dev/projects/37badc84-9384-4d2b-8da3-56516f9e5627/files/b0b1004c-737e-475d-8c92-a90dd637541f.jpg'})` }}
       />
       {/* Gradient overlay */}
       <div className="absolute inset-0 bg-gradient-to-r from-foreground via-foreground/80 to-transparent" />

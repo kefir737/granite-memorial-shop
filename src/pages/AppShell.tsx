@@ -92,6 +92,8 @@ export default function AppShell() {
     );
   }
 
+  const sharedProps = { settings, menuItems, onAdminClick: () => setAdminOpen(true) };
+
   if (adminOpen) {
     return (
       <AdminPanel
@@ -113,10 +115,9 @@ export default function AppShell() {
     );
   }
 
-  const sharedProps = { settings, menuItems, onAdminClick: () => setAdminOpen(true) };
-
   return (
     <Routes>
+      <Route path="/admin" element={<AdminRedirect open={() => setAdminOpen(true)} />} />
       <Route path="/" element={
         <Index
           {...sharedProps}
@@ -133,4 +134,13 @@ export default function AppShell() {
       <Route path="/:slug" element={<DynamicPage {...sharedProps} monuments={monuments} portfolio={portfolio} />} />
     </Routes>
   );
+}
+
+function AdminRedirect({ open }: { open: () => void }) {
+  const navigate = useNavigate();
+  useEffect(() => {
+    open();
+    navigate('/', { replace: true });
+  }, []);
+  return null;
 }
