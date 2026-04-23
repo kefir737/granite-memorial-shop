@@ -61,13 +61,13 @@ def rl_reset(ip: str):
 
 # ── Auth helpers ──────────────────────────────────────────────────────────────
 
-DEFAULT_HASH = bcrypt.hashpw(b"admin2024", bcrypt.gensalt()).decode()
+DEFAULT_PASSWORD = "admin2024"
 
 
 def get_admin_hash(cur) -> str:
     cur.execute("SELECT value FROM site_settings WHERE key='adminPasswordHash'")
     row = cur.fetchone()
-    return row["value"] if row else DEFAULT_HASH
+    return row["value"] if row else ""
 
 
 def set_admin_hash(cur, conn, plain: str):
@@ -169,11 +169,52 @@ async def api_handler(path: str, request: Request):
             return handle_pages(method, parts, body, cur, conn)
         elif entity == "leads":
             return handle_leads(method, parts, body, cur, conn)
+        elif entity == "auth":
+            return await handle_auth(method, parts, body, request, cur, conn)
         else:
             return JSONResponse({"error": "Not found"}, status_code=404)
     finally:
         cur.close()
         conn.close()
+
+
+async def handle_auth(method, parts, body, request, cur, conn):
+    ip = request.headers.get("X-Forwarded-For", request.client.host or "").split(",")[0].strip()
+    action = parts[1] if len(parts) > 1 else ""
+
+    if method == "POST" and action == "login":
+        if not rl_check(ip):
+            return JSONResponse({"ok": False, "error": "too_many_attempts"}, status_code=429)
+        password = body.get("password", "")
+        stored_hash = get_admin_hash(cur)
+        ok = False
+        if stored_hash:
+            ok = bcrypt.checkpw(password.encode(), stored_hash.encode())
+        else:
+            # Хэш ещё не записан — сравниваем с дефолтным паролем
+            ok = (password == DEFAULT_PASSWORD)
+            if ok:
+                set_admin_hash(cur, conn, DEFAULT_PASSWORD)
+        if ok:
+            rl_reset(ip)
+            return JSONResponse({"ok": True})
+        return JSONResponse({"ok": False, "error": "invalid_password"}, status_code=401)
+
+    if method == "POST" and action == "change-password":
+        if not rl_check(ip):
+            return JSONResponse({"ok": False, "error": "too_many_attempts"}, status_code=429)
+        current = body.get("current", "")
+        new_pwd = body.get("new", "")
+        if len(new_pwd) < 6:
+            return JSONResponse({"ok": False, "error": "too_short"}, status_code=400)
+        stored_hash = get_admin_hash(cur)
+        if not bcrypt.checkpw(current.encode(), stored_hash.encode()):
+            return JSONResponse({"ok": False, "error": "invalid_password"}, status_code=401)
+        set_admin_hash(cur, conn, new_pwd)
+        rl_reset(ip)
+        return JSONResponse({"ok": True})
+
+    return JSONResponse({"error": "Not found"}, status_code=404)
 
 
 def handle_monuments(method, parts, body, cur, conn):
@@ -669,56 +710,6 @@ async def sitemap():
 {items}
 </urlset>"""
     return Response(content=xml, media_type="application/xml")
-
-
-@app.post("/api/auth/login")
-async def auth_login(request: Request):
-    ip = request.headers.get("X-Forwarded-For", request.client.host or "").split(",")[0].strip()
-    if not rl_check(ip):
-        return JSONResponse({"ok": False, "error": "too_many_attempts"}, status_code=429)
-
-    body = await request.json()
-    password = body.get("password", "")
-
-    conn = get_conn()
-    cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
-    try:
-        stored_hash = get_admin_hash(cur)
-    finally:
-        cur.close()
-        conn.close()
-
-    if bcrypt.checkpw(password.encode(), stored_hash.encode()):
-        rl_reset(ip)
-        return JSONResponse({"ok": True})
-    return JSONResponse({"ok": False, "error": "invalid_password"}, status_code=401)
-
-
-@app.post("/api/auth/change-password")
-async def auth_change_password(request: Request):
-    ip = request.headers.get("X-Forwarded-For", request.client.host or "").split(",")[0].strip()
-    if not rl_check(ip):
-        return JSONResponse({"ok": False, "error": "too_many_attempts"}, status_code=429)
-
-    body = await request.json()
-    current = body.get("current", "")
-    new_pwd = body.get("new", "")
-
-    if len(new_pwd) < 6:
-        return JSONResponse({"ok": False, "error": "too_short"}, status_code=400)
-
-    conn = get_conn()
-    cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
-    try:
-        stored_hash = get_admin_hash(cur)
-        if not bcrypt.checkpw(current.encode(), stored_hash.encode()):
-            return JSONResponse({"ok": False, "error": "invalid_password"}, status_code=401)
-        set_admin_hash(cur, conn, new_pwd)
-        rl_reset(ip)
-        return JSONResponse({"ok": True})
-    finally:
-        cur.close()
-        conn.close()
 
 
 @app.get("/health")
