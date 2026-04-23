@@ -311,7 +311,11 @@ def handle_pages(method, parts, body, cur, conn):
 
     if method == "POST":
         cur.execute(
-            "INSERT INTO pages (title,slug,template,visible,content,sort_order) VALUES (%s,%s,%s,%s,%s,%s) RETURNING *",
+            """INSERT INTO pages (title,slug,template,visible,content,sort_order)
+               VALUES (%s,%s,%s,%s,%s,%s)
+               ON CONFLICT (slug) DO UPDATE SET title=EXCLUDED.title, template=EXCLUDED.template,
+               visible=EXCLUDED.visible, content=EXCLUDED.content, sort_order=EXCLUDED.sort_order
+               RETURNING *""",
             (body.get("title",""), body.get("slug",""), body.get("template","content"),
              bool(body.get("visible",False)), body.get("content",""), body.get("sortOrder",0))
         )
