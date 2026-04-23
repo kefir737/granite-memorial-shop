@@ -17,6 +17,8 @@ export default function PagesAdmin() {
   const [newTemplate, setNewTemplate] = useState<Page['template']>('content');
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
+  const [creating, setCreating] = useState(false);
+  const [error, setError] = useState('');
 
   useEffect(() => {
     getPages().then(setPages).catch(() => setPages([]));
@@ -24,12 +26,20 @@ export default function PagesAdmin() {
 
   const addPage = async () => {
     if (!newTitle.trim()) return;
-    const slug = '/' + newTitle.toLowerCase().replace(/\s+/g, '-');
-    const page = await createPage({ title: newTitle, slug, template: newTemplate, visible: false, content: '', sortOrder: 0 });
-    setPages([...pages, page]);
-    setNewTitle('');
-    setShowNew(false);
-    setSelected(page);
+    setCreating(true);
+    setError('');
+    try {
+      const slug = '/' + newTitle.toLowerCase().replace(/\s+/g, '-');
+      const page = await createPage({ title: newTitle, slug, template: newTemplate, visible: false, content: '', sortOrder: 0 });
+      setPages([...pages, page]);
+      setNewTitle('');
+      setShowNew(false);
+      setSelected(page);
+    } catch {
+      setError('Ошибка при создании. Проверьте подключение к серверу.');
+    } finally {
+      setCreating(false);
+    }
   };
 
   const savePage = async () => {
@@ -108,8 +118,11 @@ export default function PagesAdmin() {
             >
               {TEMPLATES.map(t => <option key={t.id} value={t.id}>{t.label}</option>)}
             </select>
+            {error && <p className="text-xs text-red-500 font-body">{error}</p>}
             <div className="flex gap-2">
-              <button onClick={addPage} className="flex-1 py-2 bg-foreground text-white text-sm font-body hover:bg-foreground/80">Создать</button>
+              <button onClick={addPage} disabled={creating} className="flex-1 py-2 bg-foreground text-white text-sm font-body hover:bg-foreground/80 disabled:opacity-50">
+                {creating ? 'Создание...' : 'Создать'}
+              </button>
               <button onClick={() => setShowNew(false)} className="px-3 border border-border text-sm font-body">✕</button>
             </div>
           </div>
