@@ -39,7 +39,6 @@ export default function AppShell() {
       if (svc?.length) setServices(svc);
       if (port?.length) setPortfolio(port);
       if (gran?.length) setGraniteTypes(gran);
-      console.log('[AppShell] menu from API:', JSON.stringify(menu?.slice(0,2)));
       if (menu?.length) setMenuItems(menu);
       if (rawSettings) setSettings(settingsToObj(rawSettings));
     }).finally(() => setLoading(false));

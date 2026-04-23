@@ -259,13 +259,35 @@ def handle_menu(method, parts, body, cur, conn):
     if method == "PUT":
         items = body if isinstance(body, list) else []
         cur.execute("DELETE FROM menu_items")
-        for i, item in enumerate(items):
+
+        # Сначала вставляем топ-уровень, запоминаем маппинг старый_id -> новый_id
+        id_map = {}
+        top = [item for item in items if not item.get("parentId")]
+        children = [item for item in items if item.get("parentId")]
+
+        for i, item in enumerate(top):
+            old_id = item.get("id")
+            cur.execute(
+                "INSERT INTO menu_items (label,href,sort_order,visible,menu_type,parent_id) VALUES (%s,%s,%s,%s,%s,%s) RETURNING id",
+                (item.get("label",""), item.get("href","#"),
+                 item.get("order", i+1), bool(item.get("visible", True)),
+                 item.get("menuType", "header"), None)
+            )
+            new_id = cur.fetchone()["id"]
+            if old_id:
+                id_map[old_id] = new_id
+
+        # Потом вставляем детей с правильными новыми parent_id
+        for i, item in enumerate(children):
+            old_parent = item.get("parentId")
+            new_parent = id_map.get(old_parent)
             cur.execute(
                 "INSERT INTO menu_items (label,href,sort_order,visible,menu_type,parent_id) VALUES (%s,%s,%s,%s,%s,%s)",
                 (item.get("label",""), item.get("href","#"),
-                 item.get("order", i+1), bool(item.get("visible", True)),
-                 item.get("menuType", "header"), item.get("parentId"))
+                 item.get("order", len(top)+i+1), bool(item.get("visible", True)),
+                 item.get("menuType", "header"), new_parent)
             )
+
         conn.commit()
         cur.execute("SELECT * FROM menu_items ORDER BY sort_order, id")
         return JSONResponse([row_menu(dict(r)) for r in cur.fetchall()])
