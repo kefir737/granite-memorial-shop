@@ -20,6 +20,7 @@ export default function PagesAdmin() {
   const [createError, setCreateError] = useState('');
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
+  const [showHtml, setShowHtml] = useState(false);
 
   useEffect(() => {
     getPages().then(setPages).catch(() => setPages([]));
@@ -174,6 +175,54 @@ export default function PagesAdmin() {
               className="px-6 py-2.5 bg-foreground text-white text-sm font-body hover:bg-foreground/80 transition-colors disabled:opacity-50">
               {saving ? 'Сохранение...' : saved ? 'Сохранено ✓' : 'Сохранить'}
             </button>
+
+            {/* HTML редактор */}
+            <div className="border border-border">
+              <button
+                onClick={() => setShowHtml(v => !v)}
+                className="w-full flex items-center justify-between px-4 py-3 text-sm font-body text-foreground hover:bg-stone-50 transition-colors"
+              >
+                <div className="flex items-center gap-2">
+                  <Icon name="Code" size={14} />
+                  <span>Кастомный HTML шаблон</span>
+                  {selected.customHtml && (
+                    <span className="px-1.5 py-px text-[10px] bg-amber-50 text-amber-700 font-body">активен</span>
+                  )}
+                </div>
+                <Icon name={showHtml ? 'ChevronUp' : 'ChevronDown'} size={14} className="text-muted-foreground" />
+              </button>
+
+              {showHtml && (
+                <div className="border-t border-border p-4 space-y-3">
+                  <p className="font-body text-xs text-muted-foreground">
+                    Если заполнено — используется вместо шаблона. Поддерживается любой HTML + Tailwind классы.
+                    Оставь пустым чтобы вернуться к выбранному шаблону.
+                  </p>
+                  <textarea
+                    className="w-full font-mono text-xs border border-border p-3 focus:outline-none focus:border-foreground resize-none bg-stone-50"
+                    rows={20}
+                    value={selected.customHtml || ''}
+                    onChange={e => setSelected({ ...selected, customHtml: e.target.value })}
+                    placeholder={'<main class="pt-16">\n  <h1>Заголовок</h1>\n  <!-- ваш HTML -->\n</main>'}
+                    spellCheck={false}
+                  />
+                  <div className="flex gap-2">
+                    {selected.customHtml && (
+                      <button
+                        onClick={() => setSelected({ ...selected, customHtml: '' })}
+                        className="px-4 py-2 border border-red-200 text-red-600 text-xs font-body hover:bg-red-50 transition-colors"
+                      >
+                        Сбросить к шаблону
+                      </button>
+                    )}
+                    <a href={selected.slug} target="_blank" rel="noreferrer"
+                      className="px-4 py-2 border border-border text-xs font-body hover:border-foreground/40 transition-colors">
+                      Открыть страницу
+                    </a>
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
         </div>
       )}

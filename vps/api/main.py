@@ -322,7 +322,8 @@ def get_page_assignments(cur, page_id):
 def row_page(r, assignments=None):
     return {"id": r["id"], "title": r["title"], "slug": r["slug"],
             "template": r["template"], "visible": bool(r["visible"]),
-            "content": r["content"], "sortOrder": r["sort_order"],
+            "content": r["content"], "customHtml": r.get("custom_html", ""),
+            "sortOrder": r["sort_order"],
             "menuAssignments": assignments or []}
 
 
@@ -335,10 +336,12 @@ def handle_pages(method, parts, body, cur, conn):
             template TEXT NOT NULL DEFAULT 'content',
             visible BOOLEAN NOT NULL DEFAULT false,
             content TEXT NOT NULL DEFAULT '',
+            custom_html TEXT NOT NULL DEFAULT '',
             sort_order INTEGER NOT NULL DEFAULT 0,
             created_at TIMESTAMPTZ NOT NULL DEFAULT now()
         )
     """)
+    cur.execute("ALTER TABLE pages ADD COLUMN IF NOT EXISTS custom_html TEXT NOT NULL DEFAULT ''")
     cur.execute("CREATE TABLE IF NOT EXISTS page_menu_assignments (id SERIAL PRIMARY KEY, page_id INTEGER NOT NULL, location TEXT NOT NULL, sort_order INTEGER NOT NULL DEFAULT 0, UNIQUE(page_id, location))")
     conn.commit()
 
@@ -385,9 +388,10 @@ def handle_pages(method, parts, body, cur, conn):
 
     if method == "PUT" and len(parts) == 2 and parts[1].isdigit():
         cur.execute(
-            "UPDATE pages SET title=%s,slug=%s,template=%s,visible=%s,content=%s WHERE id=%s RETURNING *",
+            "UPDATE pages SET title=%s,slug=%s,template=%s,visible=%s,content=%s,custom_html=%s WHERE id=%s RETURNING *",
             (body.get("title"), body.get("slug"), body.get("template"),
-             bool(body.get("visible")), body.get("content"), int(parts[1]))
+             bool(body.get("visible")), body.get("content"),
+             body.get("customHtml", ""), int(parts[1]))
         )
         conn.commit()
         r = cur.fetchone()

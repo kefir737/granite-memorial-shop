@@ -79,12 +79,13 @@ export type Page = {
   template: 'landing' | 'catalog' | 'content' | 'contacts';
   visible: boolean;
   content: string;
+  customHtml: string;
   sortOrder: number;
   menuAssignments: PageMenuLocation[];
 };
 export const getPages = () => apiFetch<Page[]>('pages');
-export const createPage = (data: Omit<Page, 'id' | 'menuAssignments'>) =>
-  apiFetch<Page>('pages', { method: 'POST', body: JSON.stringify(data) });
+export const createPage = (data: Omit<Page, 'id' | 'menuAssignments' | 'customHtml'>) =>
+  apiFetch<Page>('pages', { method: 'POST', body: JSON.stringify({ ...data, customHtml: '' }) });
 export const updatePage = (id: number, data: Partial<Page>) =>
   apiFetch<Page>(`pages/${id}`, { method: 'PUT', body: JSON.stringify(data) });
 export const updatePageMenuAssignments = (id: number, locations: PageMenuLocation[]) =>

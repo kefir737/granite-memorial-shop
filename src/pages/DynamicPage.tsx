@@ -44,6 +44,17 @@ export default function DynamicPage({ settings, menuItems, monuments, portfolio,
 
   const shared = { page, settings, menuItems, onAdminClick };
 
+  // Кастомный HTML перекрывает шаблон
+  if (page.customHtml) {
+    return (
+      <div className="min-h-screen bg-white">
+        <Header menuItems={menuItems} settings={settings} onAdminClick={onAdminClick} />
+        <div dangerouslySetInnerHTML={{ __html: page.customHtml }} />
+        <Footer settings={settings} menuItems={menuItems} />
+      </div>
+    );
+  }
+
   if (page.template === 'catalog') return <CatalogPage {...shared} monuments={monuments} onMonumentClick={() => {}} />;
   if (page.template === 'contacts') return <OrderPage {...shared} />;
   if (page.template === 'landing') return <ProductPage {...shared} monuments={monuments} />;
