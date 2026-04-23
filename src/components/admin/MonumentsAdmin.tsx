@@ -1,6 +1,7 @@
 import { useState, useRef } from 'react';
 import Icon from '@/components/ui/icon';
 import { Monument } from '@/data/siteData';
+import { compressImage } from '@/lib/compress';
 
 interface MonumentsAdminProps {
   monuments: Monument[];
@@ -85,13 +86,14 @@ export default function MonumentsAdmin({ monuments, onUpdate }: MonumentsAdminPr
     setUploading(true);
     setUploadError('');
     try {
+      const compressed = await compressImage(file);
       const reader = new FileReader();
       reader.onload = async (e) => {
         const b64 = e.target?.result as string;
         const res = await fetch(UPLOAD_URL, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ file: b64, fileName: file.name, contentType: file.type }),
+          body: JSON.stringify({ file: b64, fileName: compressed.name, contentType: compressed.type }),
         });
         const parsed = await res.json();
         if (parsed.ok && current) {
@@ -102,7 +104,7 @@ export default function MonumentsAdmin({ monuments, onUpdate }: MonumentsAdminPr
         }
         setUploading(false);
       };
-      reader.readAsDataURL(file);
+      reader.readAsDataURL(compressed);
     } catch {
       setUploadError('Ошибка загрузки');
       setUploading(false);

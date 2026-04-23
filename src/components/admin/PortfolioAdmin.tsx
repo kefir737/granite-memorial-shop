@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import Icon from '@/components/ui/icon';
 import { Portfolio } from '@/data/siteData';
 import { getPortfolio, createPortfolioItem, updatePortfolioItem, deletePortfolioItem } from '@/lib/api';
+import { compressImage } from '@/lib/compress';
 
 const MATERIALS = ['Чёрный гранит', 'Карельский гранит', 'Габбро-диабаз', 'Белый мрамор'];
 const UPLOAD_URL = '/upload-image';
@@ -29,19 +30,24 @@ export default function PortfolioAdmin() {
   const uploadPhoto = async (file: File) => {
     if (!file || !current) return;
     setUploading(true);
-    const reader = new FileReader();
-    reader.onload = async (e) => {
-      const b64 = e.target?.result as string;
-      const res = await fetch(UPLOAD_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ file: b64, fileName: file.name, contentType: file.type }),
-      });
-      const data = await res.json();
-      if (data.ok) setCurrent({ ...current, image: data.url });
+    try {
+      const compressed = await compressImage(file);
+      const reader = new FileReader();
+      reader.onload = async (e) => {
+        const b64 = e.target?.result as string;
+        const res = await fetch(UPLOAD_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ file: b64, fileName: compressed.name, contentType: compressed.type }),
+        });
+        const data = await res.json();
+        if (data.ok) setCurrent({ ...current, image: data.url });
+        setUploading(false);
+      };
+      reader.readAsDataURL(compressed);
+    } catch {
       setUploading(false);
-    };
-    reader.readAsDataURL(file);
+    }
   };
 
   const save = async () => {
