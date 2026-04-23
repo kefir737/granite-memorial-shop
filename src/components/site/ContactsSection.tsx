@@ -102,12 +102,14 @@ export default function ContactsSection({ settings }: ContactsSectionProps) {
             </div>
           </div>
 
-          <div className="h-full min-h-[400px] bg-stone-100 border border-border flex items-center justify-center">
-            <div className="text-center">
-              <Icon name="MapPin" size={32} className="text-muted-foreground mx-auto mb-3" />
-              <p className="font-body text-sm text-muted-foreground">{settings.address}</p>
-              <p className="font-body text-xs text-muted-foreground/60 mt-1">Карта будет отображена здесь</p>
-            </div>
+          <div className="h-full min-h-[400px] overflow-hidden border border-border">
+            <iframe
+              src="https://yandex.ru/map-widget/v1/?z=12&ol=biz&oid=229021828036"
+              width="100%"
+              height="100%"
+              style={{ minHeight: '400px', border: 0, display: 'block' }}
+              title="Карта"
+            />
           </div>
         </div>
       </div>
