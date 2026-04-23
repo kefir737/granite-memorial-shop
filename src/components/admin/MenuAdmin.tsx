@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import Icon from '@/components/ui/icon';
 import { MenuItem } from '@/data/siteData';
 
@@ -15,10 +15,6 @@ export default function MenuAdmin({ menuItems, onUpdate }: MenuAdminProps) {
   const [newLabel, setNewLabel] = useState('');
   const [newHref, setNewHref] = useState('#');
   const [newParentId, setNewParentId] = useState<number | null>(null);
-
-  useEffect(() => {
-    setItems([...menuItems].sort((a, b) => a.order - b.order));
-  }, [menuItems.length]);
 
   const sync = (updated: MenuItem[]) => {
     setItems(updated);

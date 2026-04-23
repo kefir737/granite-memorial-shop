@@ -84,7 +84,9 @@ def row_granite(r):
 
 def row_menu(r):
     return {'id': r['id'], 'label': r['label'], 'href': r['href'],
-            'order': r['sort_order'], 'visible': bool(r['visible'])}
+            'order': r['sort_order'], 'visible': bool(r['visible']),
+            'menuType': r.get('menu_type', 'header'),
+            'parentId': r.get('parent_id')}
 
 
 # ── handlers ─────────────────────────────────────────────────────────────────
@@ -231,9 +233,10 @@ def handle_menu(method, parts, body, cur, conn):
         cur.execute('DELETE FROM menu_items')
         for i, item in enumerate(items):
             cur.execute(
-                'INSERT INTO menu_items (id,label,href,sort_order,visible) VALUES (%s,%s,%s,%s,%s)',
+                'INSERT INTO menu_items (id,label,href,sort_order,visible,menu_type,parent_id) VALUES (%s,%s,%s,%s,%s,%s,%s)',
                 (item.get('id', i+1), item.get('label',''), item.get('href','#'),
-                 item.get('order', i+1), int(bool(item.get('visible', True))))
+                 item.get('order', i+1), int(bool(item.get('visible', True))),
+                 item.get('menuType', 'header'), item.get('parentId'))
             )
         conn.commit()
         cur.execute('SELECT * FROM menu_items ORDER BY sort_order, id')
