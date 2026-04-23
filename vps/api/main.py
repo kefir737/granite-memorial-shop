@@ -207,6 +207,16 @@ def handle_portfolio(method, parts, body, cur, conn):
         conn.commit()
         return JSONResponse(row_portfolio(dict(cur.fetchone())), status_code=201)
 
+    if method == "PUT" and len(parts) == 2 and parts[1].isdigit():
+        cur.execute(
+            "UPDATE portfolio SET title=%s,material=%s,image=%s,year=%s,sort_order=%s WHERE id=%s RETURNING *",
+            (body.get("title"), body.get("material"), body.get("image"),
+             body.get("year"), body.get("sortOrder", 0), int(parts[1]))
+        )
+        conn.commit()
+        r = cur.fetchone()
+        return JSONResponse(row_portfolio(dict(r))) if r else JSONResponse({"error": "Not found"}, status_code=404)
+
     if method == "DELETE" and len(parts) == 2 and parts[1].isdigit():
         cur.execute("DELETE FROM portfolio WHERE id=%s", (int(parts[1]),))
         conn.commit()

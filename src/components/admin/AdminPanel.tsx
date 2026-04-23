@@ -7,6 +7,7 @@ import MonumentsAdmin from './MonumentsAdmin';
 import MenuAdmin from './MenuAdmin';
 import SettingsAdmin from './SettingsAdmin';
 import PagesAdmin from './PagesAdmin';
+import PortfolioAdmin from './PortfolioAdmin';
 
 interface AdminPanelProps {
   monuments: Monument[];
@@ -189,9 +190,7 @@ export default function AdminPanel({
           {activeTab === 'services' && (
             <ServicesAdminSimple services={services} onUpdate={onUpdateServices} />
           )}
-          {activeTab === 'portfolio' && (
-            <PortfolioAdminSimple portfolio={portfolio} onUpdate={onUpdatePortfolio} />
-          )}
+          {activeTab === 'portfolio' && <PortfolioAdmin />}
           {activeTab === 'granite' && (
             <GraniteAdminSimple graniteTypes={graniteTypes} onUpdate={onUpdateGraniteTypes} />
           )}

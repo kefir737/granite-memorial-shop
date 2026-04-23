@@ -30,6 +30,8 @@ export const updateService = (id: number, data: Partial<Service>) =>
 export const getPortfolio = () => apiFetch<Portfolio[]>('portfolio');
 export const createPortfolioItem = (data: Omit<Portfolio, 'id'>) =>
   apiFetch<Portfolio>('portfolio', { method: 'POST', body: JSON.stringify(data) });
+export const updatePortfolioItem = (id: number, data: Partial<Portfolio>) =>
+  apiFetch<Portfolio>(`portfolio/${id}`, { method: 'PUT', body: JSON.stringify(data) });
 export const deletePortfolioItem = (id: number) =>
   apiFetch<{ deleted: boolean }>(`portfolio/${id}`, { method: 'DELETE' });
 

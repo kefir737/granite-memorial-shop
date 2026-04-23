@@ -7,7 +7,7 @@ interface MonumentsAdminProps {
   onUpdate: (v: Monument[]) => void;
 }
 
-const UPLOAD_URL = 'https://functions.poehali.dev/0a6cd7b2-1977-4844-93dc-3b92573bb20c';
+const UPLOAD_URL = '/upload-image';
 
 const EMPTY: Omit<Monument, 'id'> = {
   name: '',
@@ -93,8 +93,7 @@ export default function MonumentsAdmin({ monuments, onUpdate }: MonumentsAdminPr
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ file: b64, fileName: file.name, contentType: file.type }),
         });
-        const data = await res.json();
-        const parsed = typeof data === 'string' ? JSON.parse(data) : data;
+        const parsed = await res.json();
         if (parsed.ok && current) {
           const imgs = [...(current.images || []), parsed.url];
           setCurrent({ ...current, image: current.image || parsed.url, images: imgs });
