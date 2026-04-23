@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import Icon from '@/components/ui/icon';
 import { MenuItem, SiteSettings } from '@/data/siteData';
 
@@ -37,13 +38,9 @@ export default function Header({ menuItems, settings, onAdminClick }: HeaderProp
           {/* Desktop nav */}
           <nav className="hidden md:flex items-center gap-8">
             {visibleItems.map(item => (
-              <a
-                key={item.id}
-                href={item.href}
-                className="text-sm font-body text-muted-foreground hover:text-foreground transition-colors tracking-wide"
-              >
-                {item.label}
-              </a>
+              item.href.startsWith('#')
+                ? <a key={item.id} href={item.href} className="text-sm font-body text-muted-foreground hover:text-foreground transition-colors tracking-wide">{item.label}</a>
+                : <Link key={item.id} to={item.href} className="text-sm font-body text-muted-foreground hover:text-foreground transition-colors tracking-wide">{item.label}</Link>
             ))}
           </nav>
 
@@ -79,14 +76,9 @@ export default function Header({ menuItems, settings, onAdminClick }: HeaderProp
         <div className="md:hidden bg-white border-t border-border animate-fade-in">
           <div className="px-6 py-4 space-y-4">
             {visibleItems.map(item => (
-              <a
-                key={item.id}
-                href={item.href}
-                className="block text-sm font-body text-foreground py-2 border-b border-border last:border-0"
-                onClick={() => setMobileOpen(false)}
-              >
-                {item.label}
-              </a>
+              item.href.startsWith('#')
+                ? <a key={item.id} href={item.href} className="block text-sm font-body text-foreground py-2 border-b border-border last:border-0" onClick={() => setMobileOpen(false)}>{item.label}</a>
+                : <Link key={item.id} to={item.href} className="block text-sm font-body text-foreground py-2 border-b border-border last:border-0" onClick={() => setMobileOpen(false)}>{item.label}</Link>
             ))}
             <a href={`tel:${settings.phone}`} className="block text-sm text-blue font-body py-2">
               {settings.phone}
