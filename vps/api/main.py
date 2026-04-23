@@ -484,13 +484,25 @@ async def contact(request: Request):
         cur.close()
         conn.close()
 
-    smtp_host = os.environ.get("SMTP_HOST", "smtp.yandex.ru")
-    smtp_port = int(os.environ.get("SMTP_PORT", "465"))
-    smtp_user = os.environ.get("SMTP_USER", "")
-    smtp_password = os.environ.get("SMTP_PASSWORD", "")
-    recipient = os.environ.get("EMAIL_RECIPIENT", smtp_user)
+    # Читаем SMTP-настройки из БД (приоритет) или ENV (fallback)
+    db_conn2 = get_conn()
+    db_cur2 = db_conn2.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+    smtp_cfg = {}
+    try:
+        db_cur2.execute("SELECT key, value FROM settings WHERE key IN ('smtpHost','smtpPort','smtpUser','smtpPassword','notificationEmail')")
+        smtp_cfg = {r["key"]: r["value"] for r in db_cur2.fetchall()}
+    finally:
+        db_cur2.close()
+        db_conn2.close()
 
-    if not smtp_user or not smtp_password:
+    smtp_host = smtp_cfg.get("smtpHost") or os.environ.get("SMTP_HOST", "smtp.yandex.ru")
+    smtp_port = int(smtp_cfg.get("smtpPort") or os.environ.get("SMTP_PORT", "465"))
+    smtp_user = smtp_cfg.get("smtpUser") or os.environ.get("SMTP_USER", "")
+    smtp_password = smtp_cfg.get("smtpPassword") or os.environ.get("SMTP_PASSWORD", "")
+    recipients_raw = smtp_cfg.get("notificationEmail") or os.environ.get("EMAIL_RECIPIENT", smtp_user)
+    recipients = [r.strip() for r in recipients_raw.split(",") if r.strip()]
+
+    if not smtp_user or not smtp_password or not recipients:
         return JSONResponse({"ok": True})
 
     subject = "Новая заявка — granit-sever.ru"
@@ -509,12 +521,6 @@ async def contact(request: Request):
 </table>
 <p style="margin:16px 0 0;color:#9ca3af;font-size:12px">granit-sever.ru</p></div>"""
 
-    msg = MIMEMultipart("alternative")
-    msg["Subject"] = subject
-    msg["From"] = smtp_user
-    msg["To"] = recipient
-    msg.attach(MIMEText(html, "html", "utf-8"))
-
     try:
         if smtp_port == 465:
             server = smtplib.SMTP_SSL(smtp_host, smtp_port)
@@ -522,7 +528,13 @@ async def contact(request: Request):
             server = smtplib.SMTP(smtp_host, smtp_port)
             server.starttls()
         server.login(smtp_user, smtp_password)
-        server.sendmail(smtp_user, recipient, msg.as_string())
+        for rcpt in recipients:
+            msg = MIMEMultipart("alternative")
+            msg["Subject"] = subject
+            msg["From"] = smtp_user
+            msg["To"] = rcpt
+            msg.attach(MIMEText(html, "html", "utf-8"))
+            server.sendmail(smtp_user, rcpt, msg.as_string())
         server.quit()
     except Exception:
         pass
@@ -563,6 +575,42 @@ async def upload_image(request: Request):
 
     url = f"/uploads/{filename}"
     return JSONResponse({"ok": True, "url": url})
+
+
+@app.get("/sitemap.xml")
+async def sitemap():
+    conn = get_conn()
+    cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+    try:
+        cur.execute("SELECT value FROM settings WHERE key='siteUrl'")
+        row = cur.fetchone()
+        site_url = (row["value"] if row else "").rstrip("/") or "https://granit-sever.ru"
+
+        cur.execute("SELECT slug FROM monuments WHERE in_stock=true OR in_stock IS NULL")
+        monument_slugs = [r["slug"] for r in cur.fetchall()]
+
+        cur.execute("SELECT slug FROM pages WHERE visible=true")
+        page_slugs = [r["slug"] for r in cur.fetchall()]
+    finally:
+        cur.close()
+        conn.close()
+
+    urls = [site_url + "/"]
+    for slug in monument_slugs:
+        urls.append(f"{site_url}/monument/{slug}")
+    for slug in page_slugs:
+        urls.append(f"{site_url}/{slug}")
+
+    today = __import__("datetime").date.today().isoformat()
+    items = "\n".join(
+        f"  <url><loc>{u}</loc><lastmod>{today}</lastmod><changefreq>weekly</changefreq></url>"
+        for u in urls
+    )
+    xml = f"""<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+{items}
+</urlset>"""
+    return Response(content=xml, media_type="application/xml")
 
 
 @app.get("/health")

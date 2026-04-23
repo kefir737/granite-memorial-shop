@@ -15,6 +15,21 @@ import AdminPanel from '@/components/admin/AdminPanel';
 import Index from './Index';
 import DynamicPage from './DynamicPage';
 
+function setMeta(name: string, content: string, attr = 'name') {
+  if (!content) return;
+  let el = document.querySelector(`meta[${attr}="${name}"]`) as HTMLMetaElement | null;
+  if (!el) { el = document.createElement('meta'); el.setAttribute(attr, name); document.head.appendChild(el); }
+  el.setAttribute('content', content);
+}
+
+function applySeоTags(s: SiteSettings) {
+  if (s.seoTitle) document.title = s.seoTitle;
+  setMeta('description', s.metaDescription);
+  setMeta('og:title', s.seoTitle || s.heroTitle, 'property');
+  setMeta('og:description', s.metaDescription, 'property');
+  if (s.ogImage) setMeta('og:image', s.ogImage, 'property');
+}
+
 export default function AppShell() {
   const [monuments, setMonuments] = useState<Monument[]>(defaultMonuments);
   const [services, setServices] = useState<Service[]>(defaultServices);
@@ -40,7 +55,11 @@ export default function AppShell() {
       if (port?.length) setPortfolio(port);
       if (gran?.length) setGraniteTypes(gran);
       if (menu?.length) setMenuItems(menu);
-      if (rawSettings) setSettings(settingsToObj(rawSettings));
+      if (rawSettings) {
+        const s = settingsToObj(rawSettings);
+        setSettings(s);
+        applySeоTags(s);
+      }
     }).finally(() => setLoading(false));
   }, []);
 
@@ -81,6 +100,7 @@ export default function AppShell() {
 
   const handleUpdateSettings = async (updated: SiteSettings) => {
     setSettings(updated);
+    applySeоTags(updated);
     await saveSettings(settingsToFlat(updated)).catch(console.error);
   };
 

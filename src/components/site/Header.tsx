@@ -32,9 +32,14 @@ function NavLink({ item, onClick }: { item: MenuItem; onClick?: () => void }) {
   return <Link to={item.href} className={cls} onClick={onClick}>{item.label}</Link>;
 }
 
+function isAdminAuthed() {
+  return document.cookie.split(';').some(c => c.trim() === 'admin_ok=1');
+}
+
 export default function Header({ menuItems, settings, onAdminClick }: HeaderProps) {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [openDropdown, setOpenDropdown] = useState<number | null>(null);
+  const [adminAuthed] = useState(isAdminAuthed);
 
   const headerItems = [...menuItems]
     .filter(m => m.visible && (m.menuType === 'header' || m.menuType === 'both' || !m.menuType))
@@ -93,6 +98,14 @@ export default function Header({ menuItems, settings, onAdminClick }: HeaderProp
               <Icon name="Phone" size={14} />
               {settings.phone}
             </a>
+
+            {adminAuthed && (
+              <button onClick={onAdminClick}
+                className="hidden md:flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors border border-border px-3 py-1.5">
+                <Icon name="Settings" size={12} />
+                Управление
+              </button>
+            )}
 
             <button className="md:hidden p-2" onClick={() => setMobileOpen(!mobileOpen)}>
               <Icon name={mobileOpen ? 'X' : 'Menu'} size={20} />

@@ -48,7 +48,10 @@ export default function AdminPanel({
 }: AdminPanelProps) {
   const [activeTab, setActiveTab] = useState<Tab>('leads');
   const [sidebarOpen, setSidebarOpen] = useState(true);
-  const [authed, setAuthed] = useState(() => sessionStorage.getItem('admin_ok') === '1');
+  const [authed, setAuthed] = useState(() => {
+    if (sessionStorage.getItem('admin_ok') === '1') return true;
+    return document.cookie.split(';').some(c => c.trim() === 'admin_ok=1');
+  });
   const [pwd, setPwd] = useState('');
   const [pwdError, setPwdError] = useState(false);
 
@@ -57,6 +60,7 @@ export default function AdminPanel({
   const tryLogin = () => {
     if (pwd === ADMIN_PASSWORD) {
       sessionStorage.setItem('admin_ok', '1');
+      document.cookie = 'admin_ok=1; path=/; max-age=2592000; SameSite=Lax';
       setAuthed(true);
       setPwdError(false);
     } else {
@@ -67,6 +71,7 @@ export default function AdminPanel({
 
   const logout = () => {
     sessionStorage.removeItem('admin_ok');
+    document.cookie = 'admin_ok=; path=/; max-age=0';
     setAuthed(false);
     onClose();
   };
@@ -177,13 +182,15 @@ export default function AdminPanel({
               {tabs.find(t => t.id === activeTab)?.label}
             </h1>
           </div>
-          <button
-            onClick={onClose}
+          <a
+            href="/"
+            target="_blank"
+            rel="noopener noreferrer"
             className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
           >
             <Icon name="ExternalLink" size={14} />
             <span className="font-body">Просмотр сайта</span>
-          </button>
+          </a>
         </div>
 
         {/* Content */}

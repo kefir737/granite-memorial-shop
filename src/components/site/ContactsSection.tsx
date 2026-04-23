@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import Icon from '@/components/ui/icon';
 import { SiteSettings } from '@/data/siteData';
 
@@ -8,14 +8,58 @@ interface ContactsSectionProps {
 
 const CONTACT_URL = '/contact';
 
+function genCaptcha() {
+  const a = Math.floor(Math.random() * 9) + 1;
+  const b = Math.floor(Math.random() * 9) + 1;
+  return { a, b, answer: a + b };
+}
+
+function applyPhoneMask(raw: string): string {
+  const digits = raw.replace(/\D/g, '').replace(/^8/, '7').replace(/^7/, '');
+  let result = '+7';
+  if (digits.length === 0) return result;
+  result += ' (';
+  result += digits.slice(0, 3);
+  if (digits.length < 3) return result;
+  result += ') ';
+  result += digits.slice(3, 6);
+  if (digits.length < 6) return result;
+  result += '-';
+  result += digits.slice(6, 8);
+  if (digits.length < 8) return result;
+  result += '-';
+  result += digits.slice(8, 10);
+  return result;
+}
+
 export default function ContactsSection({ settings }: ContactsSectionProps) {
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
   const [msg, setMsg] = useState('');
   const [status, setStatus] = useState<'idle' | 'sending' | 'sent' | 'error'>('idle');
+  const [captcha, setCaptcha] = useState(genCaptcha);
+  const [captchaInput, setCaptchaInput] = useState('');
+  const [captchaError, setCaptchaError] = useState(false);
+
+  const refreshCaptcha = useCallback(() => {
+    setCaptcha(genCaptcha());
+    setCaptchaInput('');
+    setCaptchaError(false);
+  }, []);
+
+  const handlePhone = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setPhone(applyPhoneMask(e.target.value));
+  };
+
+  const isPhoneComplete = phone.replace(/\D/g, '').length === 11;
 
   const send = async () => {
-    if (!name.trim() || !phone.trim()) return;
+    if (!name.trim() || !isPhoneComplete) return;
+    if (parseInt(captchaInput) !== captcha.answer) {
+      setCaptchaError(true);
+      refreshCaptcha();
+      return;
+    }
     setStatus('sending');
     try {
       const res = await fetch(CONTACT_URL, {
@@ -24,8 +68,11 @@ export default function ContactsSection({ settings }: ContactsSectionProps) {
         body: JSON.stringify({ name, phone, message: msg }),
       });
       const data = await res.json();
-      if (data.ok) { setStatus('sent'); setName(''); setPhone(''); setMsg(''); }
-      else setStatus('error');
+      if (data.ok) {
+        setStatus('sent');
+        setName(''); setPhone(''); setMsg('');
+        refreshCaptcha();
+      } else setStatus('error');
     } catch { setStatus('error'); }
   };
 
@@ -79,13 +126,42 @@ export default function ContactsSection({ settings }: ContactsSectionProps) {
                 <div className="space-y-3">
                   <input value={name} onChange={e => setName(e.target.value)} type="text" placeholder="Ваше имя *"
                     className="w-full border border-border px-4 py-3 font-body text-sm focus:outline-none focus:border-foreground transition-colors bg-white" />
-                  <input value={phone} onChange={e => setPhone(e.target.value)} type="tel" placeholder="Телефон *"
-                    className="w-full border border-border px-4 py-3 font-body text-sm focus:outline-none focus:border-foreground transition-colors bg-white" />
+
+                  <input
+                    value={phone}
+                    onChange={handlePhone}
+                    type="tel"
+                    placeholder="+7 (___) ___-__-__"
+                    maxLength={18}
+                    className={`w-full border px-4 py-3 font-body text-sm focus:outline-none focus:border-foreground transition-colors bg-white ${!phone || isPhoneComplete ? 'border-border' : 'border-orange-300'}`}
+                  />
+
                   <textarea value={msg} onChange={e => setMsg(e.target.value)} placeholder="Ваш вопрос или пожелание" rows={3}
                     className="w-full border border-border px-4 py-3 font-body text-sm focus:outline-none focus:border-foreground transition-colors bg-white resize-none" />
+
+                  {/* Капча */}
+                  <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-2 bg-stone-50 border border-border px-4 py-3 select-none">
+                      <span className="font-body text-sm text-foreground font-medium">{captcha.a} + {captcha.b} =</span>
+                    </div>
+                    <input
+                      value={captchaInput}
+                      onChange={e => { setCaptchaInput(e.target.value); setCaptchaError(false); }}
+                      type="number"
+                      placeholder="Ответ"
+                      className={`w-24 border px-4 py-3 font-body text-sm focus:outline-none focus:border-foreground transition-colors bg-white ${captchaError ? 'border-red-400' : 'border-border'}`}
+                    />
+                    <button type="button" onClick={refreshCaptcha} title="Обновить" className="text-muted-foreground hover:text-foreground transition-colors">
+                      <Icon name="RefreshCw" size={15} />
+                    </button>
+                  </div>
+                  {captchaError && (
+                    <p className="text-red-500 text-xs font-body">Неверный ответ, попробуйте снова</p>
+                  )}
+
                   <button
                     onClick={send}
-                    disabled={status === 'sending' || !name.trim() || !phone.trim()}
+                    disabled={status === 'sending' || !name.trim() || !isPhoneComplete || !captchaInput}
                     className="w-full py-3 bg-foreground text-white font-body text-sm tracking-wide hover:bg-foreground/80 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     {status === 'sending' ? 'Отправляем...' : 'Отправить заявку'}

@@ -73,9 +73,13 @@ export type SiteSettings = {
   heroTitle: string;
   heroSubtitle: string;
   heroImage: string;
+  seoTitle: string;
   metaDescription: string;
+  ogImage: string;
+  siteUrl: string;
   notificationEmail: string;
   smtpUser: string;
+  smtpPassword: string;
   smtpHost: string;
   smtpPort: string;
 };
@@ -308,9 +312,13 @@ export const defaultSiteSettings: SiteSettings = {
   heroTitle: 'Памятники из гранита',
   heroSubtitle: 'Собственное производство · Установка · Доставка по России',
   heroImage: '',
+  seoTitle: 'Гранит Север — Памятники из гранита',
   metaDescription: 'Изготовление памятников из гранита. granit-sever.ru — широкий каталог, доступные цены, профессиональная установка.',
+  ogImage: '',
+  siteUrl: 'https://granit-sever.ru',
   notificationEmail: '',
   smtpUser: '',
+  smtpPassword: '',
   smtpHost: 'smtp.yandex.ru',
   smtpPort: '465',
 };

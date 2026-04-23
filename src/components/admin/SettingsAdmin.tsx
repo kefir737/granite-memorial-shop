@@ -12,13 +12,16 @@ interface SettingsAdminProps {
 export default function SettingsAdmin({ settings, onUpdate }: SettingsAdminProps) {
   const [draft, setDraft] = useState({ ...settings });
   const [saved, setSaved] = useState(false);
-  const [uploading, setUploading] = useState(false);
-  const fileRef = useRef<HTMLInputElement>(null);
+  const [uploading, setUploading] = useState<'hero' | 'og' | null>(null);
+  const [showSmtpPwd, setShowSmtpPwd] = useState(false);
+  const heroFileRef = useRef<HTMLInputElement>(null);
+  const ogFileRef = useRef<HTMLInputElement>(null);
 
-  const uploadHeroImage = async (file: File) => {
-    setUploading(true);
+  const uploadImage = async (file: File, field: 'heroImage' | 'ogImage', slot: 'hero' | 'og') => {
+    setUploading(slot);
     try {
-      const compressed = await compressImage(file, 1920);
+      const maxW = slot === 'og' ? 1200 : 1920;
+      const compressed = await compressImage(file, maxW);
       const reader = new FileReader();
       reader.onload = async (e) => {
         const b64 = e.target?.result as string;
@@ -28,11 +31,11 @@ export default function SettingsAdmin({ settings, onUpdate }: SettingsAdminProps
           body: JSON.stringify({ file: b64, fileName: compressed.name, contentType: compressed.type }),
         });
         const data = await res.json();
-        if (data.ok) setDraft(d => ({ ...d, heroImage: data.url }));
-        setUploading(false);
+        if (data.ok) setDraft(d => ({ ...d, [field]: data.url }));
+        setUploading(null);
       };
       reader.readAsDataURL(compressed);
-    } catch { setUploading(false); }
+    } catch { setUploading(null); }
   };
 
   const save = () => {
@@ -46,6 +49,8 @@ export default function SettingsAdmin({ settings, onUpdate }: SettingsAdminProps
     onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
       setDraft({ ...draft, [key]: e.target.value }),
   });
+
+  const sitemapUrl = (draft.siteUrl || 'https://granit-sever.ru').replace(/\/$/, '') + '/sitemap.xml';
 
   return (
     <div className="p-6 max-w-2xl">
@@ -91,15 +96,13 @@ export default function SettingsAdmin({ settings, onUpdate }: SettingsAdminProps
               {draft.heroImage && (
                 <div className="relative w-full aspect-video overflow-hidden bg-stone-100 border border-border">
                   <img src={draft.heroImage} alt="Фон" className="w-full h-full object-cover" />
-                  <div className="absolute top-2 right-2 text-xs font-body bg-black/50 text-white px-2 py-1">
-                    текущий фон
-                  </div>
+                  <div className="absolute top-2 right-2 text-xs font-body bg-black/50 text-white px-2 py-1">текущий фон</div>
                 </div>
               )}
               <div className="flex gap-2">
-                <button type="button" onClick={() => fileRef.current?.click()} disabled={uploading}
+                <button type="button" onClick={() => heroFileRef.current?.click()} disabled={uploading === 'hero'}
                   className="px-4 py-2 border border-border text-sm font-body hover:border-foreground/40 transition-colors disabled:opacity-50">
-                  {uploading ? 'Загрузка...' : draft.heroImage ? 'Заменить фото' : 'Загрузить фото'}
+                  {uploading === 'hero' ? 'Загрузка...' : draft.heroImage ? 'Заменить фото' : 'Загрузить фото'}
                 </button>
                 {draft.heroImage && (
                   <button type="button" onClick={() => setDraft(d => ({ ...d, heroImage: '' }))}
@@ -109,32 +112,85 @@ export default function SettingsAdmin({ settings, onUpdate }: SettingsAdminProps
                 )}
               </div>
               <p className="text-xs font-body text-muted-foreground">Рекомендуемый размер: 1920×1080 пикс. Сжимается автоматически.</p>
-              <input ref={fileRef} type="file" accept="image/*" className="hidden"
-                onChange={e => e.target.files?.[0] && uploadHeroImage(e.target.files[0])} />
+              <input ref={heroFileRef} type="file" accept="image/*" className="hidden"
+                onChange={e => e.target.files?.[0] && uploadImage(e.target.files[0], 'heroImage', 'hero')} />
             </div>
           </Field>
         </Section>
 
         <div className="border-t border-border" />
 
-        <Section title="SEO">
-          <Field label="Мета-описание сайта">
+        <Section title="SEO и социальные сети">
+          <Field label="Заголовок страницы (title)">
+            <input className="field-input" {...f('seoTitle')} placeholder="Гранит Север — Памятники из гранита" />
+          </Field>
+          <Field label="Мета-описание сайта (description)">
             <textarea className="field-input resize-none" rows={3} {...f('metaDescription')} />
           </Field>
+          <Field label="URL сайта (для sitemap и OG-тегов)">
+            <input className="field-input" {...f('siteUrl')} placeholder="https://granit-sever.ru" />
+          </Field>
+          <Field label="OG-изображение (превью при репосте в соцсетях, 1200×630)">
+            <div className="space-y-2">
+              {draft.ogImage && (
+                <div className="relative w-full max-w-sm overflow-hidden bg-stone-100 border border-border">
+                  <img src={draft.ogImage} alt="OG" className="w-full object-cover" style={{ aspectRatio: '1200/630' }} />
+                  <div className="absolute top-2 right-2 text-xs font-body bg-black/50 text-white px-2 py-1">OG-изображение</div>
+                </div>
+              )}
+              <div className="flex gap-2">
+                <button type="button" onClick={() => ogFileRef.current?.click()} disabled={uploading === 'og'}
+                  className="px-4 py-2 border border-border text-sm font-body hover:border-foreground/40 transition-colors disabled:opacity-50">
+                  {uploading === 'og' ? 'Загрузка...' : draft.ogImage ? 'Заменить' : 'Загрузить OG-фото'}
+                </button>
+                {draft.ogImage && (
+                  <button type="button" onClick={() => setDraft(d => ({ ...d, ogImage: '' }))}
+                    className="px-4 py-2 border border-red-200 text-red-600 text-sm font-body hover:bg-red-50 transition-colors">
+                    Удалить
+                  </button>
+                )}
+              </div>
+              <input ref={ogFileRef} type="file" accept="image/*" className="hidden"
+                onChange={e => e.target.files?.[0] && uploadImage(e.target.files[0], 'ogImage', 'og')} />
+            </div>
+          </Field>
+          <div className="bg-stone-50 border border-border p-3 flex items-center justify-between">
+            <div>
+              <div className="text-xs font-body text-muted-foreground uppercase tracking-wide mb-0.5">Карта сайта (sitemap.xml)</div>
+              <a href={sitemapUrl} target="_blank" rel="noopener noreferrer"
+                className="text-sm font-body text-blue-600 hover:underline">
+                {sitemapUrl}
+              </a>
+            </div>
+          </div>
         </Section>
 
         <div className="border-t border-border" />
 
         <Section title="Уведомления на email">
           <p className="font-body text-sm text-muted-foreground -mt-2">
-            Заявки с формы контактов будут приходить на указанный адрес. SMTP_PASSWORD задаётся в настройках платформы (секреты).
+            Заявки с формы контактов будут приходить на указанные адреса. Можно указать несколько через запятую.
           </p>
+          <Field label="Email для уведомлений (через запятую)">
+            <input className="field-input" {...f('notificationEmail')} placeholder="info@granit-sever.ru, director@granit-sever.ru" />
+          </Field>
           <TwoCol>
-            <Field label="Email для уведомлений">
-              <input className="field-input" {...f('notificationEmail')} placeholder="info@granit-sever.ru" />
-            </Field>
             <Field label="SMTP логин (отправитель)">
               <input className="field-input" {...f('smtpUser')} placeholder="noreply@granit-sever.ru" />
+            </Field>
+            <Field label="SMTP пароль">
+              <div className="relative">
+                <input
+                  className="field-input pr-10"
+                  type={showSmtpPwd ? 'text' : 'password'}
+                  {...f('smtpPassword')}
+                  placeholder="••••••••"
+                />
+                <button type="button" onClick={() => setShowSmtpPwd(v => !v)}
+                  className="absolute right-2 top-1/2 -translate-y-1/2 text-xs text-muted-foreground hover:text-foreground">
+                  {showSmtpPwd ? 'Скрыть' : 'Показать'}
+                </button>
+              </div>
             </Field>
           </TwoCol>
           <TwoCol>
