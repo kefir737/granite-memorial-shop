@@ -46,15 +46,18 @@ export default function CatalogSection({ monuments, onMonumentClick }: CatalogSe
   const [style, setStyle] = useState('Все');
   const [priceMin, setPriceMin] = useState('');
   const [priceMax, setPriceMax] = useState('');
+  const [sortPrice, setSortPrice] = useState<'asc' | 'desc' | null>(null);
   const [page, setPage] = useState(1);
 
-  const filtered = monuments.filter(m => {
-    const byMat = material === 'Все' || m.material === material;
-    const byStyle = style === 'Все' || m.style === style;
-    const min = priceMin ? m.price >= Number(priceMin) : true;
-    const max = priceMax ? m.price <= Number(priceMax) : true;
-    return byMat && byStyle && min && max;
-  });
+  const filtered = monuments
+    .filter(m => {
+      const byMat = material === 'Все' || m.material === material;
+      const byStyle = style === 'Все' || m.style === style;
+      const min = priceMin ? m.price >= Number(priceMin) : true;
+      const max = priceMax ? m.price <= Number(priceMax) : true;
+      return byMat && byStyle && min && max;
+    })
+    .sort((a, b) => sortPrice === 'asc' ? a.price - b.price : sortPrice === 'desc' ? b.price - a.price : 0);
 
   const totalPages = Math.ceil(filtered.length / PER_PAGE);
   const paginated = filtered.slice((page - 1) * PER_PAGE, page * PER_PAGE);
@@ -64,6 +67,7 @@ export default function CatalogSection({ monuments, onMonumentClick }: CatalogSe
     setStyle('Все');
     setPriceMin('');
     setPriceMax('');
+    setSortPrice(null);
     setPage(1);
   };
 
@@ -128,7 +132,23 @@ export default function CatalogSection({ monuments, onMonumentClick }: CatalogSe
             </div>
           </div>
           <div className="flex items-center justify-between pt-2 border-t border-border">
-            <span className="font-body text-xs text-muted-foreground">Найдено: {filtered.length}</span>
+            <div className="flex items-center gap-4">
+              <span className="font-body text-xs text-muted-foreground">Найдено: {filtered.length}</span>
+              <span className="text-border text-xs">|</span>
+              <span className="font-body text-xs text-muted-foreground">Сортировка:</span>
+              <button
+                onClick={() => { setSortPrice(s => s === 'asc' ? null : 'asc'); setPage(1); }}
+                className={`font-body text-xs transition-colors ${sortPrice === 'asc' ? 'text-foreground font-medium underline underline-offset-2' : 'text-muted-foreground hover:text-foreground'}`}
+              >
+                сначала дешевле
+              </button>
+              <button
+                onClick={() => { setSortPrice(s => s === 'desc' ? null : 'desc'); setPage(1); }}
+                className={`font-body text-xs transition-colors ${sortPrice === 'desc' ? 'text-foreground font-medium underline underline-offset-2' : 'text-muted-foreground hover:text-foreground'}`}
+              >
+                сначала дороже
+              </button>
+            </div>
             {(material !== 'Все' || style !== 'Все' || priceMin || priceMax) && (
               <button onClick={resetFilters} className="flex items-center gap-1.5 text-xs font-body text-muted-foreground hover:text-foreground transition-colors">
                 <Icon name="X" size={12} />
