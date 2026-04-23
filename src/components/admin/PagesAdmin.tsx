@@ -163,14 +163,38 @@ export default function PagesAdmin({ menuItems, onUpdateMenuItems }: Props) {
         <div className="flex-1 bg-white border border-border p-6">
           <div className="flex items-center justify-between mb-6">
             <h3 className="font-display text-2xl text-foreground">{selected.title}</h3>
-            <label className="flex items-center gap-2 cursor-pointer">
-              <input
-                type="checkbox"
-                checked={selected.visible}
-                onChange={e => setSelected({ ...selected, visible: e.target.checked })}
-              />
-              <span className="font-body text-sm text-foreground">Показывать в меню</span>
-            </label>
+            <div className="flex items-center gap-4">
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={menuItems.some(m => m.href === selected.slug && (m.menuType === 'header' || !m.menuType))}
+                  onChange={e => {
+                    const has = menuItems.some(m => m.href === selected.slug && (m.menuType === 'header' || !m.menuType));
+                    if (e.target.checked && !has) {
+                      onUpdateMenuItems([...menuItems, { id: Date.now(), label: selected.title, href: selected.slug, order: menuItems.length + 1, visible: true, menuType: 'header' }]);
+                    } else if (!e.target.checked) {
+                      onUpdateMenuItems(menuItems.filter(m => !(m.href === selected.slug && (m.menuType === 'header' || !m.menuType))));
+                    }
+                  }}
+                />
+                <span className="font-body text-sm text-foreground">Хедер</span>
+              </label>
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={menuItems.some(m => m.href === selected.slug && m.menuType === 'footer')}
+                  onChange={e => {
+                    const has = menuItems.some(m => m.href === selected.slug && m.menuType === 'footer');
+                    if (e.target.checked && !has) {
+                      onUpdateMenuItems([...menuItems, { id: Date.now() + 1, label: selected.title, href: selected.slug, order: menuItems.length + 1, visible: true, menuType: 'footer' }]);
+                    } else if (!e.target.checked) {
+                      onUpdateMenuItems(menuItems.filter(m => !(m.href === selected.slug && m.menuType === 'footer')));
+                    }
+                  }}
+                />
+                <span className="font-body text-sm text-foreground">Футер</span>
+              </label>
+            </div>
           </div>
 
           <div className="space-y-5">
