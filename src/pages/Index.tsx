@@ -8,8 +8,7 @@ import {
   getMonuments, getServices, getPortfolio, getGraniteTypes,
   getMenuItems, getSettings, settingsToObj,
   updateMonument, createMonument, deleteMonument,
-  updateService, createPortfolioItem, deletePortfolioItem,
-  updateGraniteType, saveMenuItems, saveSettings, settingsToFlat,
+  updateService, updateGraniteType, saveMenuItems, saveSettings, settingsToFlat,
 } from '@/lib/api';
 
 import Header from '@/components/site/Header';
@@ -84,20 +83,8 @@ export default function Index() {
     }
   };
 
-  const handleUpdatePortfolio = async (updated: Portfolio[]) => {
-    const current = portfolio;
+  const handleUpdatePortfolio = (updated: Portfolio[]) => {
     setPortfolio(updated);
-    for (const p of updated) {
-      if (!current.find(x => x.id === p.id)) {
-        await createPortfolioItem(p).catch(console.error);
-      }
-    }
-    for (const p of current) {
-      if (!updated.find(x => x.id === p.id)) {
-        await deletePortfolioItem(p.id).catch(console.error);
-      }
-    }
-    getPortfolio().then(list => { if (list?.length) setPortfolio(list); }).catch(() => {});
   };
 
   const handleUpdateGraniteTypes = async (updated: GraniteType[]) => {
