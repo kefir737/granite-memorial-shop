@@ -199,7 +199,7 @@ export default function AdminPanel({
           {activeTab === 'menu' && (
             <MenuAdmin menuItems={menuItems} onUpdate={onUpdateMenuItems} />
           )}
-          {activeTab === 'pages' && <PagesAdmin onMenuChanged={onRefreshMenu} />}
+          {activeTab === 'pages' && <PagesAdmin />}
           {activeTab === 'settings' && (
             <SettingsAdmin settings={settings} onUpdate={onUpdateSettings} />
           )}
