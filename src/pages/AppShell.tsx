@@ -73,6 +73,7 @@ export default function AppShell() {
   const handleUpdateMenuItems = async (updated: MenuItem[]) => {
     setMenuItems(updated);
     await saveMenuItems(updated).catch(console.error);
+    getMenuItems().then(list => { if (list?.length) setMenuItems(list); }).catch(() => {});
   };
 
   const handleUpdateSettings = async (updated: SiteSettings) => {

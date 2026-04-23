@@ -92,19 +92,25 @@ export default function MenuAdmin({ menuItems, onUpdate }: MenuAdminProps) {
           )}
           {isChild && <Icon name="CornerDownRight" size={12} className="text-muted-foreground shrink-0" />}
 
-          <div className="flex-1 flex gap-2">
-            <input
-              className="field-input flex-1"
-              value={item.label}
-              onChange={e => updateLabel(item.id, e.target.value)}
-              placeholder="Название пункта"
-            />
-            <input
-              className="field-input w-40"
-              value={item.href}
-              onChange={e => updateHref(item.id, e.target.value)}
-              placeholder="#section или /page"
-            />
+          <div className="flex-1 grid grid-cols-2 gap-2">
+            <div>
+              <div className="text-[10px] text-muted-foreground font-body mb-0.5">Название</div>
+              <input
+                className="field-input w-full"
+                value={item.label}
+                onChange={e => updateLabel(item.id, e.target.value)}
+                placeholder="Каталог"
+              />
+            </div>
+            <div>
+              <div className="text-[10px] text-muted-foreground font-body mb-0.5">Ссылка</div>
+              <input
+                className="field-input w-full"
+                value={item.href}
+                onChange={e => updateHref(item.id, e.target.value)}
+                placeholder="#section или /page"
+              />
+            </div>
           </div>
 
           <button onClick={() => toggle(item.id)} className={`p-2 transition-colors ${item.visible ? 'text-foreground' : 'text-muted-foreground'}`}>
