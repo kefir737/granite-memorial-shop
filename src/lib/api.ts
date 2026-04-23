@@ -68,6 +68,24 @@ export function settingsToObj(raw: Record<string, string>): SiteSettings {
   };
 }
 
+// Pages
+export type Page = {
+  id: number;
+  title: string;
+  slug: string;
+  template: 'landing' | 'catalog' | 'content' | 'contacts';
+  visible: boolean;
+  content: string;
+  sortOrder: number;
+};
+export const getPages = () => apiFetch<Page[]>('pages');
+export const createPage = (data: Omit<Page, 'id'>) =>
+  apiFetch<Page>('pages', { method: 'POST', body: JSON.stringify(data) });
+export const updatePage = (id: number, data: Partial<Page>) =>
+  apiFetch<Page>(`pages/${id}`, { method: 'PUT', body: JSON.stringify(data) });
+export const deletePage = (id: number) =>
+  apiFetch<{ deleted: boolean }>(`pages/${id}`, { method: 'DELETE' });
+
 export function settingsToFlat(s: SiteSettings): Record<string, string> {
   return {
     companyName: s.companyName,

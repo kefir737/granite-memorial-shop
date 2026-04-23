@@ -1,14 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Icon from '@/components/ui/icon';
-
-type Page = {
-  id: string;
-  title: string;
-  slug: string;
-  template: 'landing' | 'catalog' | 'content' | 'contacts';
-  visible: boolean;
-  content: string;
-};
+import { getPages, createPage, updatePage, deletePage, Page } from '@/lib/api';
 
 const TEMPLATES = [
   { id: 'landing', label: 'Лендинг', desc: 'Главная страница с героем и блоками' },
@@ -17,51 +9,49 @@ const TEMPLATES = [
   { id: 'contacts', label: 'Контакты', desc: 'Контакты, карта, форма обратной связи' },
 ];
 
-const initialPages: Page[] = [
-  { id: '1', title: 'Главная', slug: '/', template: 'landing', visible: true, content: 'Основная страница сайта с каталогом, услугами и портфолио.' },
-  { id: '2', title: 'Каталог памятников', slug: '/catalog', template: 'catalog', visible: false, content: 'Полный каталог памятников с фильтрацией.' },
-  { id: '3', title: 'Политика конфиденциальности', slug: '/privacy', template: 'content', visible: false, content: 'Текст политики конфиденциальности компании.' },
-];
-
 export default function PagesAdmin() {
-  const [pages, setPages] = useState<Page[]>(initialPages);
+  const [pages, setPages] = useState<Page[]>([]);
   const [selected, setSelected] = useState<Page | null>(null);
   const [showNew, setShowNew] = useState(false);
   const [newTitle, setNewTitle] = useState('');
   const [newTemplate, setNewTemplate] = useState<Page['template']>('content');
+  const [saving, setSaving] = useState(false);
+  const [saved, setSaved] = useState(false);
 
-  const addPage = () => {
+  useEffect(() => {
+    getPages().then(setPages).catch(() => setPages([]));
+  }, []);
+
+  const addPage = async () => {
     if (!newTitle.trim()) return;
-    const page: Page = {
-      id: Date.now().toString(),
-      title: newTitle,
-      slug: '/' + newTitle.toLowerCase().replace(/\s+/g, '-').replace(/[а-яё]/g, (c) => c),
-      template: newTemplate,
-      visible: false,
-      content: '',
-    };
+    const slug = '/' + newTitle.toLowerCase().replace(/\s+/g, '-');
+    const page = await createPage({ title: newTitle, slug, template: newTemplate, visible: false, content: '', sortOrder: 0 });
     setPages([...pages, page]);
     setNewTitle('');
     setShowNew(false);
     setSelected(page);
   };
 
-  const updatePage = (updated: Page) => {
+  const savePage = async () => {
+    if (!selected) return;
+    setSaving(true);
+    const updated = await updatePage(selected.id, selected);
     setPages(pages.map(p => p.id === updated.id ? updated : p));
     setSelected(updated);
+    setSaving(false);
+    setSaved(true);
+    setTimeout(() => setSaved(false), 2000);
   };
 
-  const removePage = (id: string) => {
-    if (id === '1') return; // protect main page
-    if (confirm('Удалить страницу?')) {
-      setPages(pages.filter(p => p.id !== id));
-      if (selected?.id === id) setSelected(null);
-    }
+  const removePage = async (id: number) => {
+    if (!confirm('Удалить страницу?')) return;
+    await deletePage(id);
+    setPages(pages.filter(p => p.id !== id));
+    if (selected?.id === id) setSelected(null);
   };
 
   return (
     <div className="p-6 flex gap-6 max-w-6xl">
-      {/* Page list */}
       <div className="w-64 shrink-0">
         <div className="flex items-center justify-between mb-4">
           <span className="font-body text-sm text-muted-foreground">{pages.length} страниц</span>
@@ -86,29 +76,22 @@ export default function PagesAdmin() {
               <div className="min-w-0">
                 <div className="font-body text-sm text-foreground truncate">{page.title}</div>
                 <div className="font-body text-xs text-muted-foreground truncate">{page.slug}</div>
-                <span className={`inline-block mt-1 px-1.5 py-px text-[10px] font-body ${
-                  TEMPLATES.find(t => t.id === page.template)
-                    ? 'bg-blue-50 text-blue-700'
-                    : ''
-                }`} style={{ background: 'hsl(214,60%,95%)', color: 'hsl(214,60%,35%)' }}>
+                <span className="inline-block mt-1 px-1.5 py-px text-[10px] font-body bg-blue-50 text-blue-700">
                   {TEMPLATES.find(t => t.id === page.template)?.label}
                 </span>
               </div>
-              {page.id !== '1' && (
-                <button
-                  onClick={e => { e.stopPropagation(); removePage(page.id); }}
-                  className="shrink-0 ml-2 p-1 text-muted-foreground hover:text-red-500 transition-colors"
-                >
-                  <Icon name="Trash2" size={12} />
-                </button>
-              )}
+              <button
+                onClick={e => { e.stopPropagation(); removePage(page.id); }}
+                className="shrink-0 ml-2 p-1 text-muted-foreground hover:text-red-500 transition-colors"
+              >
+                <Icon name="Trash2" size={12} />
+              </button>
             </div>
           ))}
         </div>
 
-        {/* New page form */}
         {showNew && (
-          <div className="mt-4 bg-white border border-border p-4 space-y-3 animate-fade-in">
+          <div className="mt-4 bg-white border border-border p-4 space-y-3">
             <div className="text-xs font-body text-muted-foreground uppercase tracking-wide">Новая страница</div>
             <input
               autoFocus
@@ -133,7 +116,6 @@ export default function PagesAdmin() {
         )}
       </div>
 
-      {/* Page editor */}
       {selected ? (
         <div className="flex-1 bg-white border border-border p-6">
           <div className="flex items-center justify-between mb-6">
@@ -142,7 +124,7 @@ export default function PagesAdmin() {
               <input
                 type="checkbox"
                 checked={selected.visible}
-                onChange={e => updatePage({ ...selected, visible: e.target.checked })}
+                onChange={e => setSelected({ ...selected, visible: e.target.checked })}
               />
               <span className="font-body text-sm text-foreground">Показывать в меню</span>
             </label>
@@ -155,7 +137,7 @@ export default function PagesAdmin() {
                 <input
                   className="field-input"
                   value={selected.title}
-                  onChange={e => updatePage({ ...selected, title: e.target.value })}
+                  onChange={e => setSelected({ ...selected, title: e.target.value })}
                 />
               </div>
               <div>
@@ -163,8 +145,7 @@ export default function PagesAdmin() {
                 <input
                   className="field-input"
                   value={selected.slug}
-                  onChange={e => updatePage({ ...selected, slug: e.target.value })}
-                  disabled={selected.id === '1'}
+                  onChange={e => setSelected({ ...selected, slug: e.target.value })}
                 />
               </div>
             </div>
@@ -175,7 +156,7 @@ export default function PagesAdmin() {
                 {TEMPLATES.map(t => (
                   <button
                     key={t.id}
-                    onClick={() => updatePage({ ...selected, template: t.id as Page['template'] })}
+                    onClick={() => setSelected({ ...selected, template: t.id as Page['template'] })}
                     className={`p-3 text-left border transition-colors ${
                       selected.template === t.id ? 'border-foreground bg-foreground/5' : 'border-border hover:border-foreground/30'
                     }`}
@@ -193,16 +174,17 @@ export default function PagesAdmin() {
                 className="field-input resize-none"
                 rows={6}
                 value={selected.content}
-                onChange={e => updatePage({ ...selected, content: e.target.value })}
+                onChange={e => setSelected({ ...selected, content: e.target.value })}
                 placeholder="Текст или описание страницы..."
               />
             </div>
 
             <button
-              onClick={() => setPages(pages.map(p => p.id === selected.id ? selected : p))}
-              className="px-6 py-3 bg-foreground text-white text-sm font-body hover:bg-foreground/80 transition-colors"
+              onClick={savePage}
+              disabled={saving}
+              className="px-6 py-2.5 bg-foreground text-white text-sm font-body hover:bg-foreground/80 transition-colors disabled:opacity-50"
             >
-              Сохранить страницу
+              {saving ? 'Сохранение...' : saved ? 'Сохранено ✓' : 'Сохранить страницу'}
             </button>
           </div>
         </div>

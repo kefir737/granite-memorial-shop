@@ -103,6 +103,8 @@ async def api_handler(path: str, request: Request):
             return handle_menu(method, parts, body, cur, conn)
         elif entity == "settings":
             return handle_settings(method, parts, body, cur, conn)
+        elif entity == "pages":
+            return handle_pages(method, parts, body, cur, conn)
         else:
             return JSONResponse({"error": "Not found"}, status_code=404)
     finally:
@@ -268,6 +270,58 @@ def handle_settings(method, parts, body, cur, conn):
         return JSONResponse({r["key"]: r["value"] for r in cur.fetchall()})
 
     return JSONResponse({"error": "Not found"}, status_code=404)
+
+
+def handle_pages(method, parts, body, cur, conn):
+    cur.execute("""
+        CREATE TABLE IF NOT EXISTS pages (
+            id SERIAL PRIMARY KEY,
+            title TEXT NOT NULL,
+            slug TEXT NOT NULL UNIQUE,
+            template TEXT NOT NULL DEFAULT 'content',
+            visible BOOLEAN NOT NULL DEFAULT false,
+            content TEXT NOT NULL DEFAULT '',
+            sort_order INTEGER NOT NULL DEFAULT 0,
+            created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+        )
+    """)
+    conn.commit()
+
+    if method == "GET":
+        cur.execute("SELECT * FROM pages ORDER BY sort_order, id")
+        return JSONResponse([row_page(dict(r)) for r in cur.fetchall()])
+
+    if method == "POST":
+        cur.execute(
+            "INSERT INTO pages (title,slug,template,visible,content,sort_order) VALUES (%s,%s,%s,%s,%s,%s) RETURNING *",
+            (body.get("title",""), body.get("slug",""), body.get("template","content"),
+             bool(body.get("visible",False)), body.get("content",""), body.get("sortOrder",0))
+        )
+        conn.commit()
+        return JSONResponse(row_page(dict(cur.fetchone())), status_code=201)
+
+    if method == "PUT" and len(parts) == 2 and parts[1].isdigit():
+        cur.execute(
+            "UPDATE pages SET title=%s,slug=%s,template=%s,visible=%s,content=%s WHERE id=%s RETURNING *",
+            (body.get("title"), body.get("slug"), body.get("template"),
+             bool(body.get("visible")), body.get("content"), int(parts[1]))
+        )
+        conn.commit()
+        r = cur.fetchone()
+        return JSONResponse(row_page(dict(r))) if r else JSONResponse({"error": "Not found"}, status_code=404)
+
+    if method == "DELETE" and len(parts) == 2 and parts[1].isdigit():
+        cur.execute("DELETE FROM pages WHERE id=%s", (int(parts[1]),))
+        conn.commit()
+        return JSONResponse({"deleted": True})
+
+    return JSONResponse({"error": "Not found"}, status_code=404)
+
+
+def row_page(r):
+    return {"id": r["id"], "title": r["title"], "slug": r["slug"],
+            "template": r["template"], "visible": bool(r["visible"]),
+            "content": r["content"], "sortOrder": r["sort_order"]}
 
 
 # ── Contact form ──────────────────────────────────────────────────────────────
