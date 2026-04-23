@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Icon from '@/components/ui/icon';
 import { MenuItem } from '@/data/siteData';
 
@@ -10,13 +10,20 @@ interface MenuAdminProps {
 type MenuType = 'header' | 'footer';
 
 export default function MenuAdmin({ menuItems, onUpdate }: MenuAdminProps) {
+  const [items, setItems] = useState<MenuItem[]>([...menuItems].sort((a, b) => a.order - b.order));
   const [activeTab, setActiveTab] = useState<MenuType>('header');
   const [newLabel, setNewLabel] = useState('');
   const [newHref, setNewHref] = useState('#');
   const [newParentId, setNewParentId] = useState<number | null>(null);
 
-  const items = [...menuItems].sort((a, b) => a.order - b.order);
-  const sync = (updated: MenuItem[]) => onUpdate(updated);
+  useEffect(() => {
+    setItems([...menuItems].sort((a, b) => a.order - b.order));
+  }, [menuItems.length]);
+
+  const sync = (updated: MenuItem[]) => {
+    setItems(updated);
+    onUpdate(updated);
+  };
 
   const byType = (type: MenuType) =>
     items.filter(i => i.menuType === type || (type === 'header' && !i.menuType));
