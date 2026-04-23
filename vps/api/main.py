@@ -61,7 +61,8 @@ def row_portfolio(r):
 def row_granite(r):
     return {"id": r["id"], "name": r["name"], "origin": r["origin"],
             "color": r["color"], "hardness": r["hardness"],
-            "description": r["description"], "image": r["image"]}
+            "description": r["description"], "image": r["image"],
+            "sortOrder": r.get("sort_order", 0)}
 
 
 def row_menu(r):
@@ -232,9 +233,9 @@ def handle_granite(method, parts, body, cur, conn):
 
     if method == "PUT" and len(parts) == 2 and parts[1].isdigit():
         cur.execute(
-            "UPDATE granite_types SET name=%s,origin=%s,color=%s,hardness=%s,description=%s,image=%s WHERE id=%s RETURNING *",
+            "UPDATE granite_types SET name=%s,origin=%s,color=%s,hardness=%s,description=%s,image=%s,sort_order=%s WHERE id=%s RETURNING *",
             (body.get("name"), body.get("origin"), body.get("color"), body.get("hardness"),
-             body.get("description"), body.get("image"), int(parts[1]))
+             body.get("description"), body.get("image"), body.get("sortOrder", 0), int(parts[1]))
         )
         conn.commit()
         r = cur.fetchone()

@@ -8,6 +8,7 @@ import MenuAdmin from './MenuAdmin';
 import SettingsAdmin from './SettingsAdmin';
 import PagesAdmin from './PagesAdmin';
 import PortfolioAdmin from './PortfolioAdmin';
+import GraniteAdmin from './GraniteAdmin';
 
 interface AdminPanelProps {
   monuments: Monument[];
@@ -192,7 +193,7 @@ export default function AdminPanel({
           )}
           {activeTab === 'portfolio' && <PortfolioAdmin onUpdate={onUpdatePortfolio} />}
           {activeTab === 'granite' && (
-            <GraniteAdminSimple graniteTypes={graniteTypes} onUpdate={onUpdateGraniteTypes} />
+            <GraniteAdmin graniteTypes={graniteTypes} onUpdate={onUpdateGraniteTypes} />
           )}
           {activeTab === 'menu' && (
             <MenuAdmin menuItems={menuItems} onUpdate={onUpdateMenuItems} />

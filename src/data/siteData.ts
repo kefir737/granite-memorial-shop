@@ -41,6 +41,7 @@ export type GraniteType = {
   hardness: string;
   description: string;
   image: string;
+  sortOrder?: number;
 };
 
 export type MenuItem = {
