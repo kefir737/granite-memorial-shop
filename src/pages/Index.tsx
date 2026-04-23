@@ -1,14 +1,65 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+import { useState } from 'react';
+import {
+  defaultMonuments, defaultServices, defaultPortfolio,
+  defaultGraniteTypes, defaultMenuItems, defaultSiteSettings,
+  Monument, Service, Portfolio, GraniteType, MenuItem, SiteSettings
+} from '@/data/siteData';
 
-const Index = () => {
+import Header from '@/components/site/Header';
+import HeroSection from '@/components/site/HeroSection';
+import CatalogSection from '@/components/site/CatalogSection';
+import ServicesSection from '@/components/site/ServicesSection';
+import PortfolioSection from '@/components/site/PortfolioSection';
+import GraniteSection from '@/components/site/GraniteSection';
+import ContactsSection from '@/components/site/ContactsSection';
+import Footer from '@/components/site/Footer';
+import AdminPanel from '@/components/admin/AdminPanel';
+
+export default function Index() {
+  const [monuments, setMonuments] = useState<Monument[]>(defaultMonuments);
+  const [services, setServices] = useState<Service[]>(defaultServices);
+  const [portfolio, setPortfolio] = useState<Portfolio[]>(defaultPortfolio);
+  const [graniteTypes, setGraniteTypes] = useState<GraniteType[]>(defaultGraniteTypes);
+  const [menuItems, setMenuItems] = useState<MenuItem[]>(defaultMenuItems);
+  const [settings, setSettings] = useState<SiteSettings>(defaultSiteSettings);
+  const [adminOpen, setAdminOpen] = useState(false);
+
+  if (adminOpen) {
+    return (
+      <AdminPanel
+        monuments={monuments}
+        services={services}
+        portfolio={portfolio}
+        graniteTypes={graniteTypes}
+        menuItems={menuItems}
+        settings={settings}
+        onUpdateMonuments={setMonuments}
+        onUpdateServices={setServices}
+        onUpdatePortfolio={setPortfolio}
+        onUpdateGraniteTypes={setGraniteTypes}
+        onUpdateMenuItems={setMenuItems}
+        onUpdateSettings={setSettings}
+        onClose={() => setAdminOpen(false)}
+      />
+    );
+  }
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="text-center">
-        <h1 className="text-4xl font-bold mb-4 color-black text-black">Добро пожаловать!</h1>
-        <p className="text-xl text-gray-600">тут будет отображаться ваш проект</p>
-      </div>
+    <div className="min-h-screen bg-white">
+      <Header
+        menuItems={menuItems}
+        settings={settings}
+        onAdminClick={() => setAdminOpen(true)}
+      />
+      <main className="pt-16">
+        <HeroSection settings={settings} />
+        <CatalogSection monuments={monuments} />
+        <ServicesSection services={services} />
+        <PortfolioSection portfolio={portfolio} />
+        <GraniteSection graniteTypes={graniteTypes} />
+        <ContactsSection settings={settings} />
+      </main>
+      <Footer settings={settings} menuItems={menuItems} />
     </div>
   );
-};
-
-export default Index;
+}
