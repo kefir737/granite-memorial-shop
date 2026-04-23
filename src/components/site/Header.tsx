@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import Icon from '@/components/ui/icon';
 import { MenuItem, SiteSettings } from '@/data/siteData';
 
@@ -10,8 +10,25 @@ interface HeaderProps {
 }
 
 function NavLink({ item, onClick }: { item: MenuItem; onClick?: () => void }) {
+  const navigate = useNavigate();
+  const location = useLocation();
   const cls = "text-sm font-body text-muted-foreground hover:text-foreground transition-colors tracking-wide";
-  if (item.href.startsWith('#')) return <a href={item.href} className={cls} onClick={onClick}>{item.label}</a>;
+
+  if (item.href.startsWith('#')) {
+    const handleAnchor = (e: React.MouseEvent) => {
+      e.preventDefault();
+      onClick?.();
+      if (location.pathname === '/') {
+        document.querySelector(item.href)?.scrollIntoView({ behavior: 'smooth' });
+      } else {
+        navigate('/');
+        setTimeout(() => {
+          document.querySelector(item.href)?.scrollIntoView({ behavior: 'smooth' });
+        }, 300);
+      }
+    };
+    return <a href={item.href} className={cls} onClick={handleAnchor}>{item.label}</a>;
+  }
   return <Link to={item.href} className={cls} onClick={onClick}>{item.label}</Link>;
 }
 
