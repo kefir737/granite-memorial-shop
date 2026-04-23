@@ -1,16 +1,14 @@
 import { Monument, Service, Portfolio, GraniteType, MenuItem, SiteSettings } from '@/data/siteData';
 
-const BASE_URL = 'https://functions.poehali.dev/35b6eecf-bee4-4d3f-ba79-551cb00675bc';
+const BASE_URL = import.meta.env.VITE_API_URL ?? '/api';
 
 async function apiFetch<T>(path: string, options?: RequestInit): Promise<T> {
-  const url = `${BASE_URL}/?path=${path}`;
+  const url = `${BASE_URL}/${path}`;
   const res = await fetch(url, {
     headers: { 'Content-Type': 'application/json' },
     ...options,
   });
-  const raw = await res.json();
-  // Platform wraps response body in extra JSON string sometimes
-  return typeof raw === 'string' ? JSON.parse(raw) : raw;
+  return res.json();
 }
 
 // Monuments
