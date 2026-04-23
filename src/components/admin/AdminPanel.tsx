@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import Icon from '@/components/ui/icon';
 import {
   Monument, Service, Portfolio, GraniteType, MenuItem, SiteSettings,
@@ -53,19 +53,44 @@ export default function AdminPanel({
     return document.cookie.split(';').some(c => c.trim() === 'admin_ok=1');
   });
   const [pwd, setPwd] = useState('');
-  const [pwdError, setPwdError] = useState(false);
+  const [pwdError, setPwdError] = useState<string>('');
+  const [pwdLoading, setPwdLoading] = useState(false);
 
-  const ADMIN_PASSWORD = 'admin2024';
+  // Смена пароля
+  const [changePwdOpen, setChangePwdOpen] = useState(false);
+  const [curPwd, setCurPwd] = useState('');
+  const [newPwd, setNewPwd] = useState('');
+  const [newPwd2, setNewPwd2] = useState('');
+  const [changeStatus, setChangeStatus] = useState<'idle' | 'ok' | 'err'>('idle');
+  const [changeMsg, setChangeMsg] = useState('');
+  const changePwdRef = useRef<HTMLDivElement>(null);
 
-  const tryLogin = () => {
-    if (pwd === ADMIN_PASSWORD) {
-      sessionStorage.setItem('admin_ok', '1');
-      document.cookie = 'admin_ok=1; path=/; max-age=2592000; SameSite=Lax';
-      setAuthed(true);
-      setPwdError(false);
-    } else {
-      setPwdError(true);
-      setPwd('');
+  const tryLogin = async () => {
+    if (!pwd) return;
+    setPwdLoading(true);
+    setPwdError('');
+    try {
+      const res = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password: pwd }),
+      });
+      const data = await res.json();
+      if (data.ok) {
+        sessionStorage.setItem('admin_ok', '1');
+        document.cookie = 'admin_ok=1; path=/; max-age=2592000; SameSite=Lax';
+        setAuthed(true);
+        setPwdError('');
+      } else if (res.status === 429) {
+        setPwdError('Слишком много попыток. Подождите 5 минут.');
+      } else {
+        setPwdError('Неверный пароль');
+        setPwd('');
+      }
+    } catch {
+      setPwdError('Ошибка соединения');
+    } finally {
+      setPwdLoading(false);
     }
   };
 
@@ -74,6 +99,28 @@ export default function AdminPanel({
     document.cookie = 'admin_ok=; path=/; max-age=0';
     setAuthed(false);
     onClose();
+  };
+
+  const changePassword = async () => {
+    if (newPwd !== newPwd2) { setChangeMsg('Пароли не совпадают'); setChangeStatus('err'); return; }
+    if (newPwd.length < 6) { setChangeMsg('Минимум 6 символов'); setChangeStatus('err'); return; }
+    setChangeStatus('idle');
+    const res = await fetch('/api/auth/change-password', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ current: curPwd, new: newPwd }),
+    });
+    const data = await res.json();
+    if (data.ok) {
+      setChangeStatus('ok');
+      setChangeMsg('Пароль изменён');
+      setCurPwd(''); setNewPwd(''); setNewPwd2('');
+      setTimeout(() => { setChangePwdOpen(false); setChangeStatus('idle'); }, 1500);
+    } else if (res.status === 429) {
+      setChangeStatus('err'); setChangeMsg('Слишком много попыток');
+    } else {
+      setChangeStatus('err'); setChangeMsg('Неверный текущий пароль');
+    }
   };
 
   if (!authed) {
@@ -88,18 +135,20 @@ export default function AdminPanel({
             <input
               type="password"
               value={pwd}
-              onChange={e => { setPwd(e.target.value); setPwdError(false); }}
+              onChange={e => { setPwd(e.target.value); setPwdError(''); }}
               onKeyDown={e => e.key === 'Enter' && tryLogin()}
               placeholder="Пароль"
               autoFocus
-              className={`w-full bg-white/10 border text-white placeholder-white/30 px-4 py-3 font-body text-sm focus:outline-none focus:border-white/60 transition-colors ${pwdError ? 'border-red-400' : 'border-white/20'}`}
+              disabled={pwdLoading}
+              className={`w-full bg-white/10 border text-white placeholder-white/30 px-4 py-3 font-body text-sm focus:outline-none focus:border-white/60 transition-colors disabled:opacity-50 ${pwdError ? 'border-red-400' : 'border-white/20'}`}
             />
-            {pwdError && <p className="text-red-400 text-xs font-body">Неверный пароль</p>}
+            {pwdError && <p className="text-red-400 text-xs font-body">{pwdError}</p>}
             <button
               onClick={tryLogin}
-              className="w-full py-3 bg-white text-foreground font-body text-sm tracking-wide hover:bg-white/90 transition-colors"
+              disabled={pwdLoading || !pwd}
+              className="w-full py-3 bg-white text-foreground font-body text-sm tracking-wide hover:bg-white/90 transition-colors disabled:opacity-50"
             >
-              Войти
+              {pwdLoading ? 'Проверяем...' : 'Войти'}
             </button>
             <button
               onClick={onClose}
@@ -163,6 +212,14 @@ export default function AdminPanel({
             {sidebarOpen && <span className="font-body">На сайт</span>}
           </button>
           <button
+            onClick={() => setChangePwdOpen(true)}
+            className="w-full flex items-center gap-3 text-sm text-white/30 hover:text-white/70 transition-colors"
+            title={!sidebarOpen ? 'Сменить пароль' : undefined}
+          >
+            <Icon name="KeyRound" size={16} />
+            {sidebarOpen && <span className="font-body">Сменить пароль</span>}
+          </button>
+          <button
             onClick={logout}
             className="w-full flex items-center gap-3 text-sm text-white/30 hover:text-red-400 transition-colors"
             title={!sidebarOpen ? 'Выйти' : undefined}
@@ -172,6 +229,40 @@ export default function AdminPanel({
           </button>
         </div>
       </aside>
+
+      {/* Change password modal */}
+      {changePwdOpen && (
+        <div className="fixed inset-0 z-[200] flex items-center justify-center bg-black/60" onClick={e => { if (e.target === e.currentTarget) setChangePwdOpen(false); }}>
+          <div ref={changePwdRef} className="bg-white w-full max-w-sm p-8 space-y-4">
+            <div className="font-display text-2xl text-foreground font-light">Смена пароля</div>
+            <div>
+              <div className="text-xs font-body text-muted-foreground mb-1 uppercase tracking-wide">Текущий пароль</div>
+              <input type="password" value={curPwd} onChange={e => setCurPwd(e.target.value)} className="field-input" placeholder="••••••••" />
+            </div>
+            <div>
+              <div className="text-xs font-body text-muted-foreground mb-1 uppercase tracking-wide">Новый пароль</div>
+              <input type="password" value={newPwd} onChange={e => setNewPwd(e.target.value)} className="field-input" placeholder="Минимум 6 символов" />
+            </div>
+            <div>
+              <div className="text-xs font-body text-muted-foreground mb-1 uppercase tracking-wide">Повторите новый пароль</div>
+              <input type="password" value={newPwd2} onChange={e => setNewPwd2(e.target.value)} onKeyDown={e => e.key === 'Enter' && changePassword()} className="field-input" placeholder="••••••••" />
+            </div>
+            {changeMsg && (
+              <p className={`text-sm font-body ${changeStatus === 'ok' ? 'text-green-600' : 'text-red-500'}`}>{changeMsg}</p>
+            )}
+            <div className="flex gap-3 pt-2">
+              <button onClick={changePassword}
+                className="flex-1 py-3 bg-foreground text-white font-body text-sm hover:bg-foreground/80 transition-colors">
+                Сохранить
+              </button>
+              <button onClick={() => { setChangePwdOpen(false); setChangeMsg(''); setChangeStatus('idle'); setCurPwd(''); setNewPwd(''); setNewPwd2(''); }}
+                className="px-5 py-3 border border-border font-body text-sm text-muted-foreground hover:border-foreground/40 transition-colors">
+                Отмена
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Main */}
       <div className="flex-1 flex flex-col overflow-hidden">

@@ -3,9 +3,13 @@ import os
 import base64
 import uuid
 import smtplib
+import time
+import threading
+import bcrypt
 from pathlib import Path
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
+from collections import defaultdict
 
 import psycopg2
 import psycopg2.extras
@@ -21,6 +25,60 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+
+# ── Rate limiter ──────────────────────────────────────────────────────────────
+
+_rl_lock = threading.Lock()
+_rl_attempts: dict = defaultdict(list)   # ip -> [timestamp, ...]
+RL_WINDOW = 60        # секунд
+RL_MAX = 5            # попыток за окно
+RL_BLOCK_TIME = 300   # блокировка 5 минут после превышения
+_rl_blocked: dict = {}   # ip -> unblock_at
+
+
+def rl_check(ip: str) -> bool:
+    """True — разрешить, False — заблокировать."""
+    now = time.time()
+    with _rl_lock:
+        if ip in _rl_blocked:
+            if now < _rl_blocked[ip]:
+                return False
+            del _rl_blocked[ip]
+        _rl_attempts[ip] = [t for t in _rl_attempts[ip] if now - t < RL_WINDOW]
+        if len(_rl_attempts[ip]) >= RL_MAX:
+            _rl_blocked[ip] = now + RL_BLOCK_TIME
+            return False
+        _rl_attempts[ip].append(now)
+        return True
+
+
+def rl_reset(ip: str):
+    with _rl_lock:
+        _rl_attempts.pop(ip, None)
+        _rl_blocked.pop(ip, None)
+
+
+# ── Auth helpers ──────────────────────────────────────────────────────────────
+
+DEFAULT_HASH = bcrypt.hashpw(b"admin2024", bcrypt.gensalt()).decode()
+
+
+def get_admin_hash(cur) -> str:
+    cur.execute("SELECT value FROM site_settings WHERE key='adminPasswordHash'")
+    row = cur.fetchone()
+    return row["value"] if row else DEFAULT_HASH
+
+
+def set_admin_hash(cur, conn, plain: str):
+    h = bcrypt.hashpw(plain.encode(), bcrypt.gensalt()).decode()
+    cur.execute(
+        "INSERT INTO site_settings (key,value) VALUES ('adminPasswordHash',%s) "
+        "ON CONFLICT (key) DO UPDATE SET value=EXCLUDED.value",
+        (h,)
+    )
+    conn.commit()
+    return h
 
 
 def get_conn():
@@ -611,6 +669,56 @@ async def sitemap():
 {items}
 </urlset>"""
     return Response(content=xml, media_type="application/xml")
+
+
+@app.post("/api/auth/login")
+async def auth_login(request: Request):
+    ip = request.headers.get("X-Forwarded-For", request.client.host or "").split(",")[0].strip()
+    if not rl_check(ip):
+        return JSONResponse({"ok": False, "error": "too_many_attempts"}, status_code=429)
+
+    body = await request.json()
+    password = body.get("password", "")
+
+    conn = get_conn()
+    cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+    try:
+        stored_hash = get_admin_hash(cur)
+    finally:
+        cur.close()
+        conn.close()
+
+    if bcrypt.checkpw(password.encode(), stored_hash.encode()):
+        rl_reset(ip)
+        return JSONResponse({"ok": True})
+    return JSONResponse({"ok": False, "error": "invalid_password"}, status_code=401)
+
+
+@app.post("/api/auth/change-password")
+async def auth_change_password(request: Request):
+    ip = request.headers.get("X-Forwarded-For", request.client.host or "").split(",")[0].strip()
+    if not rl_check(ip):
+        return JSONResponse({"ok": False, "error": "too_many_attempts"}, status_code=429)
+
+    body = await request.json()
+    current = body.get("current", "")
+    new_pwd = body.get("new", "")
+
+    if len(new_pwd) < 6:
+        return JSONResponse({"ok": False, "error": "too_short"}, status_code=400)
+
+    conn = get_conn()
+    cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+    try:
+        stored_hash = get_admin_hash(cur)
+        if not bcrypt.checkpw(current.encode(), stored_hash.encode()):
+            return JSONResponse({"ok": False, "error": "invalid_password"}, status_code=401)
+        set_admin_hash(cur, conn, new_pwd)
+        rl_reset(ip)
+        return JSONResponse({"ok": True})
+    finally:
+        cur.close()
+        conn.close()
 
 
 @app.get("/health")
