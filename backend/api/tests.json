@@ -1,0 +1,36 @@
+{
+  "tests": [
+    {
+      "name": "OPTIONS preflight",
+      "method": "OPTIONS",
+      "path": "/",
+      "expectedStatus": 200
+    },
+    {
+      "name": "Health check",
+      "method": "GET",
+      "path": "/",
+      "expectedStatus": 200,
+      "expectedBody": {"status": "ok"},
+      "bodyMatcher": "partial"
+    },
+    {
+      "name": "GET monuments",
+      "method": "GET",
+      "path": "/?path=monuments",
+      "expectedStatus": 200
+    },
+    {
+      "name": "GET settings",
+      "method": "GET",
+      "path": "/?path=settings",
+      "expectedStatus": 200
+    },
+    {
+      "name": "GET services",
+      "method": "GET",
+      "path": "/?path=services",
+      "expectedStatus": 200
+    }
+  ]
+}
