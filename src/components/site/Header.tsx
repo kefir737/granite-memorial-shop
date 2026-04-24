@@ -54,11 +54,11 @@ export default function Header({ menuItems, settings, onAdminClick }: HeaderProp
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <a href="/" className="flex items-center gap-3 group">
-            <div className="w-8 h-8 bg-red-600 flex items-center justify-center">
-              <span className="text-white font-display text-sm font-semibold">Г</span>
+            <div className="w-8 h-8 bg-foreground flex items-center justify-center">
+              <span className="text-background font-display text-sm font-semibold">Г</span>
             </div>
             <div>
-              <div className="font-display text-lg font-semibold leading-none text-red-600">{settings.companyName}</div>
+              <div className="font-display text-lg font-semibold leading-none text-foreground">{settings.companyName}</div>
               <div className="text-[10px] text-muted-foreground font-body tracking-widest uppercase">Памятники из гранита</div>
             </div>
           </a>
