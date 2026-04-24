@@ -32,5 +32,8 @@ jobs:
           key: ${{ secrets.VPS_SSH_KEY }}
           port: ${{ secrets.VPS_PORT }}
           script: |
-            cd $HOME/domains/granit-sever.ru/repo
-            bash deploy.sh
+            cd /opt/granite
+            git pull origin main
+            cd vps
+            docker compose build --no-cache frontend
+            docker compose up -d
