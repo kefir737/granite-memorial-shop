@@ -73,6 +73,8 @@ export function settingsToObj(raw: Record<string, string>): SiteSettings {
     smtpPassword: raw.smtpPassword ?? '',
     smtpHost: raw.smtpHost ?? 'smtp.yandex.ru',
     smtpPort: raw.smtpPort ?? '465',
+    siteIcon: raw.siteIcon ?? '',
+    favicon: raw.favicon ?? '',
   };
 }
 
@@ -124,5 +126,7 @@ export function settingsToFlat(s: SiteSettings): Record<string, string> {
     smtpPassword: s.smtpPassword,
     smtpHost: s.smtpHost,
     smtpPort: s.smtpPort,
+    siteIcon: s.siteIcon,
+    favicon: s.favicon,
   };
 }
