@@ -22,12 +22,28 @@ function setMeta(name: string, content: string, attr = 'name') {
   el.setAttribute('content', content);
 }
 
+function setFavicon(href: string, rel: string) {
+  if (!href) return;
+  let el = document.querySelector(`link[rel="${rel}"]`) as HTMLLinkElement | null;
+  if (!el) {
+    el = document.createElement('link');
+    el.setAttribute('rel', rel);
+    document.head.appendChild(el);
+  }
+  el.setAttribute('href', href);
+}
+
 function applySeоTags(s: SiteSettings) {
   if (s.seoTitle) document.title = s.seoTitle;
   setMeta('description', s.metaDescription);
   setMeta('og:title', s.seoTitle || s.heroTitle, 'property');
   setMeta('og:description', s.metaDescription, 'property');
   if (s.ogImage) setMeta('og:image', s.ogImage, 'property');
+  if (s.favicon) setFavicon(s.favicon, 'icon');
+  if (s.siteIcon) {
+    setFavicon(s.siteIcon, 'apple-touch-icon');
+    setMeta('theme-color', '#1a1a1a');
+  }
 }
 
 export default function AppShell() {

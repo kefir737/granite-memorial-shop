@@ -12,15 +12,17 @@ interface SettingsAdminProps {
 export default function SettingsAdmin({ settings, onUpdate }: SettingsAdminProps) {
   const [draft, setDraft] = useState({ ...settings });
   const [saved, setSaved] = useState(false);
-  const [uploading, setUploading] = useState<'hero' | 'og' | null>(null);
+  const [uploading, setUploading] = useState<'hero' | 'og' | 'icon' | 'favicon' | null>(null);
   const [showSmtpPwd, setShowSmtpPwd] = useState(false);
   const heroFileRef = useRef<HTMLInputElement>(null);
   const ogFileRef = useRef<HTMLInputElement>(null);
+  const iconFileRef = useRef<HTMLInputElement>(null);
+  const faviconFileRef = useRef<HTMLInputElement>(null);
 
-  const uploadImage = async (file: File, field: 'heroImage' | 'ogImage', slot: 'hero' | 'og') => {
+  const uploadImage = async (file: File, field: 'heroImage' | 'ogImage' | 'siteIcon' | 'favicon', slot: 'hero' | 'og' | 'icon' | 'favicon') => {
     setUploading(slot);
     try {
-      const maxW = slot === 'og' ? 1200 : 1920;
+      const maxW = slot === 'og' ? 1200 : slot === 'favicon' ? 64 : slot === 'icon' ? 512 : 1920;
       const compressed = await compressImage(file, maxW);
       const reader = new FileReader();
       reader.onload = async (e) => {
@@ -152,6 +154,52 @@ export default function SettingsAdmin({ settings, onUpdate }: SettingsAdminProps
               </div>
               <input ref={ogFileRef} type="file" accept="image/*" className="hidden"
                 onChange={e => e.target.files?.[0] && uploadImage(e.target.files[0], 'ogImage', 'og')} />
+            </div>
+          </Field>
+          <Field label="Иконка сайта (512×512, для PWA и домашних экранов)">
+            <div className="space-y-2">
+              {draft.siteIcon && (
+                <div className="relative w-24 h-24 overflow-hidden bg-stone-100 border border-border rounded-lg">
+                  <img src={draft.siteIcon} alt="Site Icon" className="w-full h-full object-cover" />
+                </div>
+              )}
+              <div className="flex gap-2">
+                <button type="button" onClick={() => iconFileRef.current?.click()} disabled={uploading === 'icon'}
+                  className="px-4 py-2 border border-border text-sm font-body hover:border-foreground/40 transition-colors disabled:opacity-50">
+                  {uploading === 'icon' ? 'Загрузка...' : draft.siteIcon ? 'Заменить' : 'Загрузить иконку'}
+                </button>
+                {draft.siteIcon && (
+                  <button type="button" onClick={() => setDraft(d => ({ ...d, siteIcon: '' }))}
+                    className="px-4 py-2 border border-red-200 text-red-600 text-sm font-body hover:bg-red-50 transition-colors">
+                    Удалить
+                  </button>
+                )}
+              </div>
+              <input ref={iconFileRef} type="file" accept="image/*" className="hidden"
+                onChange={e => e.target.files?.[0] && uploadImage(e.target.files[0], 'siteIcon', 'icon')} />
+            </div>
+          </Field>
+          <Field label="Фавиконка (64×64, для вкладок браузера)">
+            <div className="space-y-2">
+              {draft.favicon && (
+                <div className="relative w-12 h-12 overflow-hidden bg-stone-100 border border-border rounded">
+                  <img src={draft.favicon} alt="Favicon" className="w-full h-full object-cover" />
+                </div>
+              )}
+              <div className="flex gap-2">
+                <button type="button" onClick={() => faviconFileRef.current?.click()} disabled={uploading === 'favicon'}
+                  className="px-4 py-2 border border-border text-sm font-body hover:border-foreground/40 transition-colors disabled:opacity-50">
+                  {uploading === 'favicon' ? 'Загрузка...' : draft.favicon ? 'Заменить' : 'Загрузить фавиконку'}
+                </button>
+                {draft.favicon && (
+                  <button type="button" onClick={() => setDraft(d => ({ ...d, favicon: '' }))}
+                    className="px-4 py-2 border border-red-200 text-red-600 text-sm font-body hover:bg-red-50 transition-colors">
+                    Удалить
+                  </button>
+                )}
+              </div>
+              <input ref={faviconFileRef} type="file" accept="image/*" className="hidden"
+                onChange={e => e.target.files?.[0] && uploadImage(e.target.files[0], 'favicon', 'favicon')} />
             </div>
           </Field>
           <div className="bg-stone-50 border border-border p-3 flex items-center justify-between">
