@@ -399,17 +399,30 @@ def handle_menu(method, parts, body, cur, conn):
 def handle_settings(method, parts, body, cur, conn):
     if method == "GET":
         cur.execute("SELECT key, value FROM site_settings")
-        return JSONResponse({r["key"]: r["value"] for r in cur.fetchall()})
+        data = {r["key"]: r["value"] for r in cur.fetchall()}
+        # Never expose secret values to the public settings endpoint.
+        data.pop("adminPasswordHash", None)
+        if "smtpPassword" in data:
+            data["smtpPassword"] = ""
+        return JSONResponse(data)
 
     if method == "PUT":
-        for key, value in (body if isinstance(body, dict) else {}).items():
+        payload = body if isinstance(body, dict) else {}
+        for key, value in payload.items():
+            # Keep existing SMTP password when frontend sends an empty placeholder.
+            if key == "smtpPassword" and (value is None or str(value).strip() == ""):
+                continue
             cur.execute(
                 "INSERT INTO site_settings (key,value) VALUES (%s,%s) ON CONFLICT (key) DO UPDATE SET value=EXCLUDED.value",
                 (key, str(value))
             )
         conn.commit()
         cur.execute("SELECT key, value FROM site_settings")
-        return JSONResponse({r["key"]: r["value"] for r in cur.fetchall()})
+        data = {r["key"]: r["value"] for r in cur.fetchall()}
+        data.pop("adminPasswordHash", None)
+        if "smtpPassword" in data:
+            data["smtpPassword"] = ""
+        return JSONResponse(data)
 
     return JSONResponse({"error": "Not found"}, status_code=404)
 
@@ -588,7 +601,7 @@ async def contact(request: Request):
     db_cur2 = db_conn2.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
     smtp_cfg = {}
     try:
-        db_cur2.execute("SELECT key, value FROM settings WHERE key IN ('smtpHost','smtpPort','smtpUser','smtpPassword','notificationEmail')")
+        db_cur2.execute("SELECT key, value FROM site_settings WHERE key IN ('smtpHost','smtpPort','smtpUser','smtpPassword','notificationEmail')")
         smtp_cfg = {r["key"]: r["value"] for r in db_cur2.fetchall()}
     finally:
         db_cur2.close()
@@ -681,7 +694,7 @@ async def sitemap():
     conn = get_conn()
     cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
     try:
-        cur.execute("SELECT value FROM settings WHERE key='siteUrl'")
+        cur.execute("SELECT value FROM site_settings WHERE key='siteUrl'")
         row = cur.fetchone()
         site_url = (row["value"] if row else "").rstrip("/") or "https://granit-sever.ru"
 

@@ -114,10 +114,16 @@ export default function AppShell() {
     getMenuItems().then(list => { if (list?.length) setMenuItems(list); }).catch(() => {});
   };
 
-  const handleUpdateSettings = async (updated: SiteSettings) => {
+  const handleUpdateSettings = async (updated: SiteSettings): Promise<boolean> => {
     setSettings(updated);
     applySeоTags(updated);
-    await saveSettings(settingsToFlat(updated)).catch(console.error);
+    try {
+      await saveSettings(settingsToFlat(updated));
+      return true;
+    } catch (e) {
+      console.error(e);
+      return false;
+    }
   };
 
   if (loading) {

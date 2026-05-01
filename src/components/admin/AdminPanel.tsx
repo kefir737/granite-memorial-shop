@@ -23,7 +23,7 @@ interface AdminPanelProps {
   onUpdatePortfolio: (v: Portfolio[]) => void;
   onUpdateGraniteTypes: (v: GraniteType[]) => void;
   onUpdateMenuItems: (v: MenuItem[]) => void;
-  onUpdateSettings: (v: SiteSettings) => void;
+  onUpdateSettings: (v: SiteSettings) => Promise<boolean>;
   onRefreshMenu: () => void;
   onClose: () => void;
 }

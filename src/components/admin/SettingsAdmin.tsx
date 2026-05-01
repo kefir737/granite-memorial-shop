@@ -6,12 +6,13 @@ const UPLOAD_URL = '/upload-image';
 
 interface SettingsAdminProps {
   settings: SiteSettings;
-  onUpdate: (v: SiteSettings) => void;
+  onUpdate: (v: SiteSettings) => Promise<boolean>;
 }
 
 export default function SettingsAdmin({ settings, onUpdate }: SettingsAdminProps) {
   const [draft, setDraft] = useState({ ...settings });
   const [saved, setSaved] = useState(false);
+  const [saveError, setSaveError] = useState('');
   const [uploading, setUploading] = useState<'hero' | 'og' | 'icon' | 'favicon' | null>(null);
   const [showSmtpPwd, setShowSmtpPwd] = useState(false);
   const heroFileRef = useRef<HTMLInputElement>(null);
@@ -40,10 +41,16 @@ export default function SettingsAdmin({ settings, onUpdate }: SettingsAdminProps
     } catch { setUploading(null); }
   };
 
-  const save = () => {
-    onUpdate(draft);
-    setSaved(true);
-    setTimeout(() => setSaved(false), 2000);
+  const save = async () => {
+    setSaveError('');
+    const ok = await onUpdate(draft);
+    if (ok) {
+      setSaved(true);
+      setTimeout(() => setSaved(false), 2000);
+      return;
+    }
+    setSaved(false);
+    setSaveError('Не удалось сохранить. Проверьте соединение и попробуйте снова.');
   };
 
   const f = (key: keyof SiteSettings) => ({
@@ -265,6 +272,9 @@ export default function SettingsAdmin({ settings, onUpdate }: SettingsAdminProps
           </button>
           {saved && (
             <span className="font-body text-sm text-green-600 animate-fade-in">Сохранено!</span>
+          )}
+          {saveError && (
+            <span className="font-body text-sm text-red-600 animate-fade-in">{saveError}</span>
           )}
         </div>
       </div>
