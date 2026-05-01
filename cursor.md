@@ -37,3 +37,38 @@
 - if failed, inspect:
   - `docker logs <container>`
   - `docker inspect <container>` health details
+
+## Runtime/deployment specifics (granite)
+
+- Active server repo path: `/opt/granite/vps`.
+- Domain routing:
+  - `granit-sever.ru` -> nginx -> `127.0.0.1:8081` (`granite-frontend-1`)
+- Compose project name is pinned as `name: granite`.
+- After backend (`vps/api`) code changes, prefer explicit rebuild:
+  - `docker compose up -d --build api`
+  - then run post-deploy checks.
+
+## App responsibility map (must preserve)
+
+- Site = frontend user-facing pages (`src/components/site`, `src/pages`).
+- Admin = admin UI/panel (`src/components/admin`).
+- Backend = FastAPI service in `vps/api/main.py`.
+- DB = PostgreSQL (`granite-db-1`) with settings/content tables.
+
+## Key backend/settings guardrails
+
+- Settings API must not expose secrets in `GET /api/settings`:
+  - never return `adminPasswordHash`
+  - return sanitized `smtpPassword` (empty in response)
+- Settings persistence:
+  - keep updates in `site_settings` table (not `settings`)
+  - do not overwrite smtp password when frontend sends empty placeholder.
+- Frontend safety:
+  - treat empty settings strings as missing and fallback to defaults for critical fields (`heroTitle`, etc.).
+
+## Current test data baseline (admin settings)
+
+- phone: `+7 (499) 288-22-18`
+- phone2Label: `WhatsApp / Telegram / MAX`
+- phone2: `+7 (963) 751-68-23`
+- address: `Московская область, Лобня, улица Киово, 137`
