@@ -1,4 +1,12 @@
-import { Monument, Service, Portfolio, GraniteType, MenuItem, SiteSettings } from '@/data/siteData';
+import {
+  Monument,
+  Service,
+  Portfolio,
+  GraniteType,
+  MenuItem,
+  SiteSettings,
+  defaultSiteSettings,
+} from '@/data/siteData';
 
 const BASE_URL = import.meta.env.VITE_API_URL ?? '/api';
 
@@ -50,29 +58,34 @@ export const getSettings = () => apiFetch<Record<string, string>>('settings');
 export const saveSettings = (data: Record<string, string>) =>
   apiFetch<Record<string, string>>('settings', { method: 'PUT', body: JSON.stringify(data) });
 
+const pick = (value: string | undefined, fallback: string) => {
+  const v = typeof value === 'string' ? value.trim() : '';
+  return v.length ? value! : fallback;
+};
+
 // Convert flat settings object to SiteSettings type
 export function settingsToObj(raw: Record<string, string>): SiteSettings {
   return {
-    companyName: raw.companyName ?? '',
-    phone: raw.phone ?? '',
+    companyName: pick(raw.companyName, defaultSiteSettings.companyName),
+    phone: pick(raw.phone, defaultSiteSettings.phone),
     phone2: raw.phone2 ?? '',
-    phone2Label: raw.phone2Label ?? 'Мессенджеры',
+    phone2Label: pick(raw.phone2Label, defaultSiteSettings.phone2Label),
     email: raw.email ?? '',
     address: raw.address ?? '',
     workHours: raw.workHours ?? '',
     mapUrl: raw.mapUrl ?? '',
-    heroTitle: raw.heroTitle ?? '',
-    heroSubtitle: raw.heroSubtitle ?? '',
+    heroTitle: pick(raw.heroTitle, defaultSiteSettings.heroTitle),
+    heroSubtitle: pick(raw.heroSubtitle, defaultSiteSettings.heroSubtitle),
     heroImage: raw.heroImage ?? '',
-    seoTitle: raw.seoTitle ?? '',
+    seoTitle: pick(raw.seoTitle, defaultSiteSettings.seoTitle),
     metaDescription: raw.metaDescription ?? '',
     ogImage: raw.ogImage ?? '',
-    siteUrl: raw.siteUrl ?? 'https://granit-sever.ru',
+    siteUrl: pick(raw.siteUrl, defaultSiteSettings.siteUrl),
     notificationEmail: raw.notificationEmail ?? '',
     smtpUser: raw.smtpUser ?? '',
     smtpPassword: raw.smtpPassword ?? '',
-    smtpHost: raw.smtpHost ?? 'smtp.yandex.ru',
-    smtpPort: raw.smtpPort ?? '465',
+    smtpHost: pick(raw.smtpHost, defaultSiteSettings.smtpHost),
+    smtpPort: pick(raw.smtpPort, defaultSiteSettings.smtpPort),
     siteIcon: raw.siteIcon ?? '',
     favicon: raw.favicon ?? '',
   };
