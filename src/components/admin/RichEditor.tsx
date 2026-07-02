@@ -119,7 +119,7 @@ export default function RichEditor({ value, onChange, placeholder = 'Введи�
 
       <EditorContent
         editor={editor}
-        className="prose prose-sm max-w-none p-4 min-h-[200px] focus:outline-none [&_.ProseMirror]:outline-none [&_.ProseMirror]:min-h-[200px] [&_.ProseMirror_p.is-editor-empty:first-child::before]:content-[attr(data-placeholder)] [&_.ProseMirror_p.is-editor-empty:first-child::before]:text-muted-foreground [&_.ProseMirror_p.is-editor-empty:first-child::before]:pointer-events-none [&_.ProseMirror_img]:max-w-full [&_.ProseMirror_img]:rounded"
+        className="cms-content cms-content--editor p-4 min-h-[200px]"
       />
 
       <input ref={fileRef} type="file" accept="image/*" className="hidden"

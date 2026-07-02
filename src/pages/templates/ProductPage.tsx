@@ -111,7 +111,7 @@ export default function ProductPage({ page, settings, menuItems, monuments, onAd
               </div>
 
               {page.content ? (
-                <div className="prose prose-sm max-w-none font-body text-sm text-muted-foreground mb-8 leading-relaxed"
+                <div className="cms-content cms-content--compact cms-content--muted cms-content--wide mb-8"
                   dangerouslySetInnerHTML={{ __html: page.content }} />
               ) : (
                 <p className="font-body text-sm text-muted-foreground leading-relaxed mb-8">

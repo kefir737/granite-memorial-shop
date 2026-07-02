@@ -1,0 +1,196 @@
+/**
+ * Typography for CMS/WYSIWYG HTML (bare p, h2, ul, …).
+ * Scope: only inside .cms-content — site UI uses Tailwind classes on its own elements.
+ */
+
+.cms-content {
+  color: hsl(var(--foreground));
+  font-family: "Golos Text", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  font-size: 1.0625rem;
+  line-height: 1.75;
+  max-width: 65ch;
+}
+
+.cms-content > :first-child {
+  margin-top: 0;
+}
+
+.cms-content > :last-child {
+  margin-bottom: 0;
+}
+
+.cms-content p {
+  margin: 0 0 1.25em;
+}
+
+.cms-content h1,
+.cms-content h2,
+.cms-content h3,
+.cms-content h4 {
+  font-family: "Cormorant Garamond", Georgia, "Times New Roman", serif;
+  font-weight: 300;
+  color: hsl(var(--foreground));
+  letter-spacing: -0.01em;
+}
+
+.cms-content h1 {
+  font-size: 2.25rem;
+  line-height: 1.15;
+  margin: 0 0 0.75em;
+}
+
+.cms-content h2 {
+  font-size: 1.875rem;
+  line-height: 1.2;
+  margin: 2em 0 0.65em;
+}
+
+.cms-content h3 {
+  font-size: 1.375rem;
+  line-height: 1.3;
+  font-weight: 400;
+  margin: 1.65em 0 0.5em;
+}
+
+.cms-content h4 {
+  font-size: 1.125rem;
+  line-height: 1.35;
+  font-weight: 400;
+  margin: 1.5em 0 0.4em;
+}
+
+.cms-content ul,
+.cms-content ol {
+  margin: 0 0 1.25em;
+  padding-left: 1.5em;
+}
+
+.cms-content ul {
+  list-style-type: disc;
+}
+
+.cms-content ol {
+  list-style-type: decimal;
+}
+
+.cms-content li {
+  margin: 0.4em 0;
+  padding-left: 0.2em;
+}
+
+.cms-content li > p {
+  margin: 0.35em 0;
+}
+
+.cms-content li > ul,
+.cms-content li > ol {
+  margin: 0.35em 0 0.5em;
+}
+
+.cms-content strong {
+  font-weight: 600;
+}
+
+.cms-content em {
+  font-style: italic;
+}
+
+.cms-content a {
+  color: hsl(var(--blue));
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+  transition: color 0.15s ease;
+}
+
+.cms-content a:hover {
+  color: hsl(var(--blue-light));
+}
+
+.cms-content blockquote {
+  margin: 1.5em 0;
+  padding: 0.5em 0 0.5em 1.25em;
+  border-left: 3px solid hsl(var(--border));
+  color: hsl(var(--muted-foreground));
+  font-style: italic;
+}
+
+.cms-content blockquote p:last-child {
+  margin-bottom: 0;
+}
+
+.cms-content img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  margin: 1.75em auto;
+  border-radius: 2px;
+}
+
+.cms-content hr {
+  margin: 2em 0;
+  border: 0;
+  border-top: 1px solid hsl(var(--border));
+}
+
+.cms-content code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.875em;
+  background: hsl(var(--muted));
+  padding: 0.12em 0.35em;
+  border-radius: 2px;
+}
+
+/* Variants for secondary CMS blocks (catalog footer, product sidebar) */
+.cms-content--compact {
+  font-size: 0.875rem;
+  line-height: 1.65;
+}
+
+.cms-content--compact h2 {
+  font-size: 1.5rem;
+  margin-top: 1.5em;
+}
+
+.cms-content--compact h3 {
+  font-size: 1.125rem;
+  margin-top: 1.35em;
+}
+
+.cms-content--muted {
+  color: hsl(var(--muted-foreground));
+}
+
+.cms-content--muted h1,
+.cms-content--muted h2,
+.cms-content--muted h3,
+.cms-content--muted h4 {
+  color: hsl(var(--foreground));
+}
+
+.cms-content--wide {
+  max-width: none;
+}
+
+/* TipTap admin editor */
+.cms-content--editor {
+  max-width: none;
+}
+
+.cms-content--editor .ProseMirror {
+  outline: none;
+  min-height: 200px;
+}
+
+.cms-content--editor .ProseMirror p.is-editor-empty:first-child::before {
+  content: attr(data-placeholder);
+  color: hsl(var(--muted-foreground));
+  pointer-events: none;
+  float: left;
+  height: 0;
+}
+
+.cms-content--editor .ProseMirror img {
+  margin-left: 0;
+  margin-right: 0;
+}

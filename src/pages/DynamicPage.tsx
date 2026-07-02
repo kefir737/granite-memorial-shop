@@ -82,7 +82,7 @@ export default function DynamicPage({ settings, menuItems, monuments, portfolio,
       <main className="pt-16 max-w-4xl mx-auto px-6 py-16">
         <h1 className="font-display text-5xl font-light text-foreground mb-8">{page.title}</h1>
         <div
-          className="prose prose-stone max-w-none font-body leading-relaxed"
+          className="cms-content cms-content--wide"
           dangerouslySetInnerHTML={{ __html: page.content }}
         />
       </main>

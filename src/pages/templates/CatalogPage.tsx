@@ -56,7 +56,7 @@ export default function CatalogPage({ page, settings, menuItems, monuments, onAd
             </div>
             <h1 className="font-display text-4xl font-light text-foreground mb-2">{page.title}</h1>
             {page.content && (
-              <div className="font-body text-sm text-muted-foreground max-w-2xl leading-relaxed"
+              <div className="cms-content cms-content--compact cms-content--muted cms-content--wide"
                 dangerouslySetInnerHTML={{ __html: page.content }} />
             )}
           </div>
@@ -122,7 +122,7 @@ export default function CatalogPage({ page, settings, menuItems, monuments, onAd
           {/* SEO footer */}
           {page.content && (
             <div className="mt-16 pt-12 border-t border-border">
-              <div className="prose prose-stone max-w-none font-body text-sm text-muted-foreground leading-relaxed"
+              <div className="cms-content cms-content--compact cms-content--muted cms-content--wide"
                 dangerouslySetInnerHTML={{ __html: page.content }} />
             </div>
           )}
