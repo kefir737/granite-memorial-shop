@@ -21,6 +21,25 @@ export default defineConfig(({mode}) => ({
         allowedHosts: true,
         hmr: {
             overlay: false // Disables the error overlay if you only want console errors
-        }
+        },
+        proxy: {
+            '/api': 'http://localhost:8000',
+            '/save_image.php': 'http://localhost:8000',
+        },
+    },
+    build: {
+        rollupOptions: {
+            output: {
+                manualChunks(id) {
+                    if (!id.includes('node_modules')) {
+                        if (id.includes('/src/components/admin/')) return 'admin';
+                        return;
+                    }
+                    if (id.includes('@tiptap') || id.includes('prosemirror')) return 'admin-editor';
+                    if (id.includes('@radix-ui') || id.includes('recharts')) return 'admin-ui';
+                    return 'vendor';
+                },
+            },
+        },
     },
 }));

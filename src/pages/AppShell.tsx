@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, lazy, Suspense } from 'react';
 import { Routes, Route, useNavigate } from 'react-router-dom';
 import {
   defaultMonuments, defaultServices, defaultPortfolio,
@@ -11,9 +11,19 @@ import {
   updateMonument, createMonument, deleteMonument,
   updateService, updateGraniteType, saveMenuItems, saveSettings, settingsToFlat,
 } from '@/lib/api';
-import AdminPanel from '@/components/admin/AdminPanel';
 import Index from './Index';
-import DynamicPage from './DynamicPage';
+
+const AdminPanel = lazy(() => import('@/components/admin/AdminPanel'));
+const DynamicPage = lazy(() => import('./DynamicPage'));
+const ConstructorPage = lazy(() => import('./ConstructorPage'));
+
+function RouteFallback() {
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-white">
+      <div className="w-8 h-8 border-2 border-foreground border-t-transparent rounded-full animate-spin" />
+    </div>
+  );
+}
 
 function setMeta(name: string, content: string, attr = 'name') {
   if (!content) return;
@@ -53,7 +63,6 @@ export default function AppShell() {
   const [graniteTypes, setGraniteTypes] = useState<GraniteType[]>(defaultGraniteTypes);
   const [menuItems, setMenuItems] = useState<MenuItem[]>(defaultMenuItems);
   const [settings, setSettings] = useState<SiteSettings>(defaultSiteSettings);
-  const [loading, setLoading] = useState(true);
   const [adminOpen, setAdminOpen] = useState(false);
   const navigate = useNavigate();
 
@@ -76,7 +85,7 @@ export default function AppShell() {
         setSettings(s);
         applySeоTags(s);
       }
-    }).finally(() => setLoading(false));
+    });
   }, []);
 
   const handleUpdateMonuments = async (updated: Monument[]) => {
@@ -126,55 +135,54 @@ export default function AppShell() {
     }
   };
 
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-white">
-        <div className="w-8 h-8 border-2 border-foreground border-t-transparent rounded-full animate-spin mx-auto mb-4" />
-      </div>
-    );
-  }
-
   const sharedProps = { settings, menuItems, onAdminClick: () => setAdminOpen(true) };
 
   if (adminOpen) {
     return (
-      <AdminPanel
-        monuments={monuments}
-        services={services}
-        portfolio={portfolio}
-        graniteTypes={graniteTypes}
-        menuItems={menuItems}
-        settings={settings}
-        onUpdateMonuments={handleUpdateMonuments}
-        onUpdateServices={handleUpdateServices}
-        onUpdatePortfolio={handleUpdatePortfolio}
-        onUpdateGraniteTypes={handleUpdateGraniteTypes}
-        onUpdateMenuItems={handleUpdateMenuItems}
-        onUpdateSettings={handleUpdateSettings}
-        onRefreshMenu={handleRefreshMenu}
-        onClose={() => { setAdminOpen(false); navigate('/'); }}
-      />
-    );
-  }
-
-  return (
-    <Routes>
-      <Route path="/admin" element={<AdminRedirect open={() => setAdminOpen(true)} />} />
-      <Route path="/" element={
-        <Index
-          {...sharedProps}
+      <Suspense fallback={<RouteFallback />}>
+        <AdminPanel
           monuments={monuments}
           services={services}
           portfolio={portfolio}
           graniteTypes={graniteTypes}
+          menuItems={menuItems}
+          settings={settings}
           onUpdateMonuments={handleUpdateMonuments}
           onUpdateServices={handleUpdateServices}
           onUpdatePortfolio={handleUpdatePortfolio}
           onUpdateGraniteTypes={handleUpdateGraniteTypes}
+          onUpdateMenuItems={handleUpdateMenuItems}
+          onUpdateSettings={handleUpdateSettings}
+          onRefreshMenu={handleRefreshMenu}
+          onClose={() => { setAdminOpen(false); navigate('/'); }}
         />
-      } />
-      <Route path="/:slug" element={<DynamicPage {...sharedProps} monuments={monuments} portfolio={portfolio} />} />
-    </Routes>
+      </Suspense>
+    );
+  }
+
+  return (
+    <Suspense fallback={<RouteFallback />}>
+      <Routes>
+        <Route path="/admin" element={<AdminRedirect open={() => setAdminOpen(true)} />} />
+        <Route path="/" element={
+          <Index
+            {...sharedProps}
+            monuments={monuments}
+            services={services}
+            portfolio={portfolio}
+            graniteTypes={graniteTypes}
+            onUpdateMonuments={handleUpdateMonuments}
+            onUpdateServices={handleUpdateServices}
+            onUpdatePortfolio={handleUpdatePortfolio}
+            onUpdateGraniteTypes={handleUpdateGraniteTypes}
+          />
+        } />
+        <Route path="/konstruktor" element={
+          <ConstructorPage {...sharedProps} />
+        } />
+        <Route path="/:slug" element={<DynamicPage {...sharedProps} monuments={monuments} portfolio={portfolio} />} />
+      </Routes>
+    </Suspense>
   );
 }
 
