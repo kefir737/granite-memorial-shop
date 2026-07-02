@@ -312,7 +312,7 @@ export const defaultSiteSettings: SiteSettings = {
   address: 'г. Москва, ул. Гранитная, д. 12, стр. 1',
   workHours: 'Пн–Сб: 9:00–19:00, Вс: 10:00–17:00',
   mapUrl: 'https://yandex.ru/map-widget/v1/?ll=37.620393%2C55.753960&z=12',
-  heroTitle: 'Памятники из гранита',
+  heroTitle: 'Памятники из гранита в Москве и области',
   heroSubtitle: 'Собственное производство · Установка · Доставка по России',
   heroImage: '/images/hero.jpg',
   seoTitle: 'Гранит Север — Памятники из гранита',

@@ -9,29 +9,34 @@ interface HeroSectionProps {
 
 export default function HeroSection({ settings }: HeroSectionProps) {
   const [heroSrc, setHeroSrc] = useState<string | null>(null);
+  const [heroVisible, setHeroVisible] = useState(false);
 
   useEffect(() => {
+    if (window.matchMedia('(max-width: 767px)').matches) return;
+
     const url = settings.heroImage || DEFAULT_HERO;
     const load = () => setHeroSrc(url);
-    if ('requestIdleCallback' in window) {
-      const id = requestIdleCallback(load, { timeout: 2000 });
-      return () => cancelIdleCallback(id);
-    }
-    const t = window.setTimeout(load, 300);
-    return () => window.clearTimeout(t);
+    const schedule = () => window.setTimeout(load, 1500);
+
+    if (document.readyState === 'complete') schedule();
+    else window.addEventListener('load', schedule, { once: true });
   }, [settings.heroImage]);
+
+  useEffect(() => {
+    if (!heroSrc) return;
+    setHeroVisible(false);
+    const img = new Image();
+    img.onload = () => setHeroVisible(true);
+    img.src = heroSrc;
+  }, [heroSrc]);
 
   return (
     <section className="relative min-h-screen flex items-center overflow-hidden bg-foreground">
       {heroSrc && (
-        <img
-          src={heroSrc}
-          alt=""
-          loading="lazy"
-          decoding="async"
-          fetchPriority="low"
-          className="absolute inset-0 h-full w-full object-cover object-center opacity-0 transition-opacity duration-700"
-          onLoad={(e) => e.currentTarget.classList.replace('opacity-0', 'opacity-25')}
+        <div
+          aria-hidden="true"
+          className={`absolute inset-0 bg-cover bg-center transition-opacity duration-700 pointer-events-none ${heroVisible ? 'opacity-25' : 'opacity-0'}`}
+          style={{ backgroundImage: `url(${heroSrc})` }}
         />
       )}
       {/* Gradient overlay */}
