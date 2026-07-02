@@ -9,10 +9,10 @@ interface HeaderProps {
   onAdminClick: () => void;
 }
 
-function NavLink({ item, onClick }: { item: MenuItem; onClick?: () => void }) {
+function NavLink({ item, onClick, className }: { item: MenuItem; onClick?: () => void; className?: string }) {
   const navigate = useNavigate();
   const location = useLocation();
-  const cls = "text-sm font-body text-muted-foreground hover:text-foreground transition-colors tracking-wide";
+  const cls = className ?? "text-sm font-body text-muted-foreground hover:text-foreground transition-colors tracking-wide";
 
   if (item.href.startsWith('#')) {
     const handleAnchor = (e: React.MouseEvent) => {
@@ -80,9 +80,11 @@ export default function Header({ menuItems, settings, onAdminClick }: HeaderProp
                     <div className="absolute top-full left-0 pt-2 z-50">
                       <div className="bg-white border border-border shadow-lg min-w-[180px] py-1">
                         {kids.map(child => (
-                          <div key={child.id} className="px-4 py-2 hover:bg-stone-50">
-                            <NavLink item={child} />
-                          </div>
+                          <NavLink
+                            key={child.id}
+                            item={child}
+                            className="block px-4 py-2 text-sm font-body text-muted-foreground hover:text-foreground hover:bg-stone-50 transition-colors"
+                          />
                         ))}
                       </div>
                     </div>
@@ -126,9 +128,12 @@ export default function Header({ menuItems, settings, onAdminClick }: HeaderProp
                     <NavLink item={item} onClick={() => setMobileOpen(false)} />
                   </div>
                   {kids.map(child => (
-                    <div key={child.id} className="pl-4 py-1.5 border-b border-border/50">
-                      <NavLink item={child} onClick={() => setMobileOpen(false)} />
-                    </div>
+                    <NavLink
+                      key={child.id}
+                      item={child}
+                      onClick={() => setMobileOpen(false)}
+                      className="block pl-4 py-2.5 text-sm font-body text-muted-foreground hover:text-foreground border-b border-border/50 transition-colors"
+                    />
                   ))}
                 </div>
               );
