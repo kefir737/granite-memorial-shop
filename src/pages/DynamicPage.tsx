@@ -25,12 +25,12 @@ export default function DynamicPage({ settings, menuItems, monuments, portfolio,
 
   useEffect(() => {
     getPages().then(pages => {
-      const found = pages.find(p => p.slug === `/${slug}`);
+      const found = pages.find(p => p.slug === `/${slug}` && p.visible);
       if (found) setPage(found);
       else navigate('/404', { replace: true });
     }).catch(() => navigate('/404', { replace: true }))
       .finally(() => setLoading(false));
-  }, [slug]);
+  }, [slug, navigate]);
 
   if (loading) {
     return (

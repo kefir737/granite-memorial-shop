@@ -32,7 +32,7 @@ export default function PagesAdmin() {
     setCreateError('');
     try {
       const slug = '/' + newTitle.toLowerCase().replace(/\s+/g, '-');
-      const page = await createPage({ title: newTitle, slug, template: newTemplate, visible: false, content: '', sortOrder: 0 });
+      const page = await createPage({ title: newTitle, slug, template: newTemplate, visible: true, content: '', sortOrder: 0 });
       setPages(prev => [...prev, page]);
       setNewTitle('');
       setShowNew(false);
@@ -87,9 +87,16 @@ export default function PagesAdmin() {
               <div className="min-w-0">
                 <div className="font-body text-sm text-foreground truncate">{page.title}</div>
                 <div className="font-body text-xs text-muted-foreground truncate">{page.slug}</div>
-                <span className="inline-block mt-1 px-1.5 py-px text-[10px] font-body bg-blue-50 text-blue-700">
-                  {TEMPLATES.find(t => t.id === page.template)?.label}
-                </span>
+                <div className="flex items-center gap-1.5 mt-1">
+                  <span className="inline-block px-1.5 py-px text-[10px] font-body bg-blue-50 text-blue-700">
+                    {TEMPLATES.find(t => t.id === page.template)?.label}
+                  </span>
+                  {!page.visible && (
+                    <span className="inline-block px-1.5 py-px text-[10px] font-body bg-stone-100 text-muted-foreground">
+                      черновик
+                    </span>
+                  )}
+                </div>
               </div>
               <button onClick={e => { e.stopPropagation(); removePage(page.id); }}
                 className="shrink-0 ml-2 p-1 text-muted-foreground hover:text-red-500 transition-colors">
@@ -147,6 +154,21 @@ export default function PagesAdmin() {
                   onChange={e => setSelected({ ...selected, slug: e.target.value })} />
               </div>
             </div>
+
+            <label className="flex items-center gap-3 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={selected.visible}
+                onChange={e => setSelected({ ...selected, visible: e.target.checked })}
+                className="h-4 w-4 accent-foreground"
+              />
+              <span className="font-body text-sm text-foreground">
+                Опубликована
+                <span className="block text-xs text-muted-foreground font-normal">
+                  Страница доступна по URL и попадает в sitemap.xml
+                </span>
+              </span>
+            </label>
 
             <div>
               <div className="text-xs font-body text-muted-foreground mb-2 uppercase tracking-wide">Шаблон</div>
