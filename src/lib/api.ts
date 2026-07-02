@@ -99,6 +99,14 @@ export function settingsToObj(raw: Record<string, string>): SiteSettings {
 
 // Pages
 export type PageMenuLocation = 'header' | 'footer';
+
+/** Page slugs are stored and matched with a leading slash. */
+export function normalizePageSlug(slug: string): string {
+  const s = (slug || '').trim();
+  if (!s) return '/';
+  return s.startsWith('/') ? s : `/${s}`;
+}
+
 export type Page = {
   id: number;
   title: string;
@@ -108,6 +116,9 @@ export type Page = {
   content: string;
   customHtml: string;
   sortOrder: number;
+  seoTitle: string;
+  seoKeywords: string;
+  seoDescription: string;
   menuAssignments: PageMenuLocation[];
 };
 export const getPages = () => apiFetch<Page[]>('pages');

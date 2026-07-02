@@ -571,11 +571,23 @@ def get_page_assignments(cur, page_id):
     return [r["location"] for r in cur.fetchall()]
 
 
+def normalize_page_slug(slug):
+    s = (slug or "").strip()
+    if not s:
+        return "/"
+    if not s.startswith("/"):
+        s = "/" + s
+    return s
+
+
 def row_page(r, assignments=None):
     return {"id": r["id"], "title": r["title"], "slug": r["slug"],
             "template": r["template"], "visible": bool(r["visible"]),
             "content": r["content"], "customHtml": r.get("custom_html", ""),
             "sortOrder": r["sort_order"],
+            "seoTitle": r.get("seo_title") or "",
+            "seoKeywords": r.get("seo_keywords") or "",
+            "seoDescription": r.get("seo_description") or "",
             "menuAssignments": assignments or []}
 
 
@@ -594,6 +606,9 @@ def handle_pages(method, parts, body, cur, conn):
         )
     """)
     cur.execute("ALTER TABLE pages ADD COLUMN IF NOT EXISTS custom_html TEXT NOT NULL DEFAULT ''")
+    cur.execute("ALTER TABLE pages ADD COLUMN IF NOT EXISTS seo_title TEXT NOT NULL DEFAULT ''")
+    cur.execute("ALTER TABLE pages ADD COLUMN IF NOT EXISTS seo_keywords TEXT NOT NULL DEFAULT ''")
+    cur.execute("ALTER TABLE pages ADD COLUMN IF NOT EXISTS seo_description TEXT NOT NULL DEFAULT ''")
     cur.execute("CREATE TABLE IF NOT EXISTS page_menu_assignments (id SERIAL PRIMARY KEY, page_id INTEGER NOT NULL, location TEXT NOT NULL, sort_order INTEGER NOT NULL DEFAULT 0, UNIQUE(page_id, location))")
     conn.commit()
 
@@ -626,13 +641,16 @@ def handle_pages(method, parts, body, cur, conn):
 
     if method == "POST":
         cur.execute(
-            """INSERT INTO pages (title,slug,template,visible,content,sort_order)
-               VALUES (%s,%s,%s,%s,%s,%s)
+            """INSERT INTO pages (title,slug,template,visible,content,sort_order,seo_title,seo_keywords,seo_description)
+               VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s)
                ON CONFLICT (slug) DO UPDATE SET title=EXCLUDED.title, template=EXCLUDED.template,
-               visible=EXCLUDED.visible, content=EXCLUDED.content, sort_order=EXCLUDED.sort_order
+               visible=EXCLUDED.visible, content=EXCLUDED.content, sort_order=EXCLUDED.sort_order,
+               seo_title=EXCLUDED.seo_title, seo_keywords=EXCLUDED.seo_keywords,
+               seo_description=EXCLUDED.seo_description
                RETURNING *""",
-            (body.get("title",""), body.get("slug",""), body.get("template","content"),
-             bool(body.get("visible",False)), body.get("content",""), body.get("sortOrder",0))
+            (body.get("title",""), normalize_page_slug(body.get("slug","")), body.get("template","content"),
+             bool(body.get("visible",False)), body.get("content",""), body.get("sortOrder",0),
+             body.get("seoTitle",""), body.get("seoKeywords",""), body.get("seoDescription",""))
         )
         conn.commit()
         page = dict(cur.fetchone())
@@ -640,10 +658,13 @@ def handle_pages(method, parts, body, cur, conn):
 
     if method == "PUT" and len(parts) == 2 and parts[1].isdigit():
         cur.execute(
-            "UPDATE pages SET title=%s,slug=%s,template=%s,visible=%s,content=%s,custom_html=%s WHERE id=%s RETURNING *",
-            (body.get("title"), body.get("slug"), body.get("template"),
+            "UPDATE pages SET title=%s,slug=%s,template=%s,visible=%s,content=%s,custom_html=%s,"
+            "seo_title=%s,seo_keywords=%s,seo_description=%s WHERE id=%s RETURNING *",
+            (body.get("title"), normalize_page_slug(body.get("slug")), body.get("template"),
              bool(body.get("visible")), body.get("content"),
-             body.get("customHtml", ""), int(parts[1]))
+             body.get("customHtml", ""), body.get("seoTitle", ""),
+             body.get("seoKeywords", ""), body.get("seoDescription", ""),
+             int(parts[1]))
         )
         conn.commit()
         r = cur.fetchone()

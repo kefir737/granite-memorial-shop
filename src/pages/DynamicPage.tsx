@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { getPages, Page } from '@/lib/api';
+import { getPages, Page, normalizePageSlug } from '@/lib/api';
 import { SiteSettings, MenuItem, Monument, Portfolio } from '@/data/siteData';
+import { applyPageSeo, applySiteSeo } from '@/lib/seo';
 import Header from '@/components/site/Header';
 import Footer from '@/components/site/Footer';
 import SeoPage from './templates/SeoPage';
@@ -25,12 +26,19 @@ export default function DynamicPage({ settings, menuItems, monuments, portfolio,
 
   useEffect(() => {
     getPages().then(pages => {
-      const found = pages.find(p => p.slug === `/${slug}` && p.visible);
+      const target = normalizePageSlug(slug || '');
+      const found = pages.find(p => normalizePageSlug(p.slug) === target && p.visible);
       if (found) setPage(found);
       else navigate('/404', { replace: true });
     }).catch(() => navigate('/404', { replace: true }))
       .finally(() => setLoading(false));
   }, [slug, navigate]);
+
+  useEffect(() => {
+    if (!page) return;
+    applyPageSeo(page, settings);
+    return () => applySiteSeo(settings);
+  }, [page, settings]);
 
   if (loading) {
     return (

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import Icon from '@/components/ui/icon';
-import { getPages, createPage, updatePage, deletePage, Page } from '@/lib/api';
+import { getPages, createPage, updatePage, deletePage, Page, normalizePageSlug } from '@/lib/api';
 import RichEditor from './RichEditor';
 
 const TEMPLATES = [
@@ -31,8 +31,11 @@ export default function PagesAdmin() {
     setCreating(true);
     setCreateError('');
     try {
-      const slug = '/' + newTitle.toLowerCase().replace(/\s+/g, '-');
-      const page = await createPage({ title: newTitle, slug, template: newTemplate, visible: true, content: '', sortOrder: 0 });
+      const slug = normalizePageSlug(newTitle.toLowerCase().replace(/\s+/g, '-'));
+      const page = await createPage({
+        title: newTitle, slug, template: newTemplate, visible: true, content: '', sortOrder: 0,
+        seoTitle: '', seoKeywords: '', seoDescription: '',
+      });
       setPages(prev => [...prev, page]);
       setNewTitle('');
       setShowNew(false);
@@ -151,7 +154,42 @@ export default function PagesAdmin() {
               <div>
                 <div className="text-xs font-body text-muted-foreground mb-1 uppercase tracking-wide">URL (slug)</div>
                 <input className="field-input" value={selected.slug}
-                  onChange={e => setSelected({ ...selected, slug: e.target.value })} />
+                  onChange={e => setSelected({ ...selected, slug: normalizePageSlug(e.target.value) })} />
+              </div>
+            </div>
+
+            <div className="border-t border-border pt-5 space-y-4">
+              <div className="text-xs font-body text-muted-foreground uppercase tracking-wide">SEO</div>
+              <div>
+                <div className="text-xs font-body text-muted-foreground mb-1">Title</div>
+                <input
+                  className="field-input"
+                  value={selected.seoTitle ?? ''}
+                  onChange={e => setSelected({ ...selected, seoTitle: e.target.value })}
+                  placeholder={`${selected.title} — Гранит Север`}
+                />
+                <p className="text-xs text-muted-foreground font-body mt-1">
+                  Заголовок вкладки браузера и тег &lt;title&gt;. Пусто — используется название страницы.
+                </p>
+              </div>
+              <div>
+                <div className="text-xs font-body text-muted-foreground mb-1">Keywords</div>
+                <input
+                  className="field-input"
+                  value={selected.seoKeywords ?? ''}
+                  onChange={e => setSelected({ ...selected, seoKeywords: e.target.value })}
+                  placeholder="памятники из гранита, установка памятников, Лобня"
+                />
+              </div>
+              <div>
+                <div className="text-xs font-body text-muted-foreground mb-1">Description</div>
+                <textarea
+                  className="field-input resize-none"
+                  rows={3}
+                  value={selected.seoDescription ?? ''}
+                  onChange={e => setSelected({ ...selected, seoDescription: e.target.value })}
+                  placeholder="Краткое описание страницы для поисковых систем (до 160 символов)"
+                />
               </div>
             </div>
 
