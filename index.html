@@ -5,7 +5,42 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Гранит Север — Памятники из гранита | granit-sever.ru</title>
     <meta name="description" content="Изготовление и установка памятников из гранита. Каталог с ценами, профессиональная установка, доставка по России. granit-sever.ru"/>
-    <link rel="stylesheet" href="/fonts/fonts.css">
+    <style>
+      /* Critical hero shell: text visible before JS, fonts, and hero image */
+      body { margin: 0; background: #fff; color: #141414; }
+      #root { min-height: 100vh; }
+      .hero-critical {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        background: #141414;
+        color: #fff;
+        font-family: Georgia, "Times New Roman", serif;
+        padding: 8rem 1.5rem;
+      }
+      .hero-critical__inner { max-width: 42rem; }
+      .hero-critical__badge {
+        margin: 0 0 2rem;
+        font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+        font-size: 0.75rem;
+        letter-spacing: 0.3em;
+        text-transform: uppercase;
+        color: hsl(214, 60%, 65%);
+      }
+      .hero-critical h1 {
+        margin: 0 0 1.5rem;
+        font-size: clamp(2.75rem, 8vw, 4.5rem);
+        font-weight: 300;
+        line-height: 1.05;
+      }
+      .hero-critical__subtitle {
+        margin: 0;
+        font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+        font-size: 1.125rem;
+        line-height: 1.6;
+        color: rgba(255, 255, 255, 0.6);
+      }
+    </style>
     <meta name="author" content="poehali.dev"/>
     <link rel="icon" type="image/svg+xml" href="/favicon.svg">
     <link rel="apple-touch-icon" href="/apple-touch-icon.png">
@@ -25,8 +60,29 @@
   </head>
 
 <body>
-<div id="root"></div>
+<div id="root">
+  <section class="hero-critical" aria-hidden="true">
+    <div class="hero-critical__inner">
+      <p class="hero-critical__badge">Собственное производство</p>
+      <h1>Памятники из гранита</h1>
+      <p class="hero-critical__subtitle">Собственное производство · Установка · Доставка по России</p>
+    </div>
+  </section>
+</div>
 <script type="module" src="/src/main.tsx"></script>
+<script>
+  function loadFonts() {
+    var l = document.createElement('link');
+    l.rel = 'stylesheet';
+    l.href = '/fonts/fonts.css';
+    document.head.appendChild(l);
+  }
+  if ('requestIdleCallback' in window) {
+    requestIdleCallback(loadFonts, { timeout: 3000 });
+  } else {
+    window.addEventListener('load', loadFonts);
+  }
+</script>
 
 <!-- Yandex.Metrika counter (deferred — after first paint) -->
 <script type="text/javascript">

@@ -300,6 +300,7 @@ export const defaultMenuItems: MenuItem[] = [
   { id: 3, label: 'Портфолио', href: '#portfolio', order: 3, visible: true },
   { id: 4, label: 'О граните', href: '#granite', order: 4, visible: true },
   { id: 5, label: 'Контакты', href: '#contacts', order: 5, visible: true },
+  { id: 6, label: 'Конструктор', href: '/konstruktor', order: 6, visible: true },
 ];
 
 export const defaultSiteSettings: SiteSettings = {
@@ -313,7 +314,7 @@ export const defaultSiteSettings: SiteSettings = {
   mapUrl: 'https://yandex.ru/map-widget/v1/?ll=37.620393%2C55.753960&z=12',
   heroTitle: 'Памятники из гранита',
   heroSubtitle: 'Собственное производство · Установка · Доставка по России',
-  heroImage: '',
+  heroImage: '/images/hero.jpg',
   seoTitle: 'Гранит Север — Памятники из гранита',
   metaDescription: 'Изготовление памятников из гранита. granit-sever.ru — широкий каталог, доступные цены, профессиональная установка.',
   ogImage: '',

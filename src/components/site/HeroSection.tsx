@@ -1,17 +1,39 @@
+import { useEffect, useState } from 'react';
 import { SiteSettings } from '@/data/siteData';
+
+const DEFAULT_HERO = '/images/hero.jpg';
 
 interface HeroSectionProps {
   settings: SiteSettings;
 }
 
 export default function HeroSection({ settings }: HeroSectionProps) {
+  const [heroSrc, setHeroSrc] = useState<string | null>(null);
+
+  useEffect(() => {
+    const url = settings.heroImage || DEFAULT_HERO;
+    const load = () => setHeroSrc(url);
+    if ('requestIdleCallback' in window) {
+      const id = requestIdleCallback(load, { timeout: 2000 });
+      return () => cancelIdleCallback(id);
+    }
+    const t = window.setTimeout(load, 300);
+    return () => window.clearTimeout(t);
+  }, [settings.heroImage]);
+
   return (
     <section className="relative min-h-screen flex items-center overflow-hidden bg-foreground">
-      {/* Background image */}
-      <div
-        className="absolute inset-0 bg-cover bg-center opacity-25"
-        style={{ backgroundImage: `url(${settings.heroImage || 'https://cdn.poehali.dev/projects/37badc84-9384-4d2b-8da3-56516f9e5627/files/b0b1004c-737e-475d-8c92-a90dd637541f.jpg'})` }}
-      />
+      {heroSrc && (
+        <img
+          src={heroSrc}
+          alt=""
+          loading="lazy"
+          decoding="async"
+          fetchPriority="low"
+          className="absolute inset-0 h-full w-full object-cover object-center opacity-0 transition-opacity duration-700"
+          onLoad={(e) => e.currentTarget.classList.replace('opacity-0', 'opacity-25')}
+        />
+      )}
       {/* Gradient overlay */}
       <div className="absolute inset-0 bg-gradient-to-r from-foreground via-foreground/80 to-transparent" />
       {/* Blue accent line */}
@@ -20,7 +42,7 @@ export default function HeroSection({ settings }: HeroSectionProps) {
       <div className="relative z-10 max-w-7xl mx-auto px-6 py-32">
         <div className="max-w-2xl">
           {/* Badge */}
-          <div className="inline-flex items-center gap-2 mb-8 animate-fade-in" style={{ animationDelay: '0.1s' }}>
+          <div className="inline-flex items-center gap-2 mb-8">
             <div className="h-px w-8" style={{ background: 'hsl(214, 60%, 42%)' }} />
             <span className="text-xs font-body tracking-[0.3em] uppercase" style={{ color: 'hsl(214, 60%, 65%)' }}>
               Собственное производство
@@ -29,22 +51,20 @@ export default function HeroSection({ settings }: HeroSectionProps) {
 
           {/* Main heading */}
           <h1
-            className="font-display text-6xl md:text-7xl font-light text-white leading-[1.05] mb-6 animate-fade-in"
-            style={{ animationDelay: '0.2s' }}
+            className="font-display text-6xl md:text-7xl font-light text-white leading-[1.05] mb-6"
           >
             {settings.heroTitle}
           </h1>
 
           {/* Subtitle */}
           <p
-            className="font-body text-lg text-white/60 mb-10 leading-relaxed animate-fade-in"
-            style={{ animationDelay: '0.3s' }}
+            className="font-body text-lg text-white/60 mb-10 leading-relaxed"
           >
             {settings.heroSubtitle}
           </p>
 
           {/* CTA buttons */}
-          <div className="flex flex-col sm:flex-row gap-4 animate-fade-in" style={{ animationDelay: '0.4s' }}>
+          <div className="flex flex-col sm:flex-row gap-4">
             <a
               href="#catalog"
               className="inline-flex items-center justify-center px-8 py-4 bg-white text-foreground font-body text-sm tracking-wide hover:bg-white/90 transition-colors"
@@ -61,8 +81,7 @@ export default function HeroSection({ settings }: HeroSectionProps) {
 
           {/* Stats */}
           <div
-            className="flex gap-10 mt-16 pt-10 border-t border-white/10 animate-fade-in"
-            style={{ animationDelay: '0.5s' }}
+            className="flex gap-10 mt-16 pt-10 border-t border-white/10"
           >
             {[
               { value: '15+', label: 'лет на рынке' },

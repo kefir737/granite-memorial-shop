@@ -94,8 +94,8 @@ export default {
 				'slide-in': 'slideIn 0.4s ease forwards',
 			},
 			fontFamily: {
-				display: ['Cormorant Garamond', 'serif'],
-				body: ['Golos Text', 'sans-serif'],
+				display: ['Cormorant Garamond', 'Georgia', 'Times New Roman', 'serif'],
+				body: ['Golos Text', 'system-ui', '-apple-system', 'Segoe UI', 'Roboto', 'sans-serif'],
 			}
 		}
 	},
