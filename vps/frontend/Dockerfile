@@ -7,5 +7,5 @@ RUN npm run build
 
 FROM nginx:alpine
 COPY --from=builder /app/dist /usr/share/nginx/html
-COPY public/konstruktor /usr/share/nginx/html/konstruktor
+COPY public/embed/konstruktor /usr/share/nginx/html/embed/konstruktor
 COPY vps/frontend/nginx.conf /etc/nginx/conf.d/default.conf

@@ -31,7 +31,7 @@ export default function ConstructorPage({ settings, menuItems, onAdminClick }: P
           </p>
         </div>
         <iframe
-          src="/konstruktor/index.html"
+          src="/embed/konstruktor/index.html"
           title="Конструктор оформления памятников"
           className="w-full border-0 block"
           style={{ minHeight: '920px' }}
