@@ -1,11 +1,17 @@
-import { useEditor, EditorContent } from '@tiptap/react';
+import { useEditor, EditorContent, Editor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import Image from '@tiptap/extension-image';
 import Link from '@tiptap/extension-link';
 import Placeholder from '@tiptap/extension-placeholder';
-import { useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import Icon from '@/components/ui/icon';
 import { compressImage } from '@/lib/compress';
+import {
+  looksLikeMarkdown,
+  markdownToHtml,
+  sanitizeEditorHtml,
+  transformPastedHtml,
+} from '@/lib/markdownPaste';
 
 const UPLOAD_URL = '/upload-image';
 
@@ -17,17 +23,43 @@ interface Props {
 
 export default function RichEditor({ value, onChange, placeholder = 'Введите текст...' }: Props) {
   const fileRef = useRef<HTMLInputElement>(null);
+  const editorRef = useRef<Editor | null>(null);
 
   const editor = useEditor({
     extensions: [
-      StarterKit,
+      StarterKit.configure({ codeBlock: false }),
       Image.configure({ inline: false }),
       Link.configure({ openOnClick: false }),
       Placeholder.configure({ placeholder }),
     ],
-    content: value,
-    onUpdate: ({ editor }) => onChange(editor.getHTML()),
+    content: sanitizeEditorHtml(value),
+    onCreate: ({ editor: ed }) => {
+      editorRef.current = ed;
+    },
+    onUpdate: ({ editor: ed }) => onChange(ed.getHTML()),
+    editorProps: {
+      transformPastedHTML(html) {
+        return transformPastedHtml(html);
+      },
+      handlePaste(_view, event) {
+        const html = event.clipboardData?.getData('text/html') ?? '';
+        const text = event.clipboardData?.getData('text/plain') ?? '';
+        if (html.trim() || !looksLikeMarkdown(text)) return false;
+
+        event.preventDefault();
+        editorRef.current?.chain().focus().insertContent(markdownToHtml(text)).run();
+        return true;
+      },
+    },
   });
+
+  useEffect(() => {
+    if (!editor) return;
+    const next = sanitizeEditorHtml(value);
+    if (editor.getHTML() !== next) {
+      editor.commands.setContent(next, false);
+    }
+  }, [editor, value]);
 
   if (!editor) return null;
 
@@ -62,7 +94,6 @@ export default function RichEditor({ value, onChange, placeholder = 'Введи�
 
   return (
     <div className="border border-border">
-      {/* Toolbar */}
       <div className="flex flex-wrap items-center gap-0.5 px-2 py-1.5 border-b border-border bg-stone-50">
         {btn(editor.isActive('bold'), () => editor.chain().focus().toggleBold().run(), 'Bold', 'Жирный')}
         {btn(editor.isActive('italic'), () => editor.chain().focus().toggleItalic().run(), 'Italic', 'Курсив')}
