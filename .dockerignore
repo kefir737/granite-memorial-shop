@@ -1,0 +1,12 @@
+node_modules
+dist
+.git
+.github
+*.md
+.env
+.env.*
+.lh-*.json
+.psi-*.json
+.live.html
+agent-tools
+terminals
