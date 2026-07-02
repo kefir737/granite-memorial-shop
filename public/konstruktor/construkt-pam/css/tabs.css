@@ -1,0 +1,117 @@
+﻿/* tabs-constructor */
+
+
+.tabs-constructor {
+    position: relative;
+    margin: 40px auto 0;
+    width: 100%;
+    text-align: center;
+}
+	
+.tabs-constructor label {
+	display: inline-block;
+    font-family: OpenSans-Regular, "Courier New", Courier, monospace;
+    font-size: 17px;
+    font-weight: 400;
+    border-bottom: 2px solid #d4d4d4 !important;
+    margin: 20px 15px 20px 0%;
+	padding: 0 0px;
+	color: #000;
+	cursor: pointer;
+	position: relative;
+	top: 0px;
+	min-width: 30px;
+	height: 45px;
+	line-height: 45px;
+	text-align: left;
+	z-index: 1;}
+	
+
+.tab-constructor-img
+{
+    height: 30px;
+    width: 30px;
+    margin: 0px 5px 0px 0%;
+    float: left;
+}
+
+.tab-constructor-img img
+{
+    width: 100%;
+}
+	
+.tabs-constructor label:hover
+{
+    border-bottom: 2px solid #f4f6f4;
+}
+	
+.tabs-constructor input {
+	position: absolute;
+	left: -9999px;}
+#tab-constructor_1:checked  ~ #tab-constructor_l1,
+#tab-constructor_2:checked  ~ #tab-constructor_l2,
+#tab-constructor_3:checked  ~ #tab-constructor_l3,
+#tab-constructor_4:checked  ~ #tab-constructor_l4,
+#tab-constructor_5:checked  ~ #tab-constructor_l5,
+#tab-constructor_6:checked  ~ #tab-constructor_l6,
+#tab-constructor_7:checked  ~ #tab-constructor_l7,
+#tab-constructor_8:checked  ~ #tab-constructor_l8,
+#tab-constructor_9:checked  ~ #tab-constructor_l9,
+#tab-constructor_10:checked  ~ #tab-constructor_l10 
+{
+    border-bottom: 2px solid #ec0808 !important;
+	color: #000;
+    padding: 0 0px;
+    top: 0;
+    z-index: 3;
+}
+
+.tabs-constructor_cont {
+    min-height: 370px;
+	padding: 0px 0 0 0;
+    margin: 20px 0 0 0;
+	position: relative;
+	z-index: 2;
+}
+.tabs-constructor_cont > div {
+	position: absolute;
+	left: -9999px;
+	top: 0;
+	opacity: 0;
+	width: 100%;
+    -moz-transition: opacity .5s ease-in-out;
+    -webkit-transition: opacity .5s ease-in-out;
+	transition: opacity .5s ease-in-out;}
+
+#tab-constructor_1:checked ~ .tabs-constructor_cont #tab-constructor_c1,
+#tab-constructor_2:checked ~ .tabs-constructor_cont #tab-constructor_c2,
+#tab-constructor_3:checked ~ .tabs-constructor_cont #tab-constructor_c3,
+#tab-constructor_4:checked ~ .tabs-constructor_cont #tab-constructor_c4,
+#tab-constructor_5:checked ~ .tabs-constructor_cont #tab-constructor_c5,
+#tab-constructor_6:checked ~ .tabs-constructor_cont #tab-constructor_c6,
+#tab-constructor_7:checked ~ .tabs-constructor_cont #tab-constructor_c7,
+#tab-constructor_8:checked ~ .tabs-constructor_cont #tab-constructor_c8,
+#tab-constructor_9:checked ~ .tabs-constructor_cont #tab-constructor_c9,
+#tab-constructor_10:checked ~ .tabs-constructor_cont #tab-constructor_c10     
+{
+	position: static;
+	left: 0;
+	opacity: 1;}
+
+
+
+@media screen and (max-width: 900px) {
+
+.tabs-constructor label {
+    font-size: 0px;
+}
+
+.tab-constructor-img {
+    margin: 0px 0px 0px 0%;
+}
+
+.tabs-constructor label {
+    margin: 20px 10px 20px 0%;
+}
+
+}

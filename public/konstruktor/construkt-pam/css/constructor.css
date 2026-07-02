@@ -1,0 +1,1124 @@
+@import url('https://fonts.googleapis.com/css?family=Bad+Script|Cormorant+Infant|EB+Garamond|Gabriela|Kelly+Slab|Lobster|Marck+Script|Open+Sans|Open+Sans+Condensed:300|Oswald|Playfair+Display|Poiret+One|Roboto|Roboto+Condensed|Roboto+Slab');
+
+#constructor {
+    display: flex;
+}
+
+#constructor .deleteBtn {
+    background-color: #ffffff;
+    border-radius: 50%;
+    color: #1c141c;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+    font-family: OpenSans-Regular, Arial, Verdana;
+}
+
+.canvas-container {
+    margin: 0 auto;
+}
+
+.canvas-container .deleteBtn
+{
+    display: none;
+}
+
+.canvas-container .canvas-container .deleteBtn
+{
+    display: flex;
+}
+
+#constructor .left {
+    padding: 30px 0;
+    background-color: #ffffff;
+    width: 730px;
+    float: left;
+}
+
+#constructor .right {
+    margin: 0 0px 40px 30px;
+    width: 300px;
+    float: left;
+}
+
+#constructor .right p
+{
+    margin: 20px 0px 15px !important;
+    padding: 0;
+    font-family: OpenSans-Bold, OpenSans-Regular, Arial, Verdana;
+    font-size: 14px;
+}
+
+#constructor .right li {
+    height: 60px;
+    width: 25%;
+    display: inline-block;
+    cursor: pointer;
+    padding: 2%;
+    color: #e7e7e7;
+    text-align: center;
+    box-sizing: border-box;
+    border:1px solid #1c141c
+}
+
+#constructor .right li:hover {
+   border:1px solid #404040
+}
+
+#constructor .right ul.colum-1 li {
+    height: 40px;
+    width: 95%;
+    display: inline-block;
+    cursor: pointer;
+    margin: 2%;
+    color: #e7e7e7;
+}
+
+
+#constructor .right ul.colum-2 li {
+    height: 40px;
+    width: 45%;
+    display: inline-block;
+    cursor: pointer;
+    margin: 2%;
+    color: #e7e7e7;
+}
+
+
+
+
+
+#constructor .right li img {
+    max-width: 100%;
+    max-height: 100%;
+}
+
+
+
+#slide-mem {
+    text-align: center;
+    background-color: #fff;
+    flex-wrap: wrap;
+    padding: 10px 0;
+    margin: 20px 0 60px 0;
+    box-sizing: border-box;    
+}
+
+#slide-mem li {
+    height: 70px;
+    display: inline-block;
+    cursor: pointer;
+    margin: 10px;
+}
+
+#slide-mem li img {
+    max-width: 100%;
+    max-height: 100%;
+}
+
+#constructor .hide {
+    display: none;
+}
+
+
+#constructor .righ {
+    width: 300px;
+}
+
+#constructor .right ul {
+    background: #1c141c;
+    margin: 0px 0 0 0;
+    max-height: 300px;
+    overflow-y: auto;
+    width: 100%;
+    padding: 10px;
+    box-sizing: border-box;
+    position: relative;
+}
+ 
+#constructor .accordeon {
+    background: #ffffff;
+    box-shadow: 0px 0px 15px #e8e8e8;
+    border-radius: 4px;
+    border: 1px solid #ececec;
+    padding: 10px;
+    cursor: pointer;
+    display: flex;
+    width: 100%;
+    align-items: center;
+    box-sizing: border-box;
+    font-family: OpenSans-Regular, Arial, Verdana;
+    font-size: 14px;
+}
+
+
+#constructor .accordeon.portret{
+    background: url(../img/constructor/foto.svg) left center no-repeat #ffffff;
+    background-size: 22px;
+    background-position: 10px 50%;
+    padding: 10px 10px 10px 40px;
+}
+
+#constructor .accordeon.tablichki{
+    background: url(../img/constructor/tablichki.svg) left center no-repeat #ffffff;
+    background-size: 22px;
+    background-position: 10px 50%;
+    padding: 10px 10px 10px 40px;
+}
+
+#constructor .accordeon.mecheti{
+    background: url(../img/constructor/mecheti.svg) left center no-repeat #ffffff;
+    background-size: 22px;
+    background-position: 10px 50%;
+    padding: 10px 10px 10px 40px;
+}
+
+#constructor .accordeon.msimvol{
+    background: url(../img/constructor/msimvol.svg) left center no-repeat #ffffff;
+    background-size: 22px;
+    background-position: 10px 50%;
+    padding: 10px 10px 10px 40px;
+}
+
+#constructor .accordeon.muzor{
+    background: url(../img/constructor/uzor.svg) left center no-repeat #ffffff;
+    background-size: 22px;
+    background-position: 10px 50%;
+    padding: 10px 10px 10px 40px;
+}
+
+#constructor .accordeon.epitafiya{
+    background: url(../img/constructor/epitafii.svg) left center no-repeat #ffffff;
+    background-size: 22px;
+    background-position: 10px 50%;
+    padding: 10px 10px 10px 40px;
+}
+
+#constructor .accordeon.nadpis-izobrazhenie{
+    background: url(../img/constructor/nadpis-izobrazhenie.svg) left center no-repeat #ffffff;
+    background-size: 22px;
+    background-position: 10px 50%;
+    padding: 10px 10px 10px 40px;
+}
+
+#constructor .accordeon.hram{
+    background: url(../img/constructor/hram.svg) left center no-repeat #ffffff;
+    background-size: 22px;
+    background-position: 10px 50%;
+    padding: 10px 10px 10px 40px;
+}
+
+#constructor .accordeon.ikona{
+    background: url(../img/constructor/ikona.svg) left center no-repeat #ffffff;
+    background-size: 22px;
+    background-position: 10px 50%;
+    padding: 10px 10px 10px 40px;
+}
+
+#constructor .accordeon.angel{
+    background: url(../img/constructor/angel.svg) left center no-repeat #ffffff;
+    background-size: 22px;
+    background-position: 10px 50%;
+    padding: 10px 10px 10px 40px;
+}
+
+#constructor .accordeon.simvol{
+    background: url(../img/constructor/simvolika.svg) left center no-repeat #ffffff;
+    background-size: 22px;
+    background-position: 10px 50%;
+    padding: 10px 10px 10px 40px;
+}
+
+#constructor .accordeon.svechi{
+    background: url(../img/constructor/svecha.svg) left center no-repeat #ffffff;
+    background-size: 22px;
+    background-position: 10px 50%;
+    padding: 10px 10px 10px 40px;
+}
+
+#constructor .accordeon.krest{
+    background: url(../img/constructor/krestik.svg) left center no-repeat #ffffff;
+    background-size: 22px;
+    background-position: 10px 50%;
+    padding: 10px 10px 10px 40px;
+}
+
+#constructor .accordeon.pticy{
+    background: url(../img/constructor/pticy.svg) left center no-repeat #ffffff;
+    background-size: 22px;
+    background-position: 10px 50%;
+    padding: 10px 10px 10px 40px;
+}
+
+#constructor .accordeon.ramka{
+    background: url(../img/constructor/ramka.svg) left center no-repeat #ffffff;
+    background-size: 22px;
+    background-position: 10px 50%;
+    padding: 10px 10px 10px 40px;
+}
+
+#constructor .accordeon.vinetka{
+    background: url(../img/constructor/vinetka.svg) left center no-repeat #ffffff;
+    background-size: 22px;
+    background-position: 10px 50%;
+    padding: 10px 10px 10px 40px;
+}
+
+#constructor .accordeon.cvetok{
+    background: url(../img/constructor/cvetok.svg) left center no-repeat #fff;
+    background-size: 22px;
+    background-position: 10px 50%;
+    padding: 10px 10px 10px 40px;
+}
+
+#constructor .accordeon.peyzazh{
+    background: url(../img/constructor/peyzazh.svg) left center no-repeat #ffffff;
+    background-size: 22px;
+    background-position: 10px 50%;
+    padding: 10px 10px 10px 40px;
+}
+
+#constructor .accordeon.vetv{
+    background: url(../img/constructor/vetvi.svg) left center no-repeat #ffffff;
+    background-size: 22px;
+    background-position: 10px 50%;
+    padding: 10px 10px 10px 40px;
+}
+
+#constructor .accordeon.uzor{
+    background: url(../img/constructor/uzor.svg) left center no-repeat #ffffff;
+    background-size: 22px;
+    background-position: 10px 50%;
+    padding: 10px 10px 10px 40px;
+}
+
+#constructor .accordeon.voin{
+    background: url(../img/constructor/voin.svg) left center no-repeat #ffffff;
+    background-size: 22px;
+    background-position: 10px 50%;
+    padding: 10px 10px 10px 40px;
+}
+
+#constructor .accordeon img {
+    max-height: 20px;
+    margin-right: 10px;
+}
+
+#constructor .addImg, #constructor .addText {
+    margin-bottom: 5px;
+}
+
+#constructor .addImg .text {
+    padding: 8px;
+    width: 270px;
+    border: 0;
+    box-sizing: border-box;
+    margin-bottom: 10px;
+}
+
+#constructor .addImg .form {
+    background: #ffffff5d;
+    margin: 0;
+    padding: 15px; 
+    box-sizing: border-box;
+}
+
+#constructor .addImg .form span {
+    min-width: 100px;
+}
+
+#constructor .addImg .form p {
+    font-size: 12px;
+    margin-bottom: 5px;
+}
+
+#constructor .addImg .form select {
+    padding: 8px;
+    border: none;
+    margin-bottom: 10px;
+    width: 270px;
+    box-sizing: border-box;
+}
+
+#constructor .sketch-actions .button {
+    width: 100%;
+    background: #0f54bf;
+    padding: 10px 10px 10px 10px;
+    border-radius: 4px;
+    border: none;
+    text-align: left;
+    cursor: pointer;
+}
+
+#constructor .sketch-actions .button span {
+    font-family: OpenSans-Regular, Arial, Verdana;
+    font-size: 16px;
+    text-align: left;
+    color: #fff;
+	line-height: 170%;
+}
+
+
+#constructor .sketch-actions .button img {
+    float: left;
+    margin-right: 25px;
+    width: 25px;
+}
+
+#constructor .right > div.button {
+    width: auto;
+    display: flex;
+    justify-content: left;
+    text-align: left;
+    background: #2a77b9;
+    padding: 10px 10px 10px 10px;
+    border-radius: 4px;
+}
+
+
+
+
+#constructor .sketch-actions .button-zakaz {
+    width: 100%;
+    background: #c82d2d;
+    padding: 10px 10px 10px 10px;
+    border-radius: 4px;
+    border: none;
+    text-align: left;
+    cursor: pointer;
+}
+
+#constructor .sketch-actions .button-zakaz span {
+    font-family: OpenSans-Regular, Arial, Verdana;
+    font-size: 16px;
+    text-align: left;
+    color: #fff;
+	line-height: 170%;
+}
+
+#constructor .sketch-actions .button-zakaz img {
+    float: left;
+    margin-right: 25px;
+    width: 25px;
+}
+
+#constructor .right > div.button-zakaz {
+    width: auto;
+    display: flex;
+    justify-content: left;
+    text-align: left;
+    background: #2a77b9;
+    padding: 10px 10px 10px 10px;
+    border-radius: 4px;
+}
+
+
+
+
+
+
+#constructor .sketch-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 12px;
+    width: 100%;
+}
+
+#constructor .sketch-actions > p {
+    display: none;
+}
+
+#constructor .sketch-actions #download {
+    display: block;
+    text-decoration: none;
+    color: #ffffff;
+}
+
+@media screen and (min-width: 801px) {
+    #constructor .sketch-actions > p {
+        display: block;
+        font-size: 14px !important;
+    }
+}
+
+.button-download
+{
+    width: auto;
+    display: flex;
+    justify-content: left;
+    text-align: left;
+    background: #2f2e2d;
+    padding: 10px 10px 10px 10px;
+    border-radius: 4px; 
+}
+
+.button-download img
+{
+    margin-right: 25px;
+    width: 25px;
+}
+
+.button-download span
+{
+    font-family: OpenSans-Regular, Arial, Verdana;
+    font-size: 16px;
+	line-height: 170%;
+}
+
+#popup {
+    position: fixed;
+    z-index: 1000;
+    top: 30%;
+    left: 50%;
+    margin-left: -200px;
+    margin-top: -105px;
+    background-color: #fff;
+    width: 400px;
+    padding: 30px;
+    box-sizing: border-box;
+    border-radius: 5px;
+    /* border: 1px solid #c9ac75; */
+    -webkit-box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.75);
+    -moz-box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.75);
+    box-shadow: 0px 0px 55px 0px #a9a9a987;
+}
+
+
+#popup h2 {
+    margin: 0px 0px 15px !important;
+    padding: 0;
+    font-family: OpenSans-Bold, OpenSans-Regular, Arial, Verdana;
+    font-size: 16px;
+}
+
+
+
+#popup p {
+    margin-bottom: 15px; 
+    font-family: OpenSans-Regular, Arial, Verdana;
+    font-size: 14px;
+}
+
+#popup p input {
+    margin-top: 5px;
+    padding: 10px 10px;
+    width: 100%;
+    box-sizing: border-box;
+    border-radius: 3px;
+    border: 1px solid #d8d8d8;
+    font-family: OpenSans-Regular, Arial, Verdana;
+}
+
+
+#popup .button {
+    width: auto;
+    background: #034e21;
+    padding: 7px 10px 7px 10px;
+    border-radius: 4px;
+    border: none;
+    text-align: left;
+    cursor: pointer;
+    font-family: OpenSans-Regular, Arial, Verdana;
+    color: #fff;
+    font-size: 16px;
+}
+
+#popup .button:disabled {
+    opacity: 0.65;
+    cursor: wait;
+}
+
+#popup .close {
+    cursor: pointer;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+}
+
+#popup .error {
+    padding: 0;
+    color: #fc5a5a;
+}
+/* .canvas-container {} */
+
+
+
+
+@media screen and (max-width: 900px) {
+    #constructor {
+
+
+    }
+    
+    #constructor .left {
+        width: calc(100% - 340px);
+    }
+    
+    #constructor .right {
+    margin: 0 0px 40px 0px;
+    width: 300px;
+    float: left;
+    }
+
+    #slide-mem {
+        max-width: 503px;
+        margin: 20px auto;
+    }
+    
+}
+
+@media screen and (max-width: 800px) {
+
+    #constructor .left {
+        width: calc(100% - 60px);
+    }
+
+#constructor .right p {
+    margin: 15px 0px 15px !important;
+    font-size: 0px;
+}
+
+#constructor .right {
+    margin: 0 0 20px 10px;
+    width: 40px;
+    float: left;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+
+.button-download span {
+    font-size: 0px;
+}
+
+#constructor .sketch-actions .button span {
+    font-size: 0px;
+}
+
+#constructor .accordeon {
+    display: flex;
+    width: 100%;
+    height: 40px;
+    font-size: 0px;
+}
+
+#constructor .left .sketch-actions {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+    width: 100%;
+    max-width: 240px;
+    margin: 12px auto 16px;
+}
+
+#constructor .left .sketch-actions > p {
+    display: none;
+}
+
+#constructor .left .sketch-actions #download {
+    display: block;
+    width: 100%;
+}
+
+#constructor .left .sketch-actions .button-download {
+    width: 100%;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    padding: 10px;
+    margin: 0;
+}
+
+#constructor .left .sketch-actions .button-zakaz {
+    width: 100%;
+    padding: 10px;
+    margin: 0;
+    text-align: left;
+}
+
+#constructor .left .sketch-actions #printCanvas {
+    display: none;
+}
+
+#constructor .left .sketch-actions .button-zakaz span,
+#constructor .left .sketch-actions .button-download span {
+    display: inline;
+    font-size: 16px;
+    line-height: 170%;
+    color: #fff;
+}
+
+#constructor .left .sketch-actions .button-zakaz img,
+#constructor .left .sketch-actions .button-download img {
+    float: left;
+    margin-right: 25px;
+    width: 25px;
+}
+
+#constructor .right .sketch-actions {
+    display: none;
+}
+
+
+}
+
+
+
+
+@media screen and (max-width: 650px) {
+
+    #constructor {
+        flex-direction: column;
+        align-items: center;
+    }
+	
+	#constructor {
+    display: block;
+    }
+    
+    #constructor .left {
+        max-width: 100%;
+        height: auto;
+    }
+	
+	#c
+	{
+    max-width: 240px !important;
+    height: 356px !important;	
+	}
+	
+	.canvas-container
+	{
+    max-width: 240px !important;
+    height: 356px !important;	
+	}
+	
+	.upper-canvas 
+	{
+    max-width: 240px !important;
+    height: 356px !important;	
+	}
+    
+    #constructor .right {
+    margin: 0 0 20px 10px;
+    width: 40px;
+    float: left;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    }
+
+    #slide-mem li {
+    height: 40px;
+    }
+
+	#slide-mem {
+    max-width: 240px;
+    height: 460px;
+    overflow: scroll;
+    margin: 20px auto;
+	box-sizing: border-box;
+    border: 1px solid #ccc;
+    }
+	
+	#constructor .accordeon {
+    display: flex;
+    width: 100%;
+    height: 40px;
+    font-size: 0px;
+    }
+	
+	#constructor .right p {
+    margin: 15px 0px 15px !important;
+    font-size: 0px;
+    }
+	
+	#constructor .right ul {
+    background: #1c141c;
+    margin: 0px 0 0 0;
+    border: 2px solid #dc3522;
+    max-height: 300px;
+    overflow-y: auto;
+    width: 260px;
+    padding: 10px;
+    box-sizing: border-box;
+    position: absolute;
+    right: 40px;
+    z-index: 10;
+    }
+	
+
+	
+	.title-ul-adaptive
+    {
+    display: block !important;
+    background: #dc3522;
+    font-family: OpenSans-Regular, "Courier New", Courier, monospace;
+    font-size: 14px;
+    font-weight: 400;
+    margin: -24 0 0 -260px;
+    padding: 3px 10px;
+    position: absolute;
+    z-index: 9999999;
+    }
+
+	
+	#constructor .accordeon.portret,
+    #constructor .accordeon.tablichki,
+    #constructor .accordeon.mecheti,
+    #constructor .accordeon.msimvol,
+    #constructor .accordeon.muzor,
+    #constructor .accordeon.epitafiya,
+    #constructor .accordeon.nadpis-izobrazhenie,
+    #constructor .accordeon.hram,
+    #constructor .accordeon.ikona,
+    #constructor .accordeon.angel,
+    #constructor .accordeon.simvol,
+    #constructor .accordeon.svechi,
+    #constructor .accordeon.krest,
+    #constructor .accordeon.pticy,
+    #constructor .accordeon.ramka,
+    #constructor .accordeon.vinetka,
+    #constructor .accordeon.cvetok,
+    #constructor .accordeon.vetv,
+    #constructor .accordeon.uzor,
+    #constructor .accordeon.voin,
+    #constructor .accordeon.peyzazhi
+	{
+    padding: 10px 10px 10px 30px;
+    }
+
+    .button-download {
+    width: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: left;
+    background: #212129;
+    padding: 10px;
+    border-radius: 4px;
+    position: static;
+    margin: 0;
+    }
+
+    #constructor .left .sketch-actions .button-download {
+    width: 100%;
+    justify-content: flex-start;
+    }
+
+    #constructor .left .sketch-actions .button-download span {
+    display: inline;
+    font-size: 16px;
+    }
+	
+.button-download span {
+    display: none;
+}
+
+.button-download img {
+    margin-right: 0px;
+    width: 25px;
+}
+
+    #popup {
+    position: fixed;
+    z-index: 1000;
+    top: 20px;
+    left: 0%;
+    right: 0%;
+    margin: 0px auto 0;
+    background-color: #fff;
+    width: 300px;
+	}
+
+}
+
+
+
+
+
+
+@media screen and (max-width: 320px) {
+
+    #constructor {
+        flex-direction: column;
+        align-items: center;
+    }
+	
+	#constructor {
+    display: block;
+    }
+    
+    #constructor .left {
+        max-width: 220px;
+		height: 327px;
+    }
+	
+	#c
+	{
+    max-width: 220px !important;
+    height: 327px !important;	
+	}
+	
+	.canvas-container
+	{
+    max-width: 220px !important;
+    height: 327px !important;	
+	}
+	
+	.upper-canvas 
+	{
+    max-width: 220px !important;
+    height: 327px !important;	
+	}
+    
+    #constructor .right {
+    margin: 0 0 20px 20px;
+    width: 40px;
+    float: left;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    }
+
+    #slide-mem {
+    max-width: 220px;
+    height: 650px;
+    overflow: scroll;
+    margin: 20px auto;
+	box-sizing: border-box;
+    border: 1px solid #ccc;
+    }
+	
+	#constructor .accordeon {
+    display: flex;
+    width: 100%;
+    height: 40px;
+    font-size: 0px;
+    }
+	
+	#constructor .right p {
+    margin: 15px 0px 15px !important;
+    font-size: 0px;
+    }
+	
+	#constructor .right ul {
+    background: #1c141c;
+    margin: 0px 0 0 0;
+    border: 2px solid #dc3522;
+    max-height: 300px;
+    overflow-y: auto;
+    width: 260px;
+    padding: 10px;
+    box-sizing: border-box;
+    position: absolute;
+    right: 40px;
+    z-index: 10;
+    }
+	
+
+	
+	.title-ul-adaptive
+    {
+    display: block !important;
+    background: #dc3522;
+    font-family: OpenSans-Regular, "Courier New", Courier, monospace;
+    font-size: 14px;
+    font-weight: 400;
+    margin: -24 0 0 -240px;
+    padding: 3px 10px;
+    position: absolute;
+    z-index: 9999999;
+    }
+
+	
+	#constructor .accordeon.portret,
+    #constructor .accordeon.tablichki,
+    #constructor .accordeon.mecheti,
+    #constructor .accordeon.msimvol,
+    #constructor .accordeon.muzor,
+    #constructor .accordeon.epitafiya,
+    #constructor .accordeon.nadpis-izobrazhenie,
+    #constructor .accordeon.hram,
+    #constructor .accordeon.ikona,
+    #constructor .accordeon.angel,
+    #constructor .accordeon.simvol,
+    #constructor .accordeon.svechi,
+    #constructor .accordeon.krest,
+    #constructor .accordeon.pticy,
+    #constructor .accordeon.ramka,
+    #constructor .accordeon.vinetka,
+    #constructor .accordeon.cvetok,
+    #constructor .accordeon.vetv,
+    #constructor .accordeon.uzor,
+    #constructor .accordeon.voin	
+	{
+    padding: 10px 10px 10px 30px;
+    }
+
+
+
+
+	
+    #popup {
+    position: fixed;
+    z-index: 1000;
+    top: 20px;
+    left: 0%;
+    right: 0%;
+    margin: 0px auto 0;
+    background-color: #fff;
+    width: 200px;
+	}
+
+}
+
+
+
+
+
+
+
+
+.title-ul-adaptive
+{
+    display:none;
+}
+
+
+
+
+/* форма */
+
+
+.formname input[type=checkbox] {
+    display:none;
+}
+.formname input[type=checkbox] + label {
+    display: block;
+    position: relative;
+    margin: 20px 0 25px 40px !important;
+    cursor: pointer;
+    line-height: 140%;
+    color: #333333;
+    font-family: OpenSans-Regular, Arial, Verdana;
+    font-size: 13px;
+}
+.formname input[type=checkbox] + label:hover {
+    color:#337AB7;
+}
+.formname input[type=checkbox] + label:before {
+    position: absolute;
+    content: '';
+    width: 18px;
+    height: 18px;
+    line-height: 18px;
+    left: -40px;
+    top: 7px;
+    border: 1px solid #d4d4d4;
+}
+.formname input[type=checkbox]:checked + label:before{
+    content: '\2714';
+    font-family: OpenSans-Regular, Arial, Verdana;
+    color: #000000;
+    font-size: 12px;
+    text-align: center;
+    font-weight: 400;
+    border: 1px solid #16c60c;
+}
+.formname input[type=submit] {
+    display: block;
+    cursor: pointer;
+    font-size: 17px;
+    font-family: OpenSans-Regular, Arial, Verdana;
+    padding: 10px 30px;
+    border: 1px solid #275F8B;
+    background: #337AB7;
+    color: #000;
+    transition: .4s all;
+    font-weight: 400;
+}
+.formname input[type=submit]:hover {
+    background: #275F8B;
+}
+.formname input[disabled] {
+    opacity: .6;
+    cursor: not-allowed;
+}
+
+
+
+
+/* дополнительная информация на странице */
+
+.pamyatnik-vnimanie
+{
+    background: url(../img/constructor/vnimanie.svg) left center no-repeat #fff;
+    background-size: 25px;
+    background-position: 15px 50%;
+    border: 1px solid #dc3522;
+    border-left: 6px solid #dc3522;
+    border-radius: 0px;
+    max-width: 100% !important;
+    margin: 40px 0;
+    padding: 10px 10px 10px 60px;
+    font-family: OpenSans-Regular, GothaProBol, Tahoma;
+    font-size: 15px;
+    color: #000;
+    text-align: left;
+    font-weight: 300;
+    line-height: 140%;
+}
+
+p
+{
+    font-family: OpenSans-Regular, GothaProBol, Tahoma;
+    font-size: 16px;
+    color: #000;
+    text-align: left;
+    margin: 0px 0px 10px 0px;
+    font-weight: 300;
+    line-height: 140%;    
+}
+
+#constructor .right ul.panel-loading {
+    min-height: 120px;
+    pointer-events: none;
+}
+
+#constructor .panel-loader-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(28, 20, 28, 0.82);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 12px;
+    z-index: 10;
+    border-radius: 2px;
+}
+
+#constructor .panel-loader-spinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid rgba(255, 255, 255, 0.25);
+    border-top-color: #ffffff;
+    border-radius: 50%;
+    animation: panel-loader-spin 0.75s linear infinite;
+}
+
+#constructor .panel-loader-text {
+    color: #ffffff;
+    font-family: 'Open Sans', Arial, sans-serif;
+    font-size: 13px;
+    letter-spacing: 0.02em;
+}
+
+@keyframes panel-loader-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}

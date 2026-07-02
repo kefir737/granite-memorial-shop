@@ -26,14 +26,20 @@ function syncHeroFallback(settings: SiteSettings) {
 export default function HeroSection({ settings }: HeroSectionProps) {
   const [heroSrc, setHeroSrc] = useState<string | null>(null);
   const [heroVisible, setHeroVisible] = useState(false);
-  const useFallback = typeof document !== 'undefined' && !!document.getElementById(FALLBACK_ID);
+  const [fallbackRemoved, setFallbackRemoved] = useState(
+    typeof document === 'undefined' || !document.getElementById(FALLBACK_ID),
+  );
 
   useEffect(() => {
+    const el = document.getElementById(FALLBACK_ID);
+    if (!el) return;
     syncHeroFallback(settings);
-  }, [settings.heroTitle, settings.heroSubtitle]);
+    el.remove();
+    setFallbackRemoved(true);
+  }, [settings.heroTitle, settings.heroSubtitle, settings.phone]);
 
   useEffect(() => {
-    if (useFallback) return;
+    if (!fallbackRemoved) return;
     if (window.matchMedia('(max-width: 767px)').matches) return;
 
     const url = preferWebp(settings.heroImage || DEFAULT_HERO);
@@ -42,7 +48,7 @@ export default function HeroSection({ settings }: HeroSectionProps) {
 
     if (document.readyState === 'complete') schedule();
     else window.addEventListener('load', schedule, { once: true });
-  }, [settings.heroImage, useFallback]);
+  }, [settings.heroImage, fallbackRemoved]);
 
   useEffect(() => {
     if (!heroSrc) return;
@@ -52,7 +58,7 @@ export default function HeroSection({ settings }: HeroSectionProps) {
     img.src = heroSrc;
   }, [heroSrc]);
 
-  if (useFallback) return null;
+  if (!fallbackRemoved) return null;
 
   return (
     <section className="relative min-h-screen flex items-center overflow-hidden bg-foreground">

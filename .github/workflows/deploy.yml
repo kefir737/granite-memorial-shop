@@ -33,7 +33,9 @@ jobs:
           port: ${{ secrets.VPS_PORT }}
           script: |
             cd /opt/granite
-            git pull origin main
+            git fetch origin main
+            git reset --hard origin/main
+            docker system prune -af --filter "until=24h" || true
             cd vps
-            docker compose build --no-cache frontend
+            docker compose build frontend
             docker compose up -d

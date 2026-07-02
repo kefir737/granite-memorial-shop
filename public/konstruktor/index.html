@@ -1,0 +1,316 @@
+﻿<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <title>Конструктор оформления памятников</title>
+  <link rel="stylesheet" href="construkt-pam/css/constructor.css">
+  <link rel="stylesheet" href="construkt-pam/css/tabs.css">
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: 'Open Sans', Arial, sans-serif; background: #f5f5f5; color: #1c141c; }
+    .page-wrap { max-width: 1200px; margin: 0 auto; padding: 10px 15px 20px; }
+    .itemView-Konstruktor { background: #fff; border-radius: 8px; box-shadow: 0 2px 12px rgba(0,0,0,.08); padding: 10px 20px 30px; }
+    .itemHeader-Konstruktor { display: none; }
+    .clear { clear: both; }
+  </style>
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js"></script>
+  <script src="construkt-pam/fontfaceobserver.js"></script>
+  <script src="construkt-pam/fabric/fabric.js"></script>
+</head>
+<body>
+<div class="page-wrap">
+<div class="itemView-Konstruktor">
+
+	<div class="itemHeader-Konstruktor">
+
+	  	  <!-- Item title -->
+	  <h2>Конструктор оформления памятников</h2>
+	  
+    </div>
+
+	<div class="clear"></div>
+
+
+
+
+<div class="clear"></div>
+  <div id="constructor"> 
+    <div class="left"> 
+      <div class="canvas-container" width="401" height="750"> <canvas id="c" width="401" height="750" src="/" ></canvas> 
+      </div>
+      <!-- Выводим типы памятников табами -->
+      <section class="tabs-constructor"> 
+      <input id="tab-constructor_1" type="radio" name="tab" checked="checked" />
+      <input id="tab-constructor_2" type="radio" name="tab" />
+      <input id="tab-constructor_3" type="radio" name="tab" />
+      <input id="tab-constructor_4" type="radio" name="tab" />
+      <input id="tab-constructor_5" type="radio" name="tab" />
+      <label for="tab-constructor_1" id="tab-constructor_l1"> 
+      <div class="tab-constructor-img"><img src="construkt-pam/img/constructor/p-i-1.svg" alt="вертикальные памятники" title="вертикальные памятники"></div>
+      Верт.</label> 
+      <label for="tab-constructor_2" id="tab-constructor_l2"> 
+      <div class="tab-constructor-img"><img src="construkt-pam/img/constructor/p-i-2.svg" alt="горизонтальные памятники" title="горизонтальные памятники"></div>
+      Гор.</label> 
+      <label for="tab-constructor_3" id="tab-constructor_l4"> 
+      <div class="tab-constructor-img"><img src="construkt-pam/img/constructor/p-i-3.svg" alt="фигурные памятники" title="фигурные памятники"></div>
+      Фигурные</label> 
+      <label for="tab-constructor_4" id="tab-constructor_l6">
+      <div class="tab-constructor-img"><img src="construkt-pam/img/constructor/p-i-4.svg" alt="Резные памятники" title="Резные памятники"></div>
+      Резные</label> 
+      <label for="tab-constructor_5" id="tab-constructor_l5"> 
+      <div class="tab-constructor-img"><img src="construkt-pam/img/constructor/p-i-4.svg" alt="Кресты" title="Кресты"></div>
+      Кресты</label> 
+      <div class="clear"></div>
+      <div class="tabs-constructor_cont"> 
+        <!-- Выводим 1-ый тип памятников во вкладке (в табе) -->
+        <div id="tab-constructor_c1"> 
+          <ul id="slide-mem">
+            <li><img src="images/construkt-pam/constructor/memorial/p1.png"></li><li><img src="images/construkt-pam/constructor/memorial/p10.png"></li><li><img src="images/construkt-pam/constructor/memorial/p11.png"></li><li><img src="images/construkt-pam/constructor/memorial/p12.png"></li><li><img src="images/construkt-pam/constructor/memorial/p13.png"></li><li><img src="images/construkt-pam/constructor/memorial/p14.png"></li><li><img src="images/construkt-pam/constructor/memorial/p15.png"></li><li><img src="images/construkt-pam/constructor/memorial/p16.png"></li><li><img src="images/construkt-pam/constructor/memorial/p17.png"></li><li><img src="images/construkt-pam/constructor/memorial/p18.png"></li><li><img src="images/construkt-pam/constructor/memorial/p19.png"></li><li><img src="images/construkt-pam/constructor/memorial/p2.png"></li><li><img src="images/construkt-pam/constructor/memorial/p20.png"></li><li><img src="images/construkt-pam/constructor/memorial/p21.png"></li><li><img src="images/construkt-pam/constructor/memorial/p22.png"></li><li><img src="images/construkt-pam/constructor/memorial/p23.png"></li><li><img src="images/construkt-pam/constructor/memorial/p24.png"></li><li><img src="images/construkt-pam/constructor/memorial/p25.png"></li><li><img src="images/construkt-pam/constructor/memorial/p26.png"></li><li><img src="images/construkt-pam/constructor/memorial/p27.png"></li><li><img src="images/construkt-pam/constructor/memorial/p28.png"></li><li><img src="images/construkt-pam/constructor/memorial/p29.png"></li><li><img src="images/construkt-pam/constructor/memorial/p3.png"></li><li><img src="images/construkt-pam/constructor/memorial/p30.png"></li><li><img src="images/construkt-pam/constructor/memorial/p31.png"></li><li><img src="images/construkt-pam/constructor/memorial/p32.png"></li><li><img src="images/construkt-pam/constructor/memorial/p33.png"></li><li><img src="images/construkt-pam/constructor/memorial/p34.png"></li><li><img src="images/construkt-pam/constructor/memorial/p35.png"></li><li><img src="images/construkt-pam/constructor/memorial/p36.png"></li><li><img src="images/construkt-pam/constructor/memorial/p37.png"></li><li><img src="images/construkt-pam/constructor/memorial/p38.png"></li><li><img src="images/construkt-pam/constructor/memorial/p39.png"></li><li><img src="images/construkt-pam/constructor/memorial/p4.png"></li><li><img src="images/construkt-pam/constructor/memorial/p40.png"></li><li><img src="images/construkt-pam/constructor/memorial/p41.png"></li><li><img src="images/construkt-pam/constructor/memorial/p42.png"></li><li><img src="images/construkt-pam/constructor/memorial/p43.png"></li><li><img src="images/construkt-pam/constructor/memorial/p44.png"></li><li><img src="images/construkt-pam/constructor/memorial/p45.png"></li><li><img src="images/construkt-pam/constructor/memorial/p46.png"></li><li><img src="images/construkt-pam/constructor/memorial/p47.png"></li><li><img src="images/construkt-pam/constructor/memorial/p48.png"></li><li><img src="images/construkt-pam/constructor/memorial/p49.png"></li><li><img src="images/construkt-pam/constructor/memorial/p5.png"></li><li><img src="images/construkt-pam/constructor/memorial/p50.png"></li><li><img src="images/construkt-pam/constructor/memorial/p51.png"></li><li><img src="images/construkt-pam/constructor/memorial/p52.png"></li><li><img src="images/construkt-pam/constructor/memorial/p53.png"></li><li><img src="images/construkt-pam/constructor/memorial/p54.png"></li><li><img src="images/construkt-pam/constructor/memorial/p55.png"></li><li><img src="images/construkt-pam/constructor/memorial/p56.png"></li><li><img src="images/construkt-pam/constructor/memorial/p57.png"></li><li><img src="images/construkt-pam/constructor/memorial/p58.png"></li><li><img src="images/construkt-pam/constructor/memorial/p59.png"></li><li><img src="images/construkt-pam/constructor/memorial/p6.png"></li><li><img src="images/construkt-pam/constructor/memorial/p60.png"></li><li><img src="images/construkt-pam/constructor/memorial/p61.png"></li><li><img src="images/construkt-pam/constructor/memorial/p62.png"></li><li><img src="images/construkt-pam/constructor/memorial/p63.png"></li><li><img src="images/construkt-pam/constructor/memorial/p64.png"></li><li><img src="images/construkt-pam/constructor/memorial/p65.png"></li><li><img src="images/construkt-pam/constructor/memorial/p66.png"></li><li><img src="images/construkt-pam/constructor/memorial/p67.png"></li><li><img src="images/construkt-pam/constructor/memorial/p68.png"></li><li><img src="images/construkt-pam/constructor/memorial/p69.png"></li><li><img src="images/construkt-pam/constructor/memorial/p7.png"></li><li><img src="images/construkt-pam/constructor/memorial/p70.png"></li><li><img src="images/construkt-pam/constructor/memorial/p71.jpg"></li><li><img src="images/construkt-pam/constructor/memorial/p72.jpg"></li><li><img src="images/construkt-pam/constructor/memorial/p73.jpg"></li><li><img src="images/construkt-pam/constructor/memorial/p74.jpg"></li><li><img src="images/construkt-pam/constructor/memorial/p75.jpg"></li><li><img src="images/construkt-pam/constructor/memorial/p76.jpg"></li><li><img src="images/construkt-pam/constructor/memorial/p77.jpg"></li><li><img src="images/construkt-pam/constructor/memorial/p78.jpg"></li><li><img src="images/construkt-pam/constructor/memorial/p79.jpg"></li><li><img src="images/construkt-pam/constructor/memorial/p8.png"></li><li><img src="images/construkt-pam/constructor/memorial/p80.jpg"></li><li><img src="images/construkt-pam/constructor/memorial/p81.jpg"></li><li><img src="images/construkt-pam/constructor/memorial/p9.png"></li>          </ul>
+        </div>
+        <!-- Выводим 2-ый тип памятников во вкладке (в табе) -->
+        <div id="tab-constructor_c2"> 
+          <ul id="slide-mem">
+            <li><img src="images/construkt-pam/constructor/memorial-dvoynoy/w1.png"></li><li><img src="images/construkt-pam/constructor/memorial-dvoynoy/w10.png"></li><li><img src="images/construkt-pam/constructor/memorial-dvoynoy/w11.png"></li><li><img src="images/construkt-pam/constructor/memorial-dvoynoy/w12.png"></li><li><img src="images/construkt-pam/constructor/memorial-dvoynoy/w13.png"></li><li><img src="images/construkt-pam/constructor/memorial-dvoynoy/w14.png"></li><li><img src="images/construkt-pam/constructor/memorial-dvoynoy/w15.png"></li><li><img src="images/construkt-pam/constructor/memorial-dvoynoy/w16.png"></li><li><img src="images/construkt-pam/constructor/memorial-dvoynoy/w17.png"></li><li><img src="images/construkt-pam/constructor/memorial-dvoynoy/w18.png"></li><li><img src="images/construkt-pam/constructor/memorial-dvoynoy/w19.png"></li><li><img src="images/construkt-pam/constructor/memorial-dvoynoy/w2.png"></li><li><img src="images/construkt-pam/constructor/memorial-dvoynoy/w20.png"></li><li><img src="images/construkt-pam/constructor/memorial-dvoynoy/w21.png"></li><li><img src="images/construkt-pam/constructor/memorial-dvoynoy/w22.png"></li><li><img src="images/construkt-pam/constructor/memorial-dvoynoy/w23.png"></li><li><img src="images/construkt-pam/constructor/memorial-dvoynoy/w24.png"></li><li><img src="images/construkt-pam/constructor/memorial-dvoynoy/w25.jpg"></li><li><img src="images/construkt-pam/constructor/memorial-dvoynoy/w26.jpg"></li><li><img src="images/construkt-pam/constructor/memorial-dvoynoy/w27.jpg"></li><li><img src="images/construkt-pam/constructor/memorial-dvoynoy/w28.jpg"></li><li><img src="images/construkt-pam/constructor/memorial-dvoynoy/w29.jpg"></li><li><img src="images/construkt-pam/constructor/memorial-dvoynoy/w3.png"></li><li><img src="images/construkt-pam/constructor/memorial-dvoynoy/w30.jpg"></li><li><img src="images/construkt-pam/constructor/memorial-dvoynoy/w31.jpg"></li><li><img src="images/construkt-pam/constructor/memorial-dvoynoy/w32.jpg"></li><li><img src="images/construkt-pam/constructor/memorial-dvoynoy/w33.jpg"></li><li><img src="images/construkt-pam/constructor/memorial-dvoynoy/w34.jpg"></li><li><img src="images/construkt-pam/constructor/memorial-dvoynoy/w35.jpg"></li><li><img src="images/construkt-pam/constructor/memorial-dvoynoy/w36.jpg"></li><li><img src="images/construkt-pam/constructor/memorial-dvoynoy/w37.jpg"></li><li><img src="images/construkt-pam/constructor/memorial-dvoynoy/w38.jpg"></li><li><img src="images/construkt-pam/constructor/memorial-dvoynoy/w39.jpg"></li><li><img src="images/construkt-pam/constructor/memorial-dvoynoy/w4.png"></li><li><img src="images/construkt-pam/constructor/memorial-dvoynoy/w40.jpg"></li><li><img src="images/construkt-pam/constructor/memorial-dvoynoy/w41.jpg"></li><li><img src="images/construkt-pam/constructor/memorial-dvoynoy/w42.jpg"></li><li><img src="images/construkt-pam/constructor/memorial-dvoynoy/w43.jpg"></li><li><img src="images/construkt-pam/constructor/memorial-dvoynoy/w44.jpg"></li><li><img src="images/construkt-pam/constructor/memorial-dvoynoy/w45.jpg"></li><li><img src="images/construkt-pam/constructor/memorial-dvoynoy/w46.png"></li><li><img src="images/construkt-pam/constructor/memorial-dvoynoy/w47.png"></li><li><img src="images/construkt-pam/constructor/memorial-dvoynoy/w48.png"></li><li><img src="images/construkt-pam/constructor/memorial-dvoynoy/w49.png"></li><li><img src="images/construkt-pam/constructor/memorial-dvoynoy/w5.png"></li><li><img src="images/construkt-pam/constructor/memorial-dvoynoy/w50.png"></li><li><img src="images/construkt-pam/constructor/memorial-dvoynoy/w51.png"></li><li><img src="images/construkt-pam/constructor/memorial-dvoynoy/w52.png"></li><li><img src="images/construkt-pam/constructor/memorial-dvoynoy/w53.png"></li><li><img src="images/construkt-pam/constructor/memorial-dvoynoy/w54.png"></li><li><img src="images/construkt-pam/constructor/memorial-dvoynoy/w55.png"></li><li><img src="images/construkt-pam/constructor/memorial-dvoynoy/w56.png"></li><li><img src="images/construkt-pam/constructor/memorial-dvoynoy/w57.png"></li><li><img src="images/construkt-pam/constructor/memorial-dvoynoy/w58.png"></li><li><img src="images/construkt-pam/constructor/memorial-dvoynoy/w59.png"></li><li><img src="images/construkt-pam/constructor/memorial-dvoynoy/w6.png"></li><li><img src="images/construkt-pam/constructor/memorial-dvoynoy/w7.png"></li><li><img src="images/construkt-pam/constructor/memorial-dvoynoy/w8.png"></li><li><img src="images/construkt-pam/constructor/memorial-dvoynoy/w9.png"></li>          </ul>
+        </div>
+        <!-- Выводим 3-ий тип памятников во вкладке (в табе) -->
+        <div id="tab-constructor_c3"> 
+          <ul id="slide-mem">
+            <li><img src="images/construkt-pam/constructor/memorial-figurny/F-014.jpg"></li><li><img src="images/construkt-pam/constructor/memorial-figurny/F-015.jpg"></li><li><img src="images/construkt-pam/constructor/memorial-figurny/F-016.jpg"></li><li><img src="images/construkt-pam/constructor/memorial-figurny/F-017.jpg"></li><li><img src="images/construkt-pam/constructor/memorial-figurny/F-018.jpg"></li><li><img src="images/construkt-pam/constructor/memorial-figurny/F-019.jpg"></li><li><img src="images/construkt-pam/constructor/memorial-figurny/F-020.jpg"></li><li><img src="images/construkt-pam/constructor/memorial-figurny/F-021.jpg"></li><li><img src="images/construkt-pam/constructor/memorial-figurny/F-022.jpg"></li><li><img src="images/construkt-pam/constructor/memorial-figurny/F-023.jpg"></li><li><img src="images/construkt-pam/constructor/memorial-figurny/F-024.jpg"></li><li><img src="images/construkt-pam/constructor/memorial-figurny/F-025.jpg"></li><li><img src="images/construkt-pam/constructor/memorial-figurny/F-026.jpg"></li><li><img src="images/construkt-pam/constructor/memorial-figurny/F-027.jpg"></li><li><img src="images/construkt-pam/constructor/memorial-figurny/F-028.jpg"></li><li><img src="images/construkt-pam/constructor/memorial-figurny/F-029.jpg"></li><li><img src="images/construkt-pam/constructor/memorial-figurny/F-030.jpg"></li><li><img src="images/construkt-pam/constructor/memorial-figurny/F-031.jpg"></li>          </ul>
+        </div>
+        <!-- Выводим 4-ый тип памятников во вкладке (в табе) -->
+        <div id="tab-constructor_c4"> 
+          <ul id="slide-mem">
+            <li><img src="images/construkt-pam/constructor/memorial-reznye/R-001.jpg"></li><li><img src="images/construkt-pam/constructor/memorial-reznye/R-002.jpg"></li><li><img src="images/construkt-pam/constructor/memorial-reznye/R-003.jpg"></li><li><img src="images/construkt-pam/constructor/memorial-reznye/R-004.jpg"></li><li><img src="images/construkt-pam/constructor/memorial-reznye/R-005.jpg"></li><li><img src="images/construkt-pam/constructor/memorial-reznye/R-006.jpg"></li><li><img src="images/construkt-pam/constructor/memorial-reznye/R-007.jpg"></li><li><img src="images/construkt-pam/constructor/memorial-reznye/R-008.jpg"></li><li><img src="images/construkt-pam/constructor/memorial-reznye/R-009.jpg"></li><li><img src="images/construkt-pam/constructor/memorial-reznye/R-010.jpg"></li><li><img src="images/construkt-pam/constructor/memorial-reznye/R-011.jpg"></li><li><img src="images/construkt-pam/constructor/memorial-reznye/R-012.jpg"></li><li><img src="images/construkt-pam/constructor/memorial-reznye/R-013.jpg"></li><li><img src="images/construkt-pam/constructor/memorial-reznye/R-014.jpg"></li><li><img src="images/construkt-pam/constructor/memorial-reznye/R-015.jpg"></li><li><img src="images/construkt-pam/constructor/memorial-reznye/R-016.jpg"></li><li><img src="images/construkt-pam/constructor/memorial-reznye/R-017.jpg"></li><li><img src="images/construkt-pam/constructor/memorial-reznye/R-018.jpg"></li><li><img src="images/construkt-pam/constructor/memorial-reznye/R-019.jpg"></li><li><img src="images/construkt-pam/constructor/memorial-reznye/R-020.jpg"></li>          </ul>
+        </div>
+        <!-- Выводим 5-ый тип памятников во вкладке (в табе) -->
+        <div id="tab-constructor_c5"> 
+          <ul id="slide-mem">
+            <li><img src="images/construkt-pam/constructor/memorial-kresty/F-001.jpg"></li><li><img src="images/construkt-pam/constructor/memorial-kresty/F-002.jpg"></li><li><img src="images/construkt-pam/constructor/memorial-kresty/F-003.jpg"></li><li><img src="images/construkt-pam/constructor/memorial-kresty/F-004.jpg"></li><li><img src="images/construkt-pam/constructor/memorial-kresty/F-005.jpg"></li><li><img src="images/construkt-pam/constructor/memorial-kresty/F-006.jpg"></li><li><img src="images/construkt-pam/constructor/memorial-kresty/F-007.jpg"></li><li><img src="images/construkt-pam/constructor/memorial-kresty/F-008.jpg"></li><li><img src="images/construkt-pam/constructor/memorial-kresty/F-009.jpg"></li><li><img src="images/construkt-pam/constructor/memorial-kresty/F-010.jpg"></li><li><img src="images/construkt-pam/constructor/memorial-kresty/F-011.jpg"></li><li><img src="images/construkt-pam/constructor/memorial-kresty/F-012.jpg"></li><li><img src="images/construkt-pam/constructor/memorial-kresty/F-013.jpg"></li>          </ul>
+        </div>
+      </div>
+      <div class="sketch-actions">
+      <p style="margin: 10px 5px; padding: 0;">Действия с эскизом:</p>
+      <a id="download" download="memorial.png" href="/" onclick="download_img(this);">
+      <div class="button-download"><img src="construkt-pam/img/constructor/download.svg" alt="" style="max-height: 20px;"><span>Скачать 
+        эскиз</span></div>
+      </a>
+      <button class="button" id="printCanvas"><img src="construkt-pam/img/constructor/print.svg" alt=""> 
+      <span>Распечатать</span></button>
+      <button class="button-zakaz" id="jsonCanvas"><img src="construkt-pam/img/constructor/mail.svg" alt=""> 
+      <span>Узнать стоимость</span></button>
+      </div>
+      </section>
+      </ul>
+    </div>
+    <div class="right"> 
+      <p style="margin: 10px 5px; padding: 0;">Выберите вариант портрета:</p>
+      <div class="face-panel addImg"> 
+        <div class="accordeon portret"> Фотография</div>
+        <ul class="hide">
+          <li><img src="images/construkt-pam/constructor/face-panel/GR-1.png"></li><li><img src="images/construkt-pam/constructor/face-panel/GR-2.png"></li><li><img src="images/construkt-pam/constructor/face-panel/GR-3.png"></li><li><img src="images/construkt-pam/constructor/face-panel/GR-4.png"></li><li><img src="images/construkt-pam/constructor/face-panel/man.png"></li><li><img src="images/construkt-pam/constructor/face-panel/oval.png"></li><li><img src="images/construkt-pam/constructor/face-panel/pryamoug.png"></li><li><img src="images/construkt-pam/constructor/face-panel/woman.png"></li>        </ul>
+      </div>
+      
+
+      
+      
+      <p style="margin: 10px 5px; padding: 0;">Добавьте данные усопшего:</p>
+      <div class="face-panel addText"> 
+        <div class="accordeon"><img src="construkt-pam/img/constructor/fio.svg" alt=""> 
+          Фамилия</div>
+        <ul class="hide colum-2" style="font-size: 21px; font-weight: bold;">
+          <li style="font-family: 'Roboto Slab', serif;" data-font="Roboto Slab" data-text="Фамилия">Фамилия</li>
+          <li style="font-family: 'Roboto Condensed', sans-serif;" data-font="Roboto Condensed" data-text="Фамилия">Фамилия</li>
+          <li style="font-family: 'Roboto', sans-serif;" data-font="Roboto" data-text="Фамилия">Фамилия</li>
+          <li style="font-family: 'Poiret One', cursive;" data-font="Poiret One" data-text="Фамилия">Фамилия</li>
+          <li style="font-family: 'Playfair Display', serif;" data-font="Playfair Display" data-text="Фамилия">Фамилия</li>
+          <li style="font-family: 'Oswald', sans-serif;" data-font="Oswald" data-text="Фамилия">Фамилия</li>
+          <li style="font-family: 'Open Sans Condensed', sans-serif;" data-font="Open Sans Condensed" data-text="Фамилия">Фамилия</li>
+          <li style="font-family: 'Open Sans', sans-serif;" data-font="Open Sans" data-text="Фамилия">Фамилия</li>
+          <li style="font-family: 'Marck Script', cursive;" data-font="Marck Script" data-text="Фамилия">Фамилия</li>
+          <li style="font-family: 'Lobster', cursive;" data-font="Lobster" data-text="Фамилия">Фамилия</li>
+          <li style="font-family: 'Kelly Slab', cursive;" data-font="Kelly Slab" data-text="Фамилия">Фамилия</li>
+          <li style="font-family: 'Gabriela', serif;" data-font="Gabriela" data-text="Фамилия">Фамилия</li>
+          <li style="font-family: 'EB Garamond', serif;" data-font="EB Garamond" data-text="Фамилия">Фамилия</li>
+          <li style="font-family: 'Cormorant Infant', serif;" data-font="Cormorant Infant" data-text="Фамилия">Фамилия</li>
+          <li style="font-family: 'Bad Script', cursive;" data-font="Bad Script" data-text="Фамилия">Фамилия</li>
+        </ul>
+      </div>
+      <div class="face-panel addText"> 
+        <div class="accordeon"><img src="construkt-pam/img/constructor/fio.svg" alt=""> 
+          Имя</div>
+        <ul class="hide colum-2" style="font-size: 21px; font-weight: bold;">
+          <li style="font-family: 'Roboto Slab', serif;" data-font="Roboto Slab" data-text="Имя">Имя</li>
+          <li style="font-family: 'Roboto Condensed', sans-serif;" data-font="Roboto Condensed" data-text="Имя">Имя</li>
+          <li style="font-family: 'Roboto', sans-serif;" data-font="Roboto" data-text="Имя">Имя</li>
+          <li style="font-family: 'Poiret One', cursive;" data-font="Poiret One" data-text="Имя">Имя</li>
+          <li style="font-family: 'Playfair Display', serif;" data-font="Playfair Display" data-text="Имя">Имя</li>
+          <li style="font-family: 'Oswald', sans-serif;" data-font="Oswald" data-text="Имя">Имя</li>
+          <li style="font-family: 'Open Sans Condensed', sans-serif;" data-font="Open Sans Condensed" data-text="Имя">Имя</li>
+          <li style="font-family: 'Open Sans', sans-serif;" data-font="Open Sans" data-text="Имя">Имя</li>
+          <li style="font-family: 'Marck Script', cursive;" data-font="Marck Script" data-text="Имя">Имя</li>
+          <li style="font-family: 'Lobster', cursive;" data-font="Lobster" data-text="Имя">Имя</li>
+          <li style="font-family: 'Kelly Slab', cursive;" data-font="Kelly Slab" data-text="Имя">Имя</li>
+          <li style="font-family: 'Gabriela', serif;" data-font="Gabriela" data-text="Имя">Имя</li>
+          <li style="font-family: 'EB Garamond', serif;" data-font="EB Garamond" data-text="Имя">Имя</li>
+          <li style="font-family: 'Cormorant Infant', serif;" data-font="Cormorant Infant" data-text="Имя">Имя</li>
+          <li style="font-family: 'Bad Script', cursive;" data-font="Bad Script" data-text="Имя">Имя</li>
+        </ul>
+      </div>
+      <div class="face-panel addText"> 
+        <div class="accordeon"><img src="construkt-pam/img/constructor/fio.svg" alt=""> 
+          Отчество</div>
+        <ul class="hide colum-2" style="font-size: 21px; font-weight: bold;">
+          <li style="font-family: 'Roboto Slab', serif;" data-font="Roboto Slab" data-text="Отчество" class="lazy-loaded">Отчество</li>
+          <li style="font-family: 'Roboto Condensed', sans-serif;" data-font="Roboto Condensed" data-text="Отчество">Отчество</li>
+          <li style="font-family: 'Roboto', sans-serif;" data-font="Roboto" data-text="Отчество">Отчество</li>
+          <li style="font-family: 'Poiret One', cursive;" data-font="Poiret One" data-text="Отчество">Отчество</li>
+          <li style="font-family: 'Playfair Display', serif;" data-font="Playfair Display" data-text="Отчество">Отчество</li>
+          <li style="font-family: 'Oswald', sans-serif;" data-font="Oswald" data-text="Отчество">Отчество</li>
+          <li style="font-family: 'Open Sans Condensed', sans-serif;" data-font="Open Sans Condensed" data-text="Отчество">Отчество</li>
+          <li style="font-family: 'Open Sans', sans-serif;" data-font="Open Sans" data-text="Отчество">Отчество</li>
+          <li style="font-family: 'Marck Script', cursive;" data-font="Marck Script" data-text="Отчество">Отчество</li>
+          <li style="font-family: 'Lobster', cursive;" data-font="Lobster" data-text="Отчество">Отчество</li>
+          <li style="font-family: 'Kelly Slab', cursive;" data-font="Kelly Slab" data-text="Отчество">Отчество</li>
+          <li style="font-family: 'Gabriela', serif;" data-font="Gabriela" data-text="Отчество">Отчество</li>
+          <li style="font-family: 'EB Garamond', serif;" data-font="EB Garamond" data-text="Отчество">Отчество</li>
+          <li style="font-family: 'Cormorant Infant', serif;" data-font="Cormorant Infant" data-text="Отчество">Отчество</li>
+          <li style="font-family: 'Bad Script', cursive;" data-font="Bad Script" data-text="Отчество">Отчество</li>
+        </ul>
+      </div>
+      <div class="face-panel addText"> 
+        <div class="accordeon"><img src="construkt-pam/img/constructor/calendar.svg" alt=""> 
+          Даты</div>
+        <ul class="hide colum-2" style="font-size: 21px; font-weight: bold;">
+          <li style="font-family: 'Roboto Slab', serif;" data-font="Roboto Slab"                      data-text="23.04.1947 - 23.04.1947">23.04.1947</li>
+          <li style="font-family: 'Roboto Condensed', sans-serif;" data-font="Roboto Condensed"       data-text="23.04.1947 - 23.04.1947">23.04.1947</li>
+          <li style="font-family: 'Roboto', sans-serif;" data-font="Roboto"                           data-text="23.04.1947 - 23.04.1947">23.04.1947</li>
+          <li style="font-family: 'Poiret One', cursive;" data-font="Poiret One"                      data-text="23.04.1947 - 23.04.1947">23.04.1947</li>
+          <li style="font-family: 'Playfair Display', serif;" data-font="Playfair Display"            data-text="23.04.1947 - 23.04.1947">23.04.1947</li>
+          <li style="font-family: 'Oswald', sans-serif;" data-font="Oswald"                           data-text="23.04.1947 - 23.04.1947">23.04.1947</li>
+          <li style="font-family: 'Open Sans Condensed', sans-serif;" data-font="Open Sans Condensed" data-text="23.04.1947 - 23.04.1947">23.04.1947</li>
+          <li style="font-family: 'Open Sans', sans-serif;" data-font="Open Sans"                     data-text="23.04.1947 - 23.04.1947">23.04.1947</li>
+          <li style="font-family: 'Marck Script', cursive;" data-font="Marck Script"                  data-text="23.04.1947 - 23.04.1947">23.04.1947</li>
+          <li style="font-family: 'Lobster', cursive;" data-font="Lobster"                            data-text="23.04.1947 - 23.04.1947">23.04.1947</li>
+          <li style="font-family: 'Kelly Slab', cursive;" data-font="Kelly Slab"                      data-text="23.04.1947 - 23.04.1947">23.04.1947</li>
+          <li style="font-family: 'Gabriela', serif;" data-font="Gabriela"                            data-text="23.04.1947 - 23.04.1947">23.04.1947</li>
+          <li style="font-family: 'EB Garamond', serif;" data-font="EB Garamond"                      data-text="23.04.1947 - 23.04.1947">23.04.1947</li>
+          <li style="font-family: 'Cormorant Infant', serif;" data-font="Cormorant Infant"            data-text="23.04.1947 - 23.04.1947">23.04.1947</li>
+          <li style="font-family: 'Bad Script', cursive;" data-font="Bad Script"                      data-text="23.04.1947 - 23.04.1947">23.04.1947</li>
+        </ul>
+      </div>
+      <p style="margin: 10px 5px; padding: 0;">Подберите слова:</p>
+      <div class="face-panel addImg"> 
+        <div class="accordeon epitafiya"> Эпитафия</div>
+        <ul class="hide colum-1">
+          <li><img data-src="images/construkt-pam/constructor/epitafii/epitafy1.png"></li><li><img data-src="images/construkt-pam/constructor/epitafii/epitafy10.png"></li><li><img data-src="images/construkt-pam/constructor/epitafii/epitafy11.png"></li><li><img data-src="images/construkt-pam/constructor/epitafii/epitafy12.png"></li><li><img data-src="images/construkt-pam/constructor/epitafii/epitafy13.png"></li><li><img data-src="images/construkt-pam/constructor/epitafii/epitafy14.png"></li><li><img data-src="images/construkt-pam/constructor/epitafii/epitafy15.png"></li><li><img data-src="images/construkt-pam/constructor/epitafii/epitafy2.png"></li><li><img data-src="images/construkt-pam/constructor/epitafii/epitafy3.png"></li><li><img data-src="images/construkt-pam/constructor/epitafii/epitafy4.png"></li><li><img data-src="images/construkt-pam/constructor/epitafii/epitafy5.png"></li><li><img data-src="images/construkt-pam/constructor/epitafii/epitafy6.png"></li><li><img data-src="images/construkt-pam/constructor/epitafii/epitafy7.png"></li><li><img data-src="images/construkt-pam/constructor/epitafii/epitafy8.png"></li><li><img data-src="images/construkt-pam/constructor/epitafii/epitafy9.png"></li>        </ul>
+      </div>
+      <p style="margin: 10px 5px; padding: 0;">Добавьте оформления:</p>
+      <div class="face-panel addImg"> 
+        <div class="accordeon svechi"> Свечи</div>
+        <ul class="hide">
+          <li><img data-src="images/construkt-pam/constructor/candles/svecha1.png"></li><li><img data-src="images/construkt-pam/constructor/candles/svecha10.png"></li><li><img data-src="images/construkt-pam/constructor/candles/svecha11.png"></li><li><img data-src="images/construkt-pam/constructor/candles/svecha12.png"></li><li><img data-src="images/construkt-pam/constructor/candles/svecha13.png"></li><li><img data-src="images/construkt-pam/constructor/candles/svecha14.png"></li><li><img data-src="images/construkt-pam/constructor/candles/svecha15.png"></li><li><img data-src="images/construkt-pam/constructor/candles/svecha16.png"></li><li><img data-src="images/construkt-pam/constructor/candles/svecha17.png"></li><li><img data-src="images/construkt-pam/constructor/candles/svecha18.png"></li><li><img data-src="images/construkt-pam/constructor/candles/svecha19.png"></li><li><img data-src="images/construkt-pam/constructor/candles/svecha2.png"></li><li><img data-src="images/construkt-pam/constructor/candles/svecha20.png"></li><li><img data-src="images/construkt-pam/constructor/candles/svecha21.png"></li><li><img data-src="images/construkt-pam/constructor/candles/svecha22.png"></li><li><img data-src="images/construkt-pam/constructor/candles/svecha23.png"></li><li><img data-src="images/construkt-pam/constructor/candles/svecha24.png"></li><li><img data-src="images/construkt-pam/constructor/candles/svecha25.png"></li><li><img data-src="images/construkt-pam/constructor/candles/svecha26.png"></li><li><img data-src="images/construkt-pam/constructor/candles/svecha27.png"></li><li><img data-src="images/construkt-pam/constructor/candles/svecha28.png"></li><li><img data-src="images/construkt-pam/constructor/candles/svecha29.png"></li><li><img data-src="images/construkt-pam/constructor/candles/svecha3.png"></li><li><img data-src="images/construkt-pam/constructor/candles/svecha30.png"></li><li><img data-src="images/construkt-pam/constructor/candles/svecha31.png"></li><li><img data-src="images/construkt-pam/constructor/candles/svecha32.png"></li><li><img data-src="images/construkt-pam/constructor/candles/svecha33.png"></li><li><img data-src="images/construkt-pam/constructor/candles/svecha34.png"></li><li><img data-src="images/construkt-pam/constructor/candles/svecha35.png"></li><li><img data-src="images/construkt-pam/constructor/candles/svecha36.png"></li><li><img data-src="images/construkt-pam/constructor/candles/svecha37.png"></li><li><img data-src="images/construkt-pam/constructor/candles/svecha38.png"></li><li><img data-src="images/construkt-pam/constructor/candles/svecha39.png"></li><li><img data-src="images/construkt-pam/constructor/candles/svecha4.png"></li><li><img data-src="images/construkt-pam/constructor/candles/svecha40.png"></li><li><img data-src="images/construkt-pam/constructor/candles/svecha41.png"></li><li><img data-src="images/construkt-pam/constructor/candles/svecha42.png"></li><li><img data-src="images/construkt-pam/constructor/candles/svecha43.png"></li><li><img data-src="images/construkt-pam/constructor/candles/svecha44.png"></li><li><img data-src="images/construkt-pam/constructor/candles/svecha45.png"></li><li><img data-src="images/construkt-pam/constructor/candles/svecha46.png"></li><li><img data-src="images/construkt-pam/constructor/candles/svecha47.png"></li><li><img data-src="images/construkt-pam/constructor/candles/svecha48.png"></li><li><img data-src="images/construkt-pam/constructor/candles/svecha49.png"></li><li><img data-src="images/construkt-pam/constructor/candles/svecha5.png"></li><li><img data-src="images/construkt-pam/constructor/candles/svecha50.png"></li><li><img data-src="images/construkt-pam/constructor/candles/svecha51.png"></li><li><img data-src="images/construkt-pam/constructor/candles/svecha52.png"></li><li><img data-src="images/construkt-pam/constructor/candles/svecha53.png"></li><li><img data-src="images/construkt-pam/constructor/candles/svecha54.png"></li><li><img data-src="images/construkt-pam/constructor/candles/svecha55.png"></li><li><img data-src="images/construkt-pam/constructor/candles/svecha56.png"></li><li><img data-src="images/construkt-pam/constructor/candles/svecha57.png"></li><li><img data-src="images/construkt-pam/constructor/candles/svecha58.png"></li><li><img data-src="images/construkt-pam/constructor/candles/svecha59.png"></li><li><img data-src="images/construkt-pam/constructor/candles/svecha6.png"></li><li><img data-src="images/construkt-pam/constructor/candles/svecha60.png"></li><li><img data-src="images/construkt-pam/constructor/candles/svecha7.png"></li><li><img data-src="images/construkt-pam/constructor/candles/svecha8.png"></li><li><img data-src="images/construkt-pam/constructor/candles/svecha9.png"></li>        </ul>
+      </div>
+      <div class="face-panel addImg"> 
+        <div class="accordeon krest"> Кресты</div>
+        <ul class="hide">
+          <li><img data-src="images/construkt-pam/constructor/crosses/krestik1.png"></li><li><img data-src="images/construkt-pam/constructor/crosses/krestik10.png"></li><li><img data-src="images/construkt-pam/constructor/crosses/krestik11.png"></li><li><img data-src="images/construkt-pam/constructor/crosses/krestik12.png"></li><li><img data-src="images/construkt-pam/constructor/crosses/krestik13.png"></li><li><img data-src="images/construkt-pam/constructor/crosses/krestik14.png"></li><li><img data-src="images/construkt-pam/constructor/crosses/krestik15.png"></li><li><img data-src="images/construkt-pam/constructor/crosses/krestik16.png"></li><li><img data-src="images/construkt-pam/constructor/crosses/krestik17.png"></li><li><img data-src="images/construkt-pam/constructor/crosses/krestik18.png"></li><li><img data-src="images/construkt-pam/constructor/crosses/krestik19.png"></li><li><img data-src="images/construkt-pam/constructor/crosses/krestik2.png"></li><li><img data-src="images/construkt-pam/constructor/crosses/krestik20.png"></li><li><img data-src="images/construkt-pam/constructor/crosses/krestik21.png"></li><li><img data-src="images/construkt-pam/constructor/crosses/krestik22.png"></li><li><img data-src="images/construkt-pam/constructor/crosses/krestik23.png"></li><li><img data-src="images/construkt-pam/constructor/crosses/krestik24.png"></li><li><img data-src="images/construkt-pam/constructor/crosses/krestik25.png"></li><li><img data-src="images/construkt-pam/constructor/crosses/krestik26.png"></li><li><img data-src="images/construkt-pam/constructor/crosses/krestik27.png"></li><li><img data-src="images/construkt-pam/constructor/crosses/krestik28.png"></li><li><img data-src="images/construkt-pam/constructor/crosses/krestik29.png"></li><li><img data-src="images/construkt-pam/constructor/crosses/krestik3.png"></li><li><img data-src="images/construkt-pam/constructor/crosses/krestik30.png"></li><li><img data-src="images/construkt-pam/constructor/crosses/krestik31.png"></li><li><img data-src="images/construkt-pam/constructor/crosses/krestik32.png"></li><li><img data-src="images/construkt-pam/constructor/crosses/krestik33.png"></li><li><img data-src="images/construkt-pam/constructor/crosses/krestik34.png"></li><li><img data-src="images/construkt-pam/constructor/crosses/krestik35.png"></li><li><img data-src="images/construkt-pam/constructor/crosses/krestik36.png"></li><li><img data-src="images/construkt-pam/constructor/crosses/krestik37.png"></li><li><img data-src="images/construkt-pam/constructor/crosses/krestik38.png"></li><li><img data-src="images/construkt-pam/constructor/crosses/krestik39.png"></li><li><img data-src="images/construkt-pam/constructor/crosses/krestik4.png"></li><li><img data-src="images/construkt-pam/constructor/crosses/krestik40.png"></li><li><img data-src="images/construkt-pam/constructor/crosses/krestik41.png"></li><li><img data-src="images/construkt-pam/constructor/crosses/krestik42.png"></li><li><img data-src="images/construkt-pam/constructor/crosses/krestik43.png"></li><li><img data-src="images/construkt-pam/constructor/crosses/krestik44.png"></li><li><img data-src="images/construkt-pam/constructor/crosses/krestik45.png"></li><li><img data-src="images/construkt-pam/constructor/crosses/krestik46.png"></li><li><img data-src="images/construkt-pam/constructor/crosses/krestik47.png"></li><li><img data-src="images/construkt-pam/constructor/crosses/krestik48.png"></li><li><img data-src="images/construkt-pam/constructor/crosses/krestik49.png"></li><li><img data-src="images/construkt-pam/constructor/crosses/krestik5.png"></li><li><img data-src="images/construkt-pam/constructor/crosses/krestik50.png"></li><li><img data-src="images/construkt-pam/constructor/crosses/krestik51.png"></li><li><img data-src="images/construkt-pam/constructor/crosses/krestik52.png"></li><li><img data-src="images/construkt-pam/constructor/crosses/krestik53.png"></li><li><img data-src="images/construkt-pam/constructor/crosses/krestik54.png"></li><li><img data-src="images/construkt-pam/constructor/crosses/krestik55.png"></li><li><img data-src="images/construkt-pam/constructor/crosses/krestik56.png"></li><li><img data-src="images/construkt-pam/constructor/crosses/krestik57.png"></li><li><img data-src="images/construkt-pam/constructor/crosses/krestik58.png"></li><li><img data-src="images/construkt-pam/constructor/crosses/krestik59.png"></li><li><img data-src="images/construkt-pam/constructor/crosses/krestik6.png"></li><li><img data-src="images/construkt-pam/constructor/crosses/krestik7.png"></li><li><img data-src="images/construkt-pam/constructor/crosses/krestik8.png"></li><li><img data-src="images/construkt-pam/constructor/crosses/krestik9.png"></li>        </ul>
+      </div>
+      <div class="face-panel addImg"> 
+        <div class="accordeon pticy"> Птицы</div>
+        <ul class="hide">
+          <li><img data-src="images/construkt-pam/constructor/pticy/1.png"></li><li><img data-src="images/construkt-pam/constructor/pticy/2.png"></li><li><img data-src="images/construkt-pam/constructor/pticy/3.png"></li><li><img data-src="images/construkt-pam/constructor/pticy/4.png"></li><li><img data-src="images/construkt-pam/constructor/pticy/5.png"></li><li><img data-src="images/construkt-pam/constructor/pticy/6.png"></li><li><img data-src="images/construkt-pam/constructor/pticy/7.png"></li><li><img data-src="images/construkt-pam/constructor/pticy/8.png"></li><li><img data-src="images/construkt-pam/constructor/pticy/9.png"></li>        </ul>
+      </div>
+      <div class="face-panel addImg"> 
+        <div class="accordeon vetv"> Ветви</div>
+        <ul class="hide">
+          <li><img data-src="images/construkt-pam/constructor/vetki/vetv1.png"></li><li><img data-src="images/construkt-pam/constructor/vetki/vetv10.png"></li><li><img data-src="images/construkt-pam/constructor/vetki/vetv11.png"></li><li><img data-src="images/construkt-pam/constructor/vetki/vetv2.png"></li><li><img data-src="images/construkt-pam/constructor/vetki/vetv3.png"></li><li><img data-src="images/construkt-pam/constructor/vetki/vetv4.png"></li><li><img data-src="images/construkt-pam/constructor/vetki/vetv5.png"></li><li><img data-src="images/construkt-pam/constructor/vetki/vetv6.png"></li><li><img data-src="images/construkt-pam/constructor/vetki/vetv7.png"></li><li><img data-src="images/construkt-pam/constructor/vetki/vetv8.png"></li><li><img data-src="images/construkt-pam/constructor/vetki/vetv9.png"></li>        </ul>
+      </div>
+      <div class="face-panel addImg"> 
+        <div class="accordeon cvetok"> Цветы</div>
+        <ul class="hide">
+          <li><img data-src="images/construkt-pam/constructor/flowers/cvetok1.png"></li><li><img data-src="images/construkt-pam/constructor/flowers/cvetok10.png"></li><li><img data-src="images/construkt-pam/constructor/flowers/cvetok11.png"></li><li><img data-src="images/construkt-pam/constructor/flowers/cvetok12.png"></li><li><img data-src="images/construkt-pam/constructor/flowers/cvetok13.png"></li><li><img data-src="images/construkt-pam/constructor/flowers/cvetok14.png"></li><li><img data-src="images/construkt-pam/constructor/flowers/cvetok15.png"></li><li><img data-src="images/construkt-pam/constructor/flowers/cvetok16.png"></li><li><img data-src="images/construkt-pam/constructor/flowers/cvetok17.png"></li><li><img data-src="images/construkt-pam/constructor/flowers/cvetok18.png"></li><li><img data-src="images/construkt-pam/constructor/flowers/cvetok19.png"></li><li><img data-src="images/construkt-pam/constructor/flowers/cvetok2.png"></li><li><img data-src="images/construkt-pam/constructor/flowers/cvetok20.png"></li><li><img data-src="images/construkt-pam/constructor/flowers/cvetok21.png"></li><li><img data-src="images/construkt-pam/constructor/flowers/cvetok22.png"></li><li><img data-src="images/construkt-pam/constructor/flowers/cvetok23.png"></li><li><img data-src="images/construkt-pam/constructor/flowers/cvetok24.png"></li><li><img data-src="images/construkt-pam/constructor/flowers/cvetok25.png"></li><li><img data-src="images/construkt-pam/constructor/flowers/cvetok26.png"></li><li><img data-src="images/construkt-pam/constructor/flowers/cvetok27.png"></li><li><img data-src="images/construkt-pam/constructor/flowers/cvetok28.png"></li><li><img data-src="images/construkt-pam/constructor/flowers/cvetok29.png"></li><li><img data-src="images/construkt-pam/constructor/flowers/cvetok3.png"></li><li><img data-src="images/construkt-pam/constructor/flowers/cvetok30.png"></li><li><img data-src="images/construkt-pam/constructor/flowers/cvetok31.png"></li><li><img data-src="images/construkt-pam/constructor/flowers/cvetok32.png"></li><li><img data-src="images/construkt-pam/constructor/flowers/cvetok33.png"></li><li><img data-src="images/construkt-pam/constructor/flowers/cvetok34.png"></li><li><img data-src="images/construkt-pam/constructor/flowers/cvetok35.png"></li><li><img data-src="images/construkt-pam/constructor/flowers/cvetok36.png"></li><li><img data-src="images/construkt-pam/constructor/flowers/cvetok37.png"></li><li><img data-src="images/construkt-pam/constructor/flowers/cvetok38.png"></li><li><img data-src="images/construkt-pam/constructor/flowers/cvetok39.png"></li><li><img data-src="images/construkt-pam/constructor/flowers/cvetok4.png"></li><li><img data-src="images/construkt-pam/constructor/flowers/cvetok40.png"></li><li><img data-src="images/construkt-pam/constructor/flowers/cvetok41.png"></li><li><img data-src="images/construkt-pam/constructor/flowers/cvetok42.png"></li><li><img data-src="images/construkt-pam/constructor/flowers/cvetok43.png"></li><li><img data-src="images/construkt-pam/constructor/flowers/cvetok44.png"></li><li><img data-src="images/construkt-pam/constructor/flowers/cvetok45.png"></li><li><img data-src="images/construkt-pam/constructor/flowers/cvetok46.png"></li><li><img data-src="images/construkt-pam/constructor/flowers/cvetok47.png"></li><li><img data-src="images/construkt-pam/constructor/flowers/cvetok48.png"></li><li><img data-src="images/construkt-pam/constructor/flowers/cvetok49.png"></li><li><img data-src="images/construkt-pam/constructor/flowers/cvetok5.png"></li><li><img data-src="images/construkt-pam/constructor/flowers/cvetok50.png"></li><li><img data-src="images/construkt-pam/constructor/flowers/cvetok51.png"></li><li><img data-src="images/construkt-pam/constructor/flowers/cvetok52.png"></li><li><img data-src="images/construkt-pam/constructor/flowers/cvetok53.png"></li><li><img data-src="images/construkt-pam/constructor/flowers/cvetok54.png"></li><li><img data-src="images/construkt-pam/constructor/flowers/cvetok55.png"></li><li><img data-src="images/construkt-pam/constructor/flowers/cvetok56.png"></li><li><img data-src="images/construkt-pam/constructor/flowers/cvetok57.png"></li><li><img data-src="images/construkt-pam/constructor/flowers/cvetok58.png"></li><li><img data-src="images/construkt-pam/constructor/flowers/cvetok59.png"></li><li><img data-src="images/construkt-pam/constructor/flowers/cvetok6.png"></li><li><img data-src="images/construkt-pam/constructor/flowers/cvetok60.png"></li><li><img data-src="images/construkt-pam/constructor/flowers/cvetok61.png"></li><li><img data-src="images/construkt-pam/constructor/flowers/cvetok62.png"></li><li><img data-src="images/construkt-pam/constructor/flowers/cvetok63.png"></li><li><img data-src="images/construkt-pam/constructor/flowers/cvetok64.png"></li><li><img data-src="images/construkt-pam/constructor/flowers/cvetok7.png"></li><li><img data-src="images/construkt-pam/constructor/flowers/cvetok8.png"></li><li><img data-src="images/construkt-pam/constructor/flowers/cvetok9.png"></li>        </ul>
+      </div>
+	  
+	  
+	  <p style="margin: 10px 5px; padding: 0;">Мусульманская тематика:</p>
+        <div class="face-panel addImg">
+            <div class="accordeon mecheti"> Мечети</div>
+            <ul class="hide">
+            <li><img src="images/construkt-pam/constructor/mecheti/mechet1.png"></li><li><img src="images/construkt-pam/constructor/mecheti/mechet10.png"></li><li><img src="images/construkt-pam/constructor/mecheti/mechet11.png"></li><li><img src="images/construkt-pam/constructor/mecheti/mechet12.png"></li><li><img src="images/construkt-pam/constructor/mecheti/mechet13.png"></li><li><img src="images/construkt-pam/constructor/mecheti/mechet14.png"></li><li><img src="images/construkt-pam/constructor/mecheti/mechet15.png"></li><li><img src="images/construkt-pam/constructor/mecheti/mechet16.png"></li><li><img src="images/construkt-pam/constructor/mecheti/mechet2.png"></li><li><img src="images/construkt-pam/constructor/mecheti/mechet3.png"></li><li><img src="images/construkt-pam/constructor/mecheti/mechet4.png"></li><li><img src="images/construkt-pam/constructor/mecheti/mechet5.png"></li><li><img src="images/construkt-pam/constructor/mecheti/mechet6.png"></li><li><img src="images/construkt-pam/constructor/mecheti/mechet7.png"></li><li><img src="images/construkt-pam/constructor/mecheti/mechet8.png"></li><li><img src="images/construkt-pam/constructor/mecheti/mechet9.png"></li>            </ul>
+        </div>
+        <div class="face-panel addImg">
+            <div class="accordeon msimvol"> Символика</div>
+            <ul class="hide">
+            <li><img src="images/construkt-pam/constructor/msimvol/msimvolika1.png"></li><li><img src="images/construkt-pam/constructor/msimvol/msimvolika10.png"></li><li><img src="images/construkt-pam/constructor/msimvol/msimvolika11.png"></li><li><img src="images/construkt-pam/constructor/msimvol/msimvolika12.png"></li><li><img src="images/construkt-pam/constructor/msimvol/msimvolika13.png"></li><li><img src="images/construkt-pam/constructor/msimvol/msimvolika3.png"></li><li><img src="images/construkt-pam/constructor/msimvol/msimvolika4.png"></li><li><img src="images/construkt-pam/constructor/msimvol/msimvolika5.png"></li><li><img src="images/construkt-pam/constructor/msimvol/msimvolika6.png"></li><li><img src="images/construkt-pam/constructor/msimvol/msimvolika7.png"></li><li><img src="images/construkt-pam/constructor/msimvol/msimvolika8.png"></li><li><img src="images/construkt-pam/constructor/msimvol/msimvolika9.png"></li>            </ul>
+        </div>
+        
+        <div class="face-panel addImg">
+            <div class="accordeon epitafiya"> Надписи</div>
+            <ul class="hide">
+            <li><img src="images/construkt-pam/constructor/mnadpisi/mnadpis1.png"></li><li><img src="images/construkt-pam/constructor/mnadpisi/mnadpis2.png"></li><li><img src="images/construkt-pam/constructor/mnadpisi/mnadpis3.png"></li><li><img src="images/construkt-pam/constructor/mnadpisi/mnadpis4.png"></li>            </ul>
+        </div>
+        
+        <div class="face-panel addImg">
+            <div class="accordeon muzor"> Узоры</div>
+            <ul class="hide">
+            <li><img src="images/construkt-pam/constructor/muzor/uzor1.png"></li><li><img src="images/construkt-pam/constructor/muzor/uzor2.png"></li><li><img src="images/construkt-pam/constructor/muzor/uzor3.png"></li><li><img src="images/construkt-pam/constructor/muzor/uzor4.png"></li><li><img src="images/construkt-pam/constructor/muzor/uzor5.png"></li><li><img src="images/construkt-pam/constructor/muzor/uzor6.png"></li><li><img src="images/construkt-pam/constructor/muzor/uzor7.png"></li>            </ul>
+        </div>
+      
+    </div>
+  </div>
+  <div class="clear"></div>
+
+
+
+
+
+
+
+
+
+	  	  <!-- Item text -->
+	  <div class="itemFullText">
+	  		  </div>
+	  	  
+	  <div class="clear"></div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div id="popup" style="display:none"> <img src="construkt-pam/img/constructor/close.svg" alt="" class="close"> 
+  <h2>Отправить эскиз на почту</h2>
+    <p class="error"></p>
+    <input type="hidden" value="" id="urlref" name="urlref" />
+    <p>Ваше Имя<br>
+    <input placeholder="Представьтесь пожалуйста" type="text" name="imy" id="imy"></p>
+    <p>Ваш Телефон<br>
+    <input placeholder="+7 777 77 77 777" type="text" name="telefon" id="telefon"></p>
+    <p>Ваш Email, копия эскиза памятника так же будет отправлена и на Вашу почту<br>
+    <input type="text" name="" id="email"></p>
+    <button class="button">ОТПРАВИТЬ</button>
+</div>
+
+<script>
+document.getElementById("urlref").setAttribute("value",window.location.href);
+</script>
+
+	<div class="clear"></div>
+</div>
+
+</div>
+<script src="construkt-pam/jquery.lazyloadxt.js"></script>
+<script src="construkt-pam/constructor.js"></script>
+</body>
+</html>
+
