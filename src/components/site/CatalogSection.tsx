@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { Monument } from '@/data/siteData';
+import SiteImage from '@/components/site/SiteImage';
 import Icon from '@/components/ui/icon';
 
 interface CatalogSectionProps {
@@ -30,7 +31,7 @@ function LazyImage({ src, alt }: { src: string; alt: string }) {
   return (
     <div ref={imgRef} className="w-full h-full bg-stone-100">
       {visible && (
-        <img
+        <SiteImage
           src={src}
           alt={alt}
           onLoad={() => setLoaded(true)}

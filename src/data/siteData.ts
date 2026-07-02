@@ -86,9 +86,9 @@ export type SiteSettings = {
   favicon: string;
 };
 
-const IMG1 = '/images/monument-1.jpg';
-const IMG2 = '/images/monument-2.jpg';
-const IMG3 = '/images/monument-3.jpg';
+const IMG1 = '/images/monument-1.webp';
+const IMG2 = '/images/monument-2.webp';
+const IMG3 = '/images/monument-3.webp';
 
 export const defaultMonuments: Monument[] = [
   {
@@ -247,12 +247,12 @@ export const defaultServices: Service[] = [
 ];
 
 export const defaultPortfolio: Portfolio[] = [
-  { id: 1, title: 'Семейный мемориал', material: 'Чёрный гранит', image: '/images/monument-1.jpg', year: 2024 },
-  { id: 2, title: 'Эксклюзивный с горельефом', material: 'Карельский гранит', image: '/images/monument-2.jpg', year: 2024 },
-  { id: 3, title: 'Православный крест', material: 'Габбро-диабаз', image: '/images/monument-3.jpg', year: 2023 },
-  { id: 4, title: 'Арочный с портретом', material: 'Чёрный гранит', image: '/images/monument-1.jpg', year: 2023 },
-  { id: 5, title: 'Детский памятник', material: 'Белый мрамор', image: '/images/monument-2.jpg', year: 2024 },
-  { id: 6, title: 'Двойной горизонтальный', material: 'Карельский гранит', image: '/images/monument-3.jpg', year: 2023 },
+  { id: 1, title: 'Семейный мемориал', material: 'Чёрный гранит', image: '/images/monument-1.webp', year: 2024 },
+  { id: 2, title: 'Эксклюзивный с горельефом', material: 'Карельский гранит', image: '/images/monument-2.webp', year: 2024 },
+  { id: 3, title: 'Православный крест', material: 'Габбро-диабаз', image: '/images/monument-3.webp', year: 2023 },
+  { id: 4, title: 'Арочный с портретом', material: 'Чёрный гранит', image: '/images/monument-1.webp', year: 2023 },
+  { id: 5, title: 'Детский памятник', material: 'Белый мрамор', image: '/images/monument-2.webp', year: 2024 },
+  { id: 6, title: 'Двойной горизонтальный', material: 'Карельский гранит', image: '/images/monument-3.webp', year: 2023 },
 ];
 
 export const defaultGraniteTypes: GraniteType[] = [
@@ -263,7 +263,7 @@ export const defaultGraniteTypes: GraniteType[] = [
     color: 'Глубокий чёрный',
     hardness: '7 по шкале Мооса',
     description: 'Самый популярный материал для памятников. Равномерный чёрный цвет, без вкраплений. Прекрасно полируется, надписи и портреты выглядят контрастно и чётко. Не выцветает.',
-    image: '/images/monument-3.jpg',
+    image: '/images/monument-3.webp',
   },
   {
     id: 2,
@@ -272,7 +272,7 @@ export const defaultGraniteTypes: GraniteType[] = [
     color: 'Серо-голубой с тёмными вкраплениями',
     hardness: '6.5 по шкале Мооса',
     description: 'Уникальный узор из тёмных и светлых минералов создаёт неповторимый вид. Каждое изделие — единственное в своём роде. Прочный и морозостойкий, идеален для российского климата.',
-    image: '/images/monument-1.jpg',
+    image: '/images/monument-1.webp',
   },
   {
     id: 3,
@@ -281,7 +281,7 @@ export const defaultGraniteTypes: GraniteType[] = [
     color: 'Тёмно-серый, почти чёрный',
     hardness: '8 по шкале Мооса',
     description: 'Исключительно прочная горная порода. Самый износостойкий материал среди всех используемых в мемориальном производстве. Устойчив к агрессивной среде и перепадам температур.',
-    image: '/images/monument-2.jpg',
+    image: '/images/monument-2.webp',
   },
   {
     id: 4,
@@ -290,7 +290,7 @@ export const defaultGraniteTypes: GraniteType[] = [
     color: 'Белый с прожилками',
     hardness: '3-4 по шкале Мооса',
     description: 'Благородный и изысканный материал. Символизирует чистоту и вечность. Требует более тщательного ухода, но создаёт неповторимый облик. Используется для детских и женских памятников.',
-    image: '/images/monument-3.jpg',
+    image: '/images/monument-3.webp',
   },
 ];
 
@@ -314,7 +314,7 @@ export const defaultSiteSettings: SiteSettings = {
   mapUrl: 'https://yandex.ru/map-widget/v1/?ll=37.620393%2C55.753960&z=12',
   heroTitle: 'Памятники из гранита в Москве и области',
   heroSubtitle: 'Собственное производство · Установка · Доставка по России',
-  heroImage: '/images/hero.jpg',
+  heroImage: '/images/hero.webp',
   seoTitle: 'Гранит Север — Памятники из гранита',
   metaDescription: 'Изготовление памятников из гранита. granit-sever.ru — широкий каталог, доступные цены, профессиональная установка.',
   ogImage: '',

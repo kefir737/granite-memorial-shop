@@ -1,4 +1,5 @@
 import { Portfolio } from '@/data/siteData';
+import SiteImage from '@/components/site/SiteImage';
 
 interface PortfolioSectionProps {
   portfolio: Portfolio[];
@@ -23,7 +24,7 @@ export default function PortfolioSection({ portfolio }: PortfolioSectionProps) {
               className={`group relative overflow-hidden cursor-pointer ${i === 0 ? 'md:col-span-2 md:row-span-2' : ''}`}
             >
               <div className={`${i === 0 ? 'aspect-square' : 'aspect-[4/3]'} bg-stone-100`}>
-                <img
+                <SiteImage
                   src={item.image}
                   alt={item.title}
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"

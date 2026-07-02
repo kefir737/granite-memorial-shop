@@ -14,9 +14,10 @@ function htmlBuildTweaks(): Plugin {
             const match = out.match(scriptRe);
             if (match) {
                 out = out.replace(scriptRe, '');
+                const preload = `<link rel="modulepreload" href="${match[1]}">\n`;
                 out = out.replace(
                     /<\/div>\s*<script>\s*\n\s*function loadFonts/,
-                    `</div>\n<script type="module" src="${match[1]}"></script>\n<script>\n  function loadFonts`,
+                    `</div>\n${preload}<script type="module" src="${match[1]}"></script>\n<script>\n  function loadFonts`,
                 );
             }
             return out;

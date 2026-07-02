@@ -14,9 +14,9 @@ CORS = {
     'Access-Control-Allow-Headers': 'Content-Type',
 }
 
-IMG1 = '/images/monument-1.jpg'
-IMG2 = '/images/monument-2.jpg'
-IMG3 = '/images/monument-3.jpg'
+IMG1 = '/images/monument-1.webp'
+IMG2 = '/images/monument-2.webp'
+IMG3 = '/images/monument-3.webp'
 
 CREATE_SQL = """
 CREATE TABLE IF NOT EXISTS monuments (

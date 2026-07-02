@@ -21,7 +21,7 @@ const EMPTY: Omit<Monument, 'id'> = {
   width: 60,
   height: 120,
   depth: 8,
-  image: '/images/monument-1.jpg',
+  image: '/images/monument-1.webp',
   images: [],
   description: '',
   fullDescription: '',

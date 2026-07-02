@@ -1,26 +1,48 @@
 import { useEffect, useState } from 'react';
 import { SiteSettings } from '@/data/siteData';
+import { preferWebp } from '@/lib/siteImage';
 
-const DEFAULT_HERO = '/images/hero.jpg';
+const DEFAULT_HERO = '/images/hero.webp';
+const FALLBACK_ID = 'hero-fallback';
 
 interface HeroSectionProps {
   settings: SiteSettings;
 }
 
+function syncHeroFallback(settings: SiteSettings) {
+  const el = document.getElementById(FALLBACK_ID);
+  if (!el) return;
+  const h1 = el.querySelector('h1');
+  const sub = el.querySelector('.hero-critical__subtitle');
+  const phone = el.querySelector('.hero-critical__actions .btn-outline') as HTMLAnchorElement | null;
+  if (h1) h1.textContent = settings.heroTitle;
+  if (sub) sub.textContent = settings.heroSubtitle;
+  if (phone && settings.phone) {
+    phone.textContent = settings.phone;
+    phone.href = `tel:${settings.phone.replace(/\s/g, '')}`;
+  }
+}
+
 export default function HeroSection({ settings }: HeroSectionProps) {
   const [heroSrc, setHeroSrc] = useState<string | null>(null);
   const [heroVisible, setHeroVisible] = useState(false);
+  const useFallback = typeof document !== 'undefined' && !!document.getElementById(FALLBACK_ID);
 
   useEffect(() => {
+    syncHeroFallback(settings);
+  }, [settings.heroTitle, settings.heroSubtitle]);
+
+  useEffect(() => {
+    if (useFallback) return;
     if (window.matchMedia('(max-width: 767px)').matches) return;
 
-    const url = settings.heroImage || DEFAULT_HERO;
+    const url = preferWebp(settings.heroImage || DEFAULT_HERO);
     const load = () => setHeroSrc(url);
-    const schedule = () => window.setTimeout(load, 1500);
+    const schedule = () => window.setTimeout(load, 2500);
 
     if (document.readyState === 'complete') schedule();
     else window.addEventListener('load', schedule, { once: true });
-  }, [settings.heroImage]);
+  }, [settings.heroImage, useFallback]);
 
   useEffect(() => {
     if (!heroSrc) return;
@@ -29,6 +51,8 @@ export default function HeroSection({ settings }: HeroSectionProps) {
     img.onload = () => setHeroVisible(true);
     img.src = heroSrc;
   }, [heroSrc]);
+
+  if (useFallback) return null;
 
   return (
     <section className="relative min-h-screen flex items-center overflow-hidden bg-foreground">
@@ -39,14 +63,11 @@ export default function HeroSection({ settings }: HeroSectionProps) {
           style={{ backgroundImage: `url(${heroSrc})` }}
         />
       )}
-      {/* Gradient overlay */}
       <div className="absolute inset-0 bg-gradient-to-r from-foreground via-foreground/80 to-transparent" />
-      {/* Blue accent line */}
       <div className="absolute top-0 left-0 w-1 h-full bg-blue" style={{ background: 'hsl(214, 60%, 42%)' }} />
 
       <div className="relative z-10 max-w-7xl mx-auto px-6 py-32">
         <div className="max-w-2xl">
-          {/* Badge */}
           <div className="inline-flex items-center gap-2 mb-8">
             <div className="h-px w-8" style={{ background: 'hsl(214, 60%, 42%)' }} />
             <span className="text-xs font-body tracking-[0.3em] uppercase" style={{ color: 'hsl(214, 60%, 65%)' }}>
@@ -54,21 +75,14 @@ export default function HeroSection({ settings }: HeroSectionProps) {
             </span>
           </div>
 
-          {/* Main heading */}
-          <h1
-            className="font-display text-6xl md:text-7xl font-light text-white leading-[1.05] mb-6"
-          >
+          <h1 className="font-display text-6xl md:text-7xl font-light text-white leading-[1.05] mb-6">
             {settings.heroTitle}
           </h1>
 
-          {/* Subtitle */}
-          <p
-            className="font-body text-lg text-white/60 mb-10 leading-relaxed"
-          >
+          <p className="font-body text-lg text-white/60 mb-10 leading-relaxed">
             {settings.heroSubtitle}
           </p>
 
-          {/* CTA buttons */}
           <div className="flex flex-col sm:flex-row gap-4">
             <a
               href="#catalog"
@@ -84,10 +98,7 @@ export default function HeroSection({ settings }: HeroSectionProps) {
             </a>
           </div>
 
-          {/* Stats */}
-          <div
-            className="flex gap-10 mt-16 pt-10 border-t border-white/10"
-          >
+          <div className="flex gap-10 mt-16 pt-10 border-t border-white/10">
             {[
               { value: '15+', label: 'лет на рынке' },
               { value: '3 200', label: 'установленных памятников' },

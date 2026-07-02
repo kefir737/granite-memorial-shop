@@ -41,7 +41,28 @@
         line-height: 1.6;
         color: rgba(255, 255, 255, 0.6);
       }
+      .hero-critical__actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+        margin-top: 2.5rem;
+      }
+      .hero-critical__actions a {
+        font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+        font-size: 0.875rem;
+        text-decoration: none;
+        padding: 1rem 2rem;
+      }
+      .hero-critical__actions .btn-primary {
+        background: #fff;
+        color: #141414;
+      }
+      .hero-critical__actions .btn-outline {
+        border: 1px solid rgba(255,255,255,0.3);
+        color: #fff;
+      }
     </style>
+    <link rel="preload" href="/images/hero.webp" as="image" type="image/webp" media="(min-width: 768px)">
     <link rel="icon" type="image/svg+xml" href="/favicon.svg">
     <link rel="apple-touch-icon" href="/apple-touch-icon.png">
     <meta name="theme-color" content="#1a1a1a">
@@ -54,15 +75,18 @@
   </head>
 
 <body>
-<div id="root">
-  <section class="hero-critical">
-    <div class="hero-critical__inner">
-      <p class="hero-critical__badge">Собственное производство</p>
-      <h1>Памятники из гранита в Москве и области</h1>
-      <p class="hero-critical__subtitle">Собственное производство · Установка · Доставка по России</p>
+<section id="hero-fallback" class="hero-critical">
+  <div class="hero-critical__inner">
+    <p class="hero-critical__badge">Собственное производство</p>
+    <h1>Памятники из гранита в Москве и области</h1>
+    <p class="hero-critical__subtitle">Собственное производство · Установка · Доставка по России</p>
+    <div class="hero-critical__actions">
+      <a class="btn-primary" href="#catalog">Смотреть каталог</a>
+      <a class="btn-outline" href="tel:+74951234567">+7 (495) 123-45-67</a>
     </div>
-  </section>
-</div>
+  </div>
+</section>
+<div id="root"></div>
 <script type="module" src="/src/main.tsx"></script>
 <script>
   function loadFonts() {

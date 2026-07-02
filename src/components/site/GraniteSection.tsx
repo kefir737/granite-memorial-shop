@@ -1,5 +1,6 @@
 import { GraniteType } from '@/data/siteData';
 import { useState } from 'react';
+import SiteImage from '@/components/site/SiteImage';
 
 interface GraniteSectionProps {
   graniteTypes: GraniteType[];
@@ -52,7 +53,7 @@ export default function GraniteSection({ graniteTypes }: GraniteSectionProps) {
           {current && (
             <div className="animate-fade-in" key={current.id}>
               <div className="aspect-[4/3] overflow-hidden mb-6 bg-stone-200">
-                <img
+                <SiteImage
                   src={current.image}
                   alt={current.name}
                   className="w-full h-full object-cover"
