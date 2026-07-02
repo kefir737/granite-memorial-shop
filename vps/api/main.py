@@ -1,21 +1,27 @@
 import json
 import os
+import re
 import base64
 import uuid
 import smtplib
 import time
 import threading
 import bcrypt
+from html import escape as html_escape
 from pathlib import Path
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
+from email.mime.base import MIMEBase
+from email import encoders
+from email.header import Header
+from email.policy import SMTP
 from collections import defaultdict
 
 import psycopg2
 import psycopg2.extras
 from fastapi import FastAPI, Request, Response
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, PlainTextResponse
 
 app = FastAPI()
 
@@ -130,6 +136,136 @@ def row_menu(r):
             "parentId": r.get("parent_id")}
 
 
+# ── Constructor sketch email ──────────────────────────────────────────────────
+
+EMAIL_RE = re.compile(r"^[^\s@]+@[^\s@]+\.[^\s@]+$")
+
+
+def get_smtp_config():
+    db_conn = get_conn()
+    cur = db_conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+    smtp_cfg = {}
+    try:
+        cur.execute(
+            "SELECT key, value FROM site_settings WHERE key IN "
+            "('smtpHost','smtpPort','smtpUser','smtpPassword','notificationEmail')"
+        )
+        smtp_cfg = {r["key"]: r["value"] for r in cur.fetchall()}
+    finally:
+        cur.close()
+        db_conn.close()
+
+    smtp_host = smtp_cfg.get("smtpHost") or os.environ.get("SMTP_HOST", "smtp.jino.ru")
+    smtp_port = int(smtp_cfg.get("smtpPort") or os.environ.get("SMTP_PORT", "587"))
+    smtp_user = smtp_cfg.get("smtpUser") or os.environ.get("SMTP_USER", "")
+    smtp_password = smtp_cfg.get("smtpPassword") or os.environ.get("SMTP_PASSWORD", "")
+    recipients_raw = smtp_cfg.get("notificationEmail") or os.environ.get("EMAIL_RECIPIENT", smtp_user)
+    recipients = [r.strip() for r in recipients_raw.split(",") if r.strip()]
+    return smtp_host, smtp_port, smtp_user, smtp_password, recipients
+
+
+def send_html_email(smtp_host, smtp_port, smtp_user, smtp_password, to_addr, subject, html, reply_to=None, attachment=None):
+    if smtp_port == 465:
+        server = smtplib.SMTP_SSL(smtp_host, smtp_port)
+    else:
+        server = smtplib.SMTP(smtp_host, smtp_port)
+        server.starttls()
+    server.login(smtp_user, smtp_password)
+
+    msg = MIMEMultipart(policy=SMTP)
+    msg["Subject"] = str(Header(subject, "utf-8"))
+    msg["From"] = smtp_user
+    msg["To"] = to_addr
+    if reply_to:
+        msg["Reply-To"] = reply_to
+    msg.attach(MIMEText(html, "html", "utf-8"))
+
+    if attachment:
+        filename, content, content_type = attachment
+        part = MIMEBase("application", "octet-stream")
+        part.set_payload(content)
+        encoders.encode_base64(part)
+        part.add_header("Content-Disposition", "attachment", filename=("utf-8", "", filename))
+        if content_type:
+            part.add_header("Content-Type", content_type)
+        msg.attach(part)
+
+    server.sendmail(smtp_user, [to_addr], msg.as_bytes())
+    server.quit()
+
+
+async def parse_sketch_form(request: Request):
+    content_type = request.headers.get("content-type", "")
+    if "application/json" in content_type:
+        body = await request.json()
+        return body.get("img", ""), body.get("email", ""), body.get("imy", ""), body.get("telefon", ""), body.get("urlref", "")
+    form = await request.form()
+    return form.get("img", ""), form.get("email", ""), form.get("imy", ""), form.get("telefon", ""), form.get("urlref", "")
+
+
+async def handle_send_sketch(request: Request):
+    try:
+        img, email, imy, telefon, urlref = await parse_sketch_form(request)
+        email = (email or "").strip()
+        imy = (imy or "Клиент").strip()
+        telefon = (telefon or "—").strip()
+        page_url = (urlref or "—").strip()
+
+        if not email or not EMAIL_RE.match(email):
+            return PlainTextResponse("Укажите корректный email", status_code=400)
+        if not img:
+            return PlainTextResponse("Эскиз не получен", status_code=400)
+
+        smtp_host, smtp_port, smtp_user, smtp_password, recipients = get_smtp_config()
+        if not smtp_user or not smtp_password or not recipients:
+            return PlainTextResponse("SMTP не настроен на сервере", status_code=500)
+
+        mail_to = recipients[0]
+        image_bytes = base64.b64decode(img)
+        attachment = ("eskiz-pamyatnika.png", image_bytes, "image/png")
+
+        manager_html = f"""
+            <h2>Новая заявка: узнать стоимость</h2>
+            <p><strong>Имя:</strong> {html_escape(imy)}</p>
+            <p><strong>Телефон:</strong> {html_escape(telefon)}</p>
+            <p><strong>Email клиента:</strong> {html_escape(email)}</p>
+            <p><strong>Страница:</strong> {html_escape(page_url)}</p>
+            <p>Эскиз памятника во вложении.</p>
+        """
+        greeting = f", {html_escape(imy)}" if imy != "Клиент" else ""
+        client_html = f"""
+            <h2>Ваш эскиз памятника</h2>
+            <p>Здравствуйте{greeting}!</p>
+            <p>Спасибо за обращение. Мы получили ваш эскиз и свяжемся с вами для расчёта стоимости.</p>
+            <p>Копия эскиза — во вложении.</p>
+        """
+
+        send_html_email(
+            smtp_host, smtp_port, smtp_user, smtp_password,
+            mail_to, f"Эскиз памятника — {imy}", manager_html,
+            reply_to=email, attachment=attachment,
+        )
+        send_html_email(
+            smtp_host, smtp_port, smtp_user, smtp_password,
+            email, "Ваш эскиз памятника", client_html,
+            attachment=attachment,
+        )
+        return PlainTextResponse("OK")
+    except Exception as exc:
+        print(f"Sketch send error: {exc}")
+        return PlainTextResponse(str(exc) or "Ошибка отправки письма", status_code=500)
+
+
+@app.post("/api/send-sketch")
+async def send_sketch(request: Request):
+    return await handle_send_sketch(request)
+
+
+@app.post("/save_image.php")
+async def save_image_php(request: Request):
+    return await handle_send_sketch(request)
+
+
 # ── API endpoints ─────────────────────────────────────────────────────────────
 
 @app.get("/api/{path:path}")
@@ -171,6 +307,8 @@ async def api_handler(path: str, request: Request):
             return handle_leads(method, parts, body, cur, conn)
         elif entity == "auth":
             return await handle_auth(method, parts, body, request, cur, conn)
+        elif entity == "sitemap":
+            return handle_sitemap(method, parts, cur, conn)
         else:
             return JSONResponse({"error": "Not found"}, status_code=404)
     finally:
@@ -689,39 +827,105 @@ async def upload_image(request: Request):
     return JSONResponse({"ok": True, "url": url})
 
 
+SITEMAP_RESERVED = frozenset({
+    "admin", "api", "contact", "embed", "konstruktor", "monument",
+    "upload-image", "uploads", "save_image.php", "sitemap.xml", "robots.txt", "404",
+})
+
+
+def _site_base_url(cur) -> str:
+    cur.execute("SELECT value FROM site_settings WHERE key='siteUrl'")
+    row = cur.fetchone()
+    return (row["value"] if row else "").rstrip("/") or "https://granit-sever.ru"
+
+
+def _normalize_page_path(slug: str) -> str | None:
+    s = (slug or "").strip()
+    if not s:
+        return None
+    if not s.startswith("/"):
+        s = "/" + s
+    path = s.rstrip("/") or "/"
+    if path == "/":
+        return None
+    segment = path.strip("/").split("/")[0].lower()
+    if segment in SITEMAP_RESERVED:
+        return None
+    if "/" in path.strip("/"):
+        return None
+    return path
+
+
+def build_sitemap_urls(cur) -> list[str]:
+    site_url = _site_base_url(cur)
+    urls: list[str] = [f"{site_url}/"]
+
+    cur.execute(
+        "SELECT slug FROM monuments WHERE slug IS NOT NULL AND slug != '' "
+        "AND (in_stock=true OR in_stock IS NULL)"
+    )
+    monument_slugs = {r["slug"] for r in cur.fetchall() if r["slug"]}
+
+    cur.execute("SELECT slug FROM pages WHERE visible=true AND slug IS NOT NULL AND slug != ''")
+    page_paths = set()
+    for r in cur.fetchall():
+        path = _normalize_page_path(r["slug"])
+        if path:
+            page_paths.add(path)
+
+    if "/konstruktor" not in page_paths:
+        urls.append(f"{site_url}/konstruktor")
+
+    for slug in sorted(monument_slugs):
+        urls.append(f"{site_url}/monument/{slug}")
+
+    for path in sorted(page_paths):
+        urls.append(f"{site_url}{path}")
+
+    seen = set()
+    unique: list[str] = []
+    for u in urls:
+        if u not in seen:
+            seen.add(u)
+            unique.append(u)
+    return unique
+
+
+def render_sitemap_xml(urls: list[str]) -> str:
+    today = __import__("datetime").date.today().isoformat()
+    items = "\n".join(
+        f"  <url><loc>{html_escape(u)}</loc><lastmod>{today}</lastmod><changefreq>weekly</changefreq></url>"
+        for u in urls
+    )
+    return f"""<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+{items}
+</urlset>"""
+
+
+def handle_sitemap(method, parts, cur, conn):
+    action = parts[1] if len(parts) > 1 else ""
+    if method in ("GET", "POST") and action in ("preview", "regenerate", ""):
+        urls = build_sitemap_urls(cur)
+        return JSONResponse({
+            "ok": True,
+            "urlCount": len(urls),
+            "urls": urls,
+            "sitemapUrl": f"{_site_base_url(cur)}/sitemap.xml",
+        })
+    return JSONResponse({"error": "Not found"}, status_code=404)
+
+
 @app.get("/sitemap.xml")
 async def sitemap():
     conn = get_conn()
     cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
     try:
-        cur.execute("SELECT value FROM site_settings WHERE key='siteUrl'")
-        row = cur.fetchone()
-        site_url = (row["value"] if row else "").rstrip("/") or "https://granit-sever.ru"
-
-        cur.execute("SELECT slug FROM monuments WHERE in_stock=true OR in_stock IS NULL")
-        monument_slugs = [r["slug"] for r in cur.fetchall()]
-
-        cur.execute("SELECT slug FROM pages WHERE visible=true")
-        page_slugs = [r["slug"] for r in cur.fetchall()]
+        urls = build_sitemap_urls(cur)
+        xml = render_sitemap_xml(urls)
     finally:
         cur.close()
         conn.close()
-
-    urls = [site_url + "/"]
-    for slug in monument_slugs:
-        urls.append(f"{site_url}/monument/{slug}")
-    for slug in page_slugs:
-        urls.append(f"{site_url}/{slug}")
-
-    today = __import__("datetime").date.today().isoformat()
-    items = "\n".join(
-        f"  <url><loc>{u}</loc><lastmod>{today}</lastmod><changefreq>weekly</changefreq></url>"
-        for u in urls
-    )
-    xml = f"""<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-{items}
-</urlset>"""
     return Response(content=xml, media_type="application/xml")
 
 

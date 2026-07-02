@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { SiteSettings } from '@/data/siteData';
 import { compressImage } from '@/lib/compress';
+import { regenerateSitemap } from '@/lib/api';
 
 const UPLOAD_URL = '/upload-image';
 
@@ -15,6 +16,9 @@ export default function SettingsAdmin({ settings, onUpdate }: SettingsAdminProps
   const [saveError, setSaveError] = useState('');
   const [uploading, setUploading] = useState<'hero' | 'og' | 'icon' | 'favicon' | null>(null);
   const [showSmtpPwd, setShowSmtpPwd] = useState(false);
+  const [sitemapLoading, setSitemapLoading] = useState(false);
+  const [sitemapInfo, setSitemapInfo] = useState('');
+  const [sitemapError, setSitemapError] = useState('');
   const heroFileRef = useRef<HTMLInputElement>(null);
   const ogFileRef = useRef<HTMLInputElement>(null);
   const iconFileRef = useRef<HTMLInputElement>(null);
@@ -64,6 +68,24 @@ export default function SettingsAdmin({ settings, onUpdate }: SettingsAdminProps
   });
 
   const sitemapUrl = (draft.siteUrl || 'https://granit-sever.ru').replace(/\/$/, '') + '/sitemap.xml';
+
+  const handleRegenerateSitemap = async () => {
+    setSitemapLoading(true);
+    setSitemapError('');
+    setSitemapInfo('');
+    try {
+      const data = await regenerateSitemap();
+      if (data.ok) {
+        setSitemapInfo(`Готово: ${data.urlCount} URL в карте сайта`);
+      } else {
+        setSitemapError('Не удалось перегенерировать sitemap');
+      }
+    } catch {
+      setSitemapError('Ошибка при обращении к API');
+    } finally {
+      setSitemapLoading(false);
+    }
+  };
 
   return (
     <div className="p-6 max-w-2xl">
@@ -213,14 +235,24 @@ export default function SettingsAdmin({ settings, onUpdate }: SettingsAdminProps
                 onChange={e => e.target.files?.[0] && uploadImage(e.target.files[0], 'favicon', 'favicon')} />
             </div>
           </Field>
-          <div className="bg-stone-50 border border-border p-3 flex items-center justify-between">
-            <div>
+          <div className="bg-stone-50 border border-border p-3 flex items-center justify-between gap-4">
+            <div className="min-w-0">
               <div className="text-xs font-body text-muted-foreground uppercase tracking-wide mb-0.5">Карта сайта (sitemap.xml)</div>
               <a href={sitemapUrl} target="_blank" rel="noopener noreferrer"
-                className="text-sm font-body text-blue-600 hover:underline">
+                className="text-sm font-body text-blue-600 hover:underline break-all">
                 {sitemapUrl}
               </a>
+              {sitemapInfo && <p className="text-sm font-body text-green-700 mt-2">{sitemapInfo}</p>}
+              {sitemapError && <p className="text-sm font-body text-red-600 mt-2">{sitemapError}</p>}
             </div>
+            <button
+              type="button"
+              onClick={handleRegenerateSitemap}
+              disabled={sitemapLoading}
+              className="shrink-0 px-4 py-2 border border-border text-sm font-body hover:border-foreground/40 transition-colors disabled:opacity-50 whitespace-nowrap"
+            >
+              {sitemapLoading ? 'Генерация...' : 'Перегенерировать sitemap'}
+            </button>
           </div>
         </Section>
 

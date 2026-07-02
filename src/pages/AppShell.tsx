@@ -17,6 +17,8 @@ import { dismissStaticHero } from '@/lib/bootstrapStaticHero';
 const AdminPanel = lazy(() => import('@/components/admin/AdminPanel'));
 const DynamicPage = lazy(() => import('./DynamicPage'));
 const ConstructorPage = lazy(() => import('./ConstructorPage'));
+const MonumentRoutePage = lazy(() => import('./MonumentRoutePage'));
+const NotFound = lazy(() => import('./NotFound'));
 
 function RouteFallback() {
   return (
@@ -185,7 +187,11 @@ export default function AppShell() {
         <Route path="/konstruktor" element={
           <ConstructorPage {...sharedProps} />
         } />
+        <Route path="/monument/:slug" element={
+          <MonumentRoutePage {...sharedProps} monuments={monuments} />
+        } />
         <Route path="/:slug" element={<DynamicPage {...sharedProps} monuments={monuments} portfolio={portfolio} />} />
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </Suspense>
   );

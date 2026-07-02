@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Monument, Service, Portfolio, GraniteType, MenuItem, SiteSettings } from '@/data/siteData';
 
 import Header from '@/components/site/Header';
@@ -9,7 +9,6 @@ import PortfolioSection from '@/components/site/PortfolioSection';
 import GraniteSection from '@/components/site/GraniteSection';
 import ContactsSection from '@/components/site/ContactsSection';
 import Footer from '@/components/site/Footer';
-import MonumentPage from './MonumentPage';
 
 interface Props {
   monuments: Monument[];
@@ -29,18 +28,7 @@ export default function Index({
   monuments, services, portfolio, graniteTypes, menuItems, settings,
   onAdminClick,
 }: Props) {
-  const [currentSlug, setCurrentSlug] = useState<string | null>(null);
-  const currentMonument = currentSlug ? monuments.find(m => m.slug === currentSlug) : null;
-
-  if (currentMonument) {
-    return (
-      <MonumentPage
-        monument={currentMonument}
-        settings={settings}
-        onBack={() => setCurrentSlug(null)}
-      />
-    );
-  }
+  const navigate = useNavigate();
 
   return (
     <div className="min-h-screen bg-white">
@@ -49,7 +37,7 @@ export default function Index({
         <HeroSection settings={settings} />
         <CatalogSection
           monuments={monuments}
-          onMonumentClick={(slug) => { setCurrentSlug(slug); window.scrollTo(0, 0); }}
+          onMonumentClick={(slug) => navigate(`/monument/${slug}`)}
         />
         <ServicesSection services={services} />
         <PortfolioSection portfolio={portfolio} />

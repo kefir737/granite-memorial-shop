@@ -21,7 +21,13 @@ async function apiFetch<T>(path: string, options?: RequestInit): Promise<T> {
 
 // Monuments
 export const getMonuments = () => apiFetch<Monument[]>('monuments');
-export const getMonumentBySlug = (slug: string) => apiFetch<Monument>(`monuments/${slug}`);
+export async function getMonumentBySlug(slug: string): Promise<Monument | null> {
+  const res = await fetch(`${BASE_URL}/monuments/${encodeURIComponent(slug)}`, {
+    headers: { 'Content-Type': 'application/json' },
+  });
+  if (!res.ok) return null;
+  return res.json();
+}
 export const createMonument = (data: Omit<Monument, 'id'>) =>
   apiFetch<Monument>('monuments', { method: 'POST', body: JSON.stringify(data) });
 export const updateMonument = (id: number, data: Partial<Monument>) =>
@@ -116,6 +122,16 @@ export const updatePageMenuAssignments = (id: number, locations: PageMenuLocatio
   });
 export const deletePage = (id: number) =>
   apiFetch<{ deleted: boolean }>(`pages/${id}`, { method: 'DELETE' });
+
+export interface SitemapPreview {
+  ok: boolean;
+  urlCount: number;
+  urls: string[];
+  sitemapUrl: string;
+}
+
+export const regenerateSitemap = () =>
+  apiFetch<SitemapPreview>('sitemap/regenerate', { method: 'POST' });
 
 export function settingsToFlat(s: SiteSettings): Record<string, string> {
   return {

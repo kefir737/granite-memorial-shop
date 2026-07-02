@@ -55,7 +55,15 @@ export default function DynamicPage({ settings, menuItems, monuments, portfolio,
     );
   }
 
-  if (page.template === 'catalog') return <CatalogPage {...shared} monuments={monuments} onMonumentClick={() => {}} />;
+  if (page.template === 'catalog') {
+    return (
+      <CatalogPage
+        {...shared}
+        monuments={monuments}
+        onMonumentClick={(s) => navigate(`/monument/${s}`)}
+      />
+    );
+  }
   if (page.template === 'contacts') return <OrderPage {...shared} />;
   if (page.template === 'landing') return <ProductPage {...shared} monuments={monuments} />;
   if (page.template === 'content') return <SeoPage {...shared} portfolio={portfolio} />;
