@@ -12,6 +12,7 @@ import {
   updateService, updateGraniteType, saveMenuItems, saveSettings, settingsToFlat,
 } from '@/lib/api';
 import Index from './Index';
+import { dismissStaticHero } from '@/lib/bootstrapStaticHero';
 
 const AdminPanel = lazy(() => import('@/components/admin/AdminPanel'));
 const DynamicPage = lazy(() => import('./DynamicPage'));
@@ -65,6 +66,10 @@ export default function AppShell() {
   const [settings, setSettings] = useState<SiteSettings>(defaultSiteSettings);
   const [adminOpen, setAdminOpen] = useState(false);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    dismissStaticHero();
+  }, []);
 
   useEffect(() => {
     Promise.all([

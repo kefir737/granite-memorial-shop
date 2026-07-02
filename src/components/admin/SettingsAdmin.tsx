@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { SiteSettings } from '@/data/siteData';
 import { compressImage } from '@/lib/compress';
 
@@ -19,6 +19,10 @@ export default function SettingsAdmin({ settings, onUpdate }: SettingsAdminProps
   const ogFileRef = useRef<HTMLInputElement>(null);
   const iconFileRef = useRef<HTMLInputElement>(null);
   const faviconFileRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    setDraft({ ...settings });
+  }, [settings]);
 
   const uploadImage = async (file: File, field: 'heroImage' | 'ogImage' | 'siteIcon' | 'favicon', slot: 'hero' | 'og' | 'icon' | 'favicon') => {
     setUploading(slot);

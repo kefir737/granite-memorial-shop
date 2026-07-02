@@ -148,6 +148,7 @@
     font-size: 0.875rem;
     font-family: "Golos Text", sans-serif;
     background: white;
+    color: hsl(var(--foreground));
     outline: none;
     transition: border-color 0.15s;
   }

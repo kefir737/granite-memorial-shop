@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { SiteSettings } from '@/data/siteData';
 import { preferWebp } from '@/lib/siteImage';
+import { dismissStaticHero } from '@/lib/bootstrapStaticHero';
 
 const DEFAULT_HERO = '/images/hero.webp';
 const FALLBACK_ID = 'hero-fallback';
@@ -34,7 +35,7 @@ export default function HeroSection({ settings }: HeroSectionProps) {
     const el = document.getElementById(FALLBACK_ID);
     if (!el) return;
     syncHeroFallback(settings);
-    el.remove();
+    dismissStaticHero();
     setFallbackRemoved(true);
   }, [settings.heroTitle, settings.heroSubtitle, settings.phone]);
 
