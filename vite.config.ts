@@ -1,12 +1,34 @@
-import {defineConfig} from "vite";
+import {defineConfig, type Plugin} from "vite";
 import react from "@vitejs/plugin-react-swc";
 import path from "path";
 import {componentTagger} from "pp-tagger";
+
+/** Move app bundle to body end; drop crossorigin (breaks module load without ACAO). */
+function htmlBuildTweaks(): Plugin {
+    return {
+        name: 'html-build-tweaks',
+        apply: 'build',
+        transformIndexHtml(html) {
+            let out = html.replace(/ crossorigin/g, '');
+            const scriptRe = /<script type="module" src="(\/assets\/[^"]+\.js)"><\/script>\s*/;
+            const match = out.match(scriptRe);
+            if (match) {
+                out = out.replace(scriptRe, '');
+                out = out.replace(
+                    /<\/div>\s*<script>\s*\n\s*function loadFonts/,
+                    `</div>\n<script type="module" src="${match[1]}"></script>\n<script>\n  function loadFonts`,
+                );
+            }
+            return out;
+        },
+    };
+}
 
 // https://vitejs.dev/config/
 export default defineConfig(({mode}) => ({
     plugins: [
         react(),
+        htmlBuildTweaks(),
         mode === 'development' &&
         componentTagger(),
     ].filter(Boolean),
