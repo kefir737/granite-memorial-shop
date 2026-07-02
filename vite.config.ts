@@ -1,27 +1,12 @@
-import {defineConfig, type Plugin} from "vite";
+import {defineConfig} from "vite";
 import react from "@vitejs/plugin-react-swc";
 import path from "path";
 import {componentTagger} from "pp-tagger";
-
-function asyncCssPlugin(): Plugin {
-    return {
-        name: 'async-css',
-        apply: 'build',
-        transformIndexHtml(html) {
-            return html.replace(
-                /<link rel="stylesheet" crossorigin href="(\/assets\/[^"]+\.css)">/,
-                '<link rel="preload" href="$1" as="style" onload="this.onload=null;this.rel=\'stylesheet\'">' +
-                '<noscript><link rel="stylesheet" href="$1"></noscript>',
-            );
-        },
-    };
-}
 
 // https://vitejs.dev/config/
 export default defineConfig(({mode}) => ({
     plugins: [
         react(),
-        asyncCssPlugin(),
         mode === 'development' &&
         componentTagger(),
     ].filter(Boolean),
