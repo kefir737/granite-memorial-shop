@@ -35,8 +35,7 @@ jobs:
             cd /opt/granite
             git fetch origin main
             git reset --hard origin/main
-            docker system prune -af || true
-            docker builder prune -af || true
             cd vps
             docker compose build frontend
-            docker compose up -d
+            docker compose up -d --force-recreate --remove-orphans
+            docker compose ps
