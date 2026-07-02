@@ -21,7 +21,7 @@ const EMPTY: Omit<Monument, 'id'> = {
   width: 60,
   height: 120,
   depth: 8,
-  image: 'https://cdn.poehali.dev/projects/37badc84-9384-4d2b-8da3-56516f9e5627/files/b0b1004c-737e-475d-8c92-a90dd637541f.jpg',
+  image: '/images/monument-1.jpg',
   images: [],
   description: '',
   fullDescription: '',

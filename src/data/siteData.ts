@@ -86,9 +86,9 @@ export type SiteSettings = {
   favicon: string;
 };
 
-const IMG1 = 'https://cdn.poehali.dev/projects/37badc84-9384-4d2b-8da3-56516f9e5627/files/b0b1004c-737e-475d-8c92-a90dd637541f.jpg';
-const IMG2 = 'https://cdn.poehali.dev/projects/37badc84-9384-4d2b-8da3-56516f9e5627/files/5145858e-0a87-4025-87c5-050692b76940.jpg';
-const IMG3 = 'https://cdn.poehali.dev/projects/37badc84-9384-4d2b-8da3-56516f9e5627/files/1074cc91-a715-454c-8c17-7d03038739d8.jpg';
+const IMG1 = '/images/monument-1.jpg';
+const IMG2 = '/images/monument-2.jpg';
+const IMG3 = '/images/monument-3.jpg';
 
 export const defaultMonuments: Monument[] = [
   {
@@ -247,12 +247,12 @@ export const defaultServices: Service[] = [
 ];
 
 export const defaultPortfolio: Portfolio[] = [
-  { id: 1, title: 'Семейный мемориал', material: 'Чёрный гранит', image: 'https://cdn.poehali.dev/projects/37badc84-9384-4d2b-8da3-56516f9e5627/files/b0b1004c-737e-475d-8c92-a90dd637541f.jpg', year: 2024 },
-  { id: 2, title: 'Эксклюзивный с горельефом', material: 'Карельский гранит', image: 'https://cdn.poehali.dev/projects/37badc84-9384-4d2b-8da3-56516f9e5627/files/5145858e-0a87-4025-87c5-050692b76940.jpg', year: 2024 },
-  { id: 3, title: 'Православный крест', material: 'Габбро-диабаз', image: 'https://cdn.poehali.dev/projects/37badc84-9384-4d2b-8da3-56516f9e5627/files/1074cc91-a715-454c-8c17-7d03038739d8.jpg', year: 2023 },
-  { id: 4, title: 'Арочный с портретом', material: 'Чёрный гранит', image: 'https://cdn.poehali.dev/projects/37badc84-9384-4d2b-8da3-56516f9e5627/files/b0b1004c-737e-475d-8c92-a90dd637541f.jpg', year: 2023 },
-  { id: 5, title: 'Детский памятник', material: 'Белый мрамор', image: 'https://cdn.poehali.dev/projects/37badc84-9384-4d2b-8da3-56516f9e5627/files/5145858e-0a87-4025-87c5-050692b76940.jpg', year: 2024 },
-  { id: 6, title: 'Двойной горизонтальный', material: 'Карельский гранит', image: 'https://cdn.poehali.dev/projects/37badc84-9384-4d2b-8da3-56516f9e5627/files/1074cc91-a715-454c-8c17-7d03038739d8.jpg', year: 2023 },
+  { id: 1, title: 'Семейный мемориал', material: 'Чёрный гранит', image: '/images/monument-1.jpg', year: 2024 },
+  { id: 2, title: 'Эксклюзивный с горельефом', material: 'Карельский гранит', image: '/images/monument-2.jpg', year: 2024 },
+  { id: 3, title: 'Православный крест', material: 'Габбро-диабаз', image: '/images/monument-3.jpg', year: 2023 },
+  { id: 4, title: 'Арочный с портретом', material: 'Чёрный гранит', image: '/images/monument-1.jpg', year: 2023 },
+  { id: 5, title: 'Детский памятник', material: 'Белый мрамор', image: '/images/monument-2.jpg', year: 2024 },
+  { id: 6, title: 'Двойной горизонтальный', material: 'Карельский гранит', image: '/images/monument-3.jpg', year: 2023 },
 ];
 
 export const defaultGraniteTypes: GraniteType[] = [
@@ -263,7 +263,7 @@ export const defaultGraniteTypes: GraniteType[] = [
     color: 'Глубокий чёрный',
     hardness: '7 по шкале Мооса',
     description: 'Самый популярный материал для памятников. Равномерный чёрный цвет, без вкраплений. Прекрасно полируется, надписи и портреты выглядят контрастно и чётко. Не выцветает.',
-    image: 'https://cdn.poehali.dev/projects/37badc84-9384-4d2b-8da3-56516f9e5627/files/1074cc91-a715-454c-8c17-7d03038739d8.jpg',
+    image: '/images/monument-3.jpg',
   },
   {
     id: 2,
@@ -272,7 +272,7 @@ export const defaultGraniteTypes: GraniteType[] = [
     color: 'Серо-голубой с тёмными вкраплениями',
     hardness: '6.5 по шкале Мооса',
     description: 'Уникальный узор из тёмных и светлых минералов создаёт неповторимый вид. Каждое изделие — единственное в своём роде. Прочный и морозостойкий, идеален для российского климата.',
-    image: 'https://cdn.poehali.dev/projects/37badc84-9384-4d2b-8da3-56516f9e5627/files/b0b1004c-737e-475d-8c92-a90dd637541f.jpg',
+    image: '/images/monument-1.jpg',
   },
   {
     id: 3,
@@ -281,7 +281,7 @@ export const defaultGraniteTypes: GraniteType[] = [
     color: 'Тёмно-серый, почти чёрный',
     hardness: '8 по шкале Мооса',
     description: 'Исключительно прочная горная порода. Самый износостойкий материал среди всех используемых в мемориальном производстве. Устойчив к агрессивной среде и перепадам температур.',
-    image: 'https://cdn.poehali.dev/projects/37badc84-9384-4d2b-8da3-56516f9e5627/files/5145858e-0a87-4025-87c5-050692b76940.jpg',
+    image: '/images/monument-2.jpg',
   },
   {
     id: 4,
@@ -290,7 +290,7 @@ export const defaultGraniteTypes: GraniteType[] = [
     color: 'Белый с прожилками',
     hardness: '3-4 по шкале Мооса',
     description: 'Благородный и изысканный материал. Символизирует чистоту и вечность. Требует более тщательного ухода, но создаёт неповторимый облик. Используется для детских и женских памятников.',
-    image: 'https://cdn.poehali.dev/projects/37badc84-9384-4d2b-8da3-56516f9e5627/files/1074cc91-a715-454c-8c17-7d03038739d8.jpg',
+    image: '/images/monument-3.jpg',
   },
 ];
 

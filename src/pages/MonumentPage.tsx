@@ -8,7 +8,7 @@ interface MonumentPageProps {
   onBack: () => void;
 }
 
-const CONTACT_URL = 'https://functions.poehali.dev/164ed562-9538-47ed-9730-c9118fa2f14d';
+const CONTACT_URL = '/contact';
 
 export default function MonumentPage({ monument, settings, onBack }: MonumentPageProps) {
   const [activeImg, setActiveImg] = useState(0);

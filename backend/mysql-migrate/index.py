@@ -14,9 +14,9 @@ CORS = {
     'Access-Control-Allow-Headers': 'Content-Type',
 }
 
-IMG1 = 'https://cdn.poehali.dev/projects/37badc84-9384-4d2b-8da3-56516f9e5627/files/b0b1004c-737e-475d-8c92-a90dd637541f.jpg'
-IMG2 = 'https://cdn.poehali.dev/projects/37badc84-9384-4d2b-8da3-56516f9e5627/files/5145858e-0a87-4025-87c5-050692b76940.jpg'
-IMG3 = 'https://cdn.poehali.dev/projects/37badc84-9384-4d2b-8da3-56516f9e5627/files/1074cc91-a715-454c-8c17-7d03038739d8.jpg'
+IMG1 = '/images/monument-1.jpg'
+IMG2 = '/images/monument-2.jpg'
+IMG3 = '/images/monument-3.jpg'
 
 CREATE_SQL = """
 CREATE TABLE IF NOT EXISTS monuments (
