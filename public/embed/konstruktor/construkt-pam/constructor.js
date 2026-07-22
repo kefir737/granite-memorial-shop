@@ -88,8 +88,11 @@ $(document).ready(function () {
     });
 
 
-    $('.addImg img').on('click', function() {
+    $(document).on('click', '.addImg img', function() {
         var src = $(this).attr('src') || $(this).attr('data-src');
+        if (!src || src.indexOf('data:image/gif') === 0) {
+            return;
+        }
         fabric.Image.fromURL(src, function(img) {
             img.top = 60;
             img.left = 30;
@@ -211,8 +214,9 @@ $(document).ready(function () {
             $list.slideUp('slow');
             return;
         }
-        $list.slideDown('slow');
-        loadPanelImages($list);
+        $list.slideDown('slow', function () {
+            loadPanelImages($list);
+        });
     });
 
     function showPanelLoader($list) {
@@ -236,13 +240,19 @@ $(document).ready(function () {
         $list.find('img').each(function () {
             var img = this;
             var dataSrc = img.getAttribute('data-src');
+            var currentSrc = img.currentSrc || img.src || '';
 
             if (dataSrc) {
                 pending.push(img);
                 return;
             }
 
-            if (img.src && !img.complete) {
+            if (currentSrc.indexOf('data:image/gif') === 0) {
+                pending.push(img);
+                return;
+            }
+
+            if (currentSrc && !img.complete) {
                 pending.push(img);
             }
         });
@@ -264,26 +274,32 @@ $(document).ready(function () {
         pending.forEach(function (img) {
             var dataSrc = img.getAttribute('data-src');
             var finished = false;
+            var timeoutId;
 
             function finish() {
                 if (finished) {
                     return;
                 }
                 finished = true;
+                if (timeoutId) {
+                    clearTimeout(timeoutId);
+                }
                 img.onload = null;
                 img.onerror = null;
+                img.classList.remove('lazy-hidden');
                 onDone();
             }
 
             img.onload = finish;
             img.onerror = finish;
+            timeoutId = setTimeout(finish, 12000);
 
             if (dataSrc) {
                 img.src = dataSrc;
                 img.removeAttribute('data-src');
             }
 
-            if (img.complete) {
+            if (img.complete && img.naturalWidth > 1) {
                 finish();
             }
         });
