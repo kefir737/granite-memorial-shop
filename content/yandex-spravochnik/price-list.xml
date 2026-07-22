@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<yml_catalog>
+    <shop>
+        <categories>
+            <category id="1">Памятники и ритуальные изделия</category>
+            <category id="2">Ритуальные услуги</category>
+        </categories>
+        <offers>
+            <offer id="1">
+                <name>Классическая стела</name>
+                <vendor>Гранит Север</vendor>
+                <price>44900</price>
+                <currencyId>RUR</currencyId>
+                <categoryId>1</categoryId>
+                <picture>https://granit-sever.ru/yandex/01-klassicheskaya-stela.jpg</picture>
+                <description>Вертикальный памятник из полированного чёрного гранита. Размер 60×120×8 см. Подходит для большинства типов захоронений. Гравировка имени и дат, 3D-эскиз, бетонное основание в комплекте. Изготовление 14–21 день. Гарантия до 5 лет.</description>
+                <shortDescription>Классическая стела из чёрного гранита, от 44 900 ₽</shortDescription>
+                <url>https://granit-sever.ru/monument/klassicheskaya-stela</url>
+            </offer>
+            <offer id="2">
+                <name>Арочный с гравюрой</name>
+                <vendor>Гранит Север</vendor>
+                <price>138500</price>
+                <currencyId>RUR</currencyId>
+                <categoryId>1</categoryId>
+                <picture>https://granit-sever.ru/yandex/02-arochny-s-gravyuroy.jpg</picture>
+                <description>Памятник арочной формы из карельского гранита с уникальным природным рисунком. Размер 70×130×10 см. Художественная лазерная гравюра — изображение не выцветает. Долговечность более 100 лет.</description>
+                <shortDescription>Арочный памятник из карельского гранита, от 138 500 ₽</shortDescription>
+                <url>https://granit-sever.ru/monument/arochny-s-gravyuroy</url>
+            </offer>
+            <offer id="3">
+                <name>Двойной горизонтальный</name>
+                <vendor>Гранит Север</vendor>
+                <price>102000</price>
+                <currencyId>RUR</currencyId>
+                <categoryId>1</categoryId>
+                <picture>https://granit-sever.ru/yandex/03-dvojnoj-gorizontalny.jpg</picture>
+                <description>Семейный памятник для двух захоронений из габбро-диабаза. Размер 120×90×10 см. Самый прочный камень (8 по шкале Мооса), не трескается от мороза, минимальный уход.</description>
+                <shortDescription>Семейный горизонтальный памятник, от 102 000 ₽</shortDescription>
+                <url>https://granit-sever.ru/monument/dvojnoj-gorizontalny</url>
+            </offer>
+            <offer id="4">
+                <name>Крест православный</name>
+                <vendor>Гранит Север</vendor>
+                <price>69900</price>
+                <currencyId>RUR</currencyId>
+                <categoryId>1</categoryId>
+                <picture>https://granit-sever.ru/yandex/04-krest-pravoslavny.jpg</picture>
+                <description>Православный крест канонической формы из полированного чёрного гранита. Размер 50×150×10 см. Гравировка лика святого, молитвы и эпитафии. Поставляется с подготовленным стаканом для установки.</description>
+                <shortDescription>Православный крест из чёрного гранита, 69 900 ₽</shortDescription>
+                <url>https://granit-sever.ru/monument/krest-pravoslavny</url>
+            </offer>
+            <offer id="5">
+                <name>Эксклюзивный с портретом</name>
+                <vendor>Гранит Север</vendor>
+                <price>118000</price>
+                <currencyId>RUR</currencyId>
+                <categoryId>1</categoryId>
+                <picture>https://granit-sever.ru/yandex/05-eksklyuzivny-s-portretom.jpg</picture>
+                <description>Индивидуальный проект с лазерным портретом высокого разрешения. Карельский гранит, размер 80×140×12 см. Художественная гравировка орнаментов и эпитафий. Срок изготовления 30–45 дней.</description>
+                <shortDescription>Эксклюзивный памятник с лазерным портретом, от 118 000 ₽</shortDescription>
+                <url>https://granit-sever.ru/monument/eksklyuzivny-s-portretom</url>
+            </offer>
+            <offer id="6">
+                <name>Детский ангел</name>
+                <vendor>Гранит Север</vendor>
+                <price>85000</price>
+                <currencyId>RUR</currencyId>
+                <categoryId>1</categoryId>
+                <picture>https://granit-sever.ru/yandex/06-detsky-angel.jpg</picture>
+                <description>Памятник в форме ангела из белого каррарского мрамора. Размер 55×100×8 см. Мягкие линии, символ чистоты и покоя. Для детских захоронений. Гравировка имени и дат.</description>
+                <shortDescription>Детский памятник-ангел из белого мрамора, от 85 000 ₽</shortDescription>
+                <url>https://granit-sever.ru/monument/detsky-angel</url>
+            </offer>
+            <offer id="7">
+                <name>Изготовление памятника</name>
+                <vendor>Гранит Север</vendor>
+                <price>15000</price>
+                <currencyId>RUR</currencyId>
+                <categoryId>2</categoryId>
+                <picture>https://granit-sever.ru/yandex/07-izgotovlenie.jpg</picture>
+                <description>Собственное производство в Лобне. От эскиза до готового изделия — 14–30 дней. Контроль качества на каждом этапе. 3D-визуализация перед изготовлением.</description>
+                <shortDescription>Изготовление памятника на собственном производстве, от 15 000 ₽</shortDescription>
+                <url>https://granit-sever.ru/#services</url>
+            </offer>
+            <offer id="8">
+                <name>Установка памятника</name>
+                <vendor>Гранит Север</vendor>
+                <price>8000</price>
+                <currencyId>RUR</currencyId>
+                <categoryId>2</categoryId>
+                <picture>https://granit-sever.ru/yandex/08-ustanovka.jpg</picture>
+                <description>Профессиональная установка с соблюдением норм. Выравнивание, бетонирование основания, укладка плитки вокруг. Согласование с администрацией кладбища. Вывоз грунта и уборка после монтажа.</description>
+                <shortDescription>Установка памятника под ключ, от 8 000 ₽</shortDescription>
+                <url>https://granit-sever.ru/#services</url>
+            </offer>
+            <offer id="9">
+                <name>Доставка памятника</name>
+                <vendor>Гранит Север</vendor>
+                <price>3500</price>
+                <currencyId>RUR</currencyId>
+                <categoryId>2</categoryId>
+                <picture>https://granit-sever.ru/yandex/09-dostavka.jpg</picture>
+                <description>Доставка по Москве и Московской области, а также в регионы России. Специализированный транспорт с мягкой фиксацией изделия.</description>
+                <shortDescription>Доставка памятника по Москве и области, от 3 500 ₽</shortDescription>
+                <url>https://granit-sever.ru/#services</url>
+            </offer>
+            <offer id="10">
+                <name>Гравировка на памятнике</name>
+                <vendor>Гранит Север</vendor>
+                <price>2000</price>
+                <currencyId>RUR</currencyId>
+                <categoryId>2</categoryId>
+                <picture>https://granit-sever.ru/yandex/10-gravirovka.jpg</picture>
+                <description>Лазерная и алмазная гравировка портретов, текстов, орнаментов и религиозных символов. Точность и долговечность изображения — не выцветает и не стирается.</description>
+                <shortDescription>Лазерная и алмазная гравировка, от 2 000 ₽</shortDescription>
+                <url>https://granit-sever.ru/#services</url>
+            </offer>
+            <offer id="11">
+                <name>Благоустройство могилы</name>
+                <vendor>Гранит Север</vendor>
+                <price>12000</price>
+                <currencyId>RUR</currencyId>
+                <categoryId>2</categoryId>
+                <picture>https://granit-sever.ru/yandex/11-blagoustrojstvo.jpg</picture>
+                <description>Укладка тротуарной плитки, установка ограды, цветник. Полное оформление места захоронения под ключ.</description>
+                <shortDescription>Благоустройство места захоронения, от 12 000 ₽</shortDescription>
+                <url>https://granit-sever.ru/#services</url>
+            </offer>
+            <offer id="12">
+                <name>Реставрация памятника</name>
+                <vendor>Гранит Север</vendor>
+                <price>5000</price>
+                <currencyId>RUR</currencyId>
+                <categoryId>2</categoryId>
+                <picture>https://granit-sever.ru/yandex/12-restavratsiya.jpg</picture>
+                <description>Восстановление старых памятников: полировка, обновление надписей, замена сколов. Вернём прежний вид и продлим срок службы.</description>
+                <shortDescription>Реставрация и полировка памятников, от 5 000 ₽</shortDescription>
+                <url>https://granit-sever.ru/#services</url>
+            </offer>
+        </offers>
+    </shop>
+</yml_catalog>

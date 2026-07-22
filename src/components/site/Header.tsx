@@ -54,9 +54,13 @@ export default function Header({ menuItems, settings, onAdminClick }: HeaderProp
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <a href="/" className="flex items-center gap-3 group">
-            <div className="w-8 h-8 bg-foreground flex items-center justify-center">
-              <span className="text-background font-display text-sm font-semibold">Г</span>
-            </div>
+            <img
+              src="/web-app-manifest-192x192.png"
+              alt=""
+              className="w-8 h-8 object-contain shrink-0"
+              width={32}
+              height={32}
+            />
             <div>
               <div className="font-display text-lg font-semibold leading-none text-foreground">{settings.companyName}</div>
               <div className="text-[10px] text-muted-foreground font-body tracking-widest uppercase">Памятники из гранита</div>
