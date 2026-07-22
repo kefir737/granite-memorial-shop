@@ -28,6 +28,9 @@ cp /opt/granite/vps/nginx/granit-sever.ru.conf /etc/nginx/sites-available/granit
 
 nginx -t && systemctl reload nginx
 
+echo "==> Настраиваю cron для автообновления SSL..."
+bash "$(dirname "$0")/install-certbot-cron.sh"
+
 echo "==> Готово! Осталось:"
 echo "  1. Направить DNS kladbishe-kiovo.ru на этот VPS"
 echo "  2. Запустить новый проект на порту 8082"
