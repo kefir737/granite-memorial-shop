@@ -4,6 +4,7 @@
         <categories>
             <category id="1">Памятники и ритуальные изделия</category>
             <category id="2">Ритуальные услуги</category>
+            <category id="3">Онлайн-сервисы</category>
         </categories>
         <offers>
             <offer id="1">
@@ -149,6 +150,18 @@
                 <description>1 штука за указанную цену. Восстановление старых памятников: полировка, обновление надписей, замена сколов. Вернём прежний вид и продлим срок службы.</description>
                 <shortDescription>1 штука · Реставрация и полировка памятников, от 5 000 ₽</shortDescription>
                 <url>https://granit-sever.ru/#services</url>
+            </offer>
+            <offer id="13">
+                <name>Конструктор памятников онлайн</name>
+                <vendor>Гранит Север</vendor>
+                <price>15000</price>
+                <currencyId>RUB</currencyId>
+                <categoryId>3</categoryId>
+                <picture>https://granit-sever.ru/yandex/13-konstruktor.jpg</picture>
+                <param name="Количество" unit="штука">1</param>
+                <description>1 штука за указанную цену. Бесплатный онлайн-конструктор оформления памятника: выберите форму, гравировку, портрет и декор, создайте эскиз и отправьте заявку на расчёт. Изготовление по проекту — от 15 000 ₽.</description>
+                <shortDescription>Бесплатно · Онлайн-конструктор эскиза памятника</shortDescription>
+                <url>https://granit-sever.ru/konstruktor</url>
             </offer>
         </offers>
     </shop>
